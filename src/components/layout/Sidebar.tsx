@@ -59,8 +59,8 @@ export default function Sidebar() {
 
       {/* Bottom Actions */}
       <div className="p-4 border-t border-gray-200 bg-gray-50/50">
-        <button className="w-full bg-[#2548B4] hover:bg-blue-800 text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-4 shadow-sm">
-          Upgrade Plan
+        <button className="w-full bg-[#0a235c] hover:bg-[#071944] text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-4 shadow-sm">
+          New Analysis
         </button>
         <ul className="flex flex-col gap-1">
           <li>
