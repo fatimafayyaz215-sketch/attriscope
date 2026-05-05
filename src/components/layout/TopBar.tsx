@@ -10,7 +10,7 @@ export default function TopBar() {
     '/dashboard': 'Dashboard Overview',
     '/risk-analysis': 'Risk Analysis',
     '/outreach-hub': 'Retention Outreach Hub',
-    '/data-management': 'Data Management',
+    '/data-management': 'Data Import Wizard',
     '/settings': 'System Settings'
   };
 
