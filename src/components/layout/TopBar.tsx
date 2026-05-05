@@ -11,7 +11,7 @@ export default function TopBar() {
     '/risk-analysis': 'Risk Analysis',
     '/outreach-hub': 'Retention Outreach Hub',
     '/data-management': 'Data Import Wizard',
-    '/settings': 'System Settings'
+    '/settings': 'Calibration & Setup'
   };
 
   const title = titles[pathname] || 'Dashboard Overview';
