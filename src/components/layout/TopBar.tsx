@@ -9,7 +9,7 @@ export default function TopBar() {
   const titles: Record<string, string> = {
     '/dashboard': 'Dashboard Overview',
     '/risk-analysis': 'Risk Analysis',
-    '/outreach-hub': 'Outreach Hub',
+    '/outreach-hub': 'Retention Outreach Hub',
     '/data-management': 'Data Management',
     '/settings': 'System Settings'
   };
