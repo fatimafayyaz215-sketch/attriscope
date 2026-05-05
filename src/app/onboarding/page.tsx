@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import OnboardingHeader from "@/features/onboarding/components/OnboardingHeader";
 import OnboardingFooter from "@/features/onboarding/components/OnboardingFooter";
 import IndustryCard from "@/features/onboarding/components/IndustryCard";
@@ -45,6 +46,7 @@ const industries = [
 ];
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [selectedIndustry, setSelectedIndustry] = useState<string>("saas");
 
   return (
@@ -142,8 +144,8 @@ export default function OnboardingPage() {
       </main>
 
       <OnboardingFooter 
-        onBack={() => console.log('back')}
-        onContinue={() => console.log('continue')}
+        onBack={() => router.push('/')}
+        onContinue={() => router.push('/onboarding/step-2')}
         canContinue={!!selectedIndustry}
       />
     </div>

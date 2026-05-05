@@ -136,7 +136,7 @@ export default function OnboardingStep2Page() {
 
       <OnboardingFooter 
         onBack={() => router.push('/onboarding')}
-        onContinue={() => console.log('continue to step 3')}
+        onContinue={() => router.push('/onboarding/step-3')}
         continueText="Continue to Step 3 →"
       />
     </div>

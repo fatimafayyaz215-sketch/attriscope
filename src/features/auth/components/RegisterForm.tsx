@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function RegisterForm() {
+  const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +13,7 @@ export default function RegisterForm() {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire up registration
+    router.push('/onboarding');
   };
 
   return (
