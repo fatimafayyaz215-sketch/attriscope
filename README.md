@@ -25,7 +25,7 @@ Next.js is a React framework that provides:
 - **Server & Client Components** — granular control over rendering (SSR, SSG, ISR, CSR).
 - **Built-in optimisations** — automatic image optimisation (`<Image />`), font loading, and code splitting.
 - **API Routes** — backend endpoints co-located with the frontend inside `src/app/api/`.
-- **Middleware** — edge-runtime logic (auth, redirects, A/B tests) via `middleware.ts`.
+- **Proxy** — edge-runtime logic (auth, redirects, A/B tests) via `proxy.ts`.
 
 ---
 
@@ -132,7 +132,7 @@ churn/
 | `error.tsx`     | Error boundary (must be a Client Component)                  |
 | `not-found.tsx` | Rendered when `notFound()` is called                         |
 | `route.ts`      | API route handler (GET, POST, ...)                           |
-| `middleware.ts` | Runs before requests at the edge                             |
+| `proxy.ts`     | Edge-runtime routing, redirects, and rewrites (replaces middleware) |
 
 ---
 
