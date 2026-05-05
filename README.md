@@ -240,4 +240,40 @@ npm run build     # Verify the production build (essential before PRs)
 | `npm run start` | Serves the production build locally |
 | `npm run lint` | Runs the ESLint suite for code quality |
 
+
+---
+
+## 🔌 Backend Integration
+
+To make backend integration seamless, we have implemented a **Service Layer** pattern.
+
+### 1. API Client (`src/lib/api-client.ts`)
+A centralized wrapper around the native `fetch` API. It handles:
+- Base URL management via `NEXT_PUBLIC_API_URL`.
+- Automatic `Content-Type` header injection.
+- Standardized error handling for non-2xx responses.
+
+### 2. Service Layer (`src/services/`)
+Each domain (auth, risk, outreach) has its own service file.
+- **Example**: `auth.service.ts` contains `login()`, `register()`, etc.
+- **Benefit**: Components stay clean; they only call the service and handle the loading/error UI state.
+
+### 3. How to Connect a Component
+```tsx
+import { authService } from "@/services/auth.service";
+
+// Inside a Client Component:
+const handleLogin = async () => {
+  setIsLoading(true);
+  try {
+    const data = await authService.login({ email, password });
+    // Handle success (save token, redirect)
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+```
+
 ---
