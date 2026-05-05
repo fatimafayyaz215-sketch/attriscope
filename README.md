@@ -1,4 +1,4 @@
-﻿# Churn Prediction — Next.js Application
+# Churn Prediction — Next.js Application
 
 > A production-ready Next.js application using the **App Router**, TypeScript, Tailwind CSS v4, and ESLint.
 
@@ -26,6 +26,14 @@ Next.js is a React framework that provides:
 - **Built-in optimisations** — automatic image optimisation (`<Image />`), font loading, and code splitting.
 - **API Routes** — backend endpoints co-located with the frontend inside `src/app/api/`.
 - **Middleware** — edge-runtime logic (auth, redirects, A/B tests) via `middleware.ts`.
+
+---
+
+## Implemented Features
+
+- **Authentication Flow (`/(auth)`)**: Login, Registration, and Forgot Password screens with modular split-panel designs.
+- **Onboarding Wizard (`/onboarding`)**: A 3-step configuration flow for industry selection, weight calibration, and data connection.
+- **Dashboard Overview (`/(dashboard)`)**: The main application shell featuring a persistent sidebar, top navigation, and custom dashboard widgets (KPI Cards, Risk Distribution Chart, Engagement Trend Chart, and High-Priority Alerts Table).
 
 ---
 
