@@ -3,16 +3,38 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { authService } from "@/services/auth.service";
 
 export default function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/onboarding');
+    setLoading(true);
+    setError(null);
+    const { error } = await authService.login({ email, password });
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      router.push("/dashboard");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    const { error } = await authService.loginWithGoogle();
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+    // On success Supabase redirects the browser — no manual navigation needed.
   };
 
   return (
@@ -22,6 +44,12 @@ export default function LoginForm() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
         <p className="text-gray-500 text-sm mb-8">Please enter your details to sign in.</p>
+
+        {error && (
+          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 mb-2">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSignIn} className="flex flex-col gap-5">
 
@@ -99,12 +127,15 @@ export default function LoginForm() {
           <button
             id="login-submit"
             type="submit"
-            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+            disabled={loading}
+            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Sign In
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+            {loading ? "Signing in…" : "Sign In"}
+            {!loading && (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            )}
           </button>
         </form>
 
@@ -119,7 +150,9 @@ export default function LoginForm() {
         <button
           id="login-google"
           type="button"
-          className="w-full border border-gray-300 hover:bg-gray-50 active:scale-[0.99] rounded-lg py-2.5 text-sm text-gray-700 font-medium flex items-center justify-center gap-2.5 transition-all cursor-pointer"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          className="w-full border border-gray-300 hover:bg-gray-50 active:scale-[0.99] rounded-lg py-2.5 text-sm text-gray-700 font-medium flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

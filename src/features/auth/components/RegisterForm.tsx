@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { authService } from "@/services/auth.service";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -10,10 +11,24 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agree, setAgree] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/onboarding');
+    setLoading(true);
+    setError(null);
+    const { error } = await authService.register({ name: companyName, email, password });
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      // Supabase may require email confirmation — show a success state rather than redirecting.
+      setSuccess(true);
+      setLoading(false);
+      router.push("/onboarding");
+    }
   };
 
   return (
@@ -23,6 +38,19 @@ export default function RegisterForm() {
         <p className="text-gray-500 text-sm mb-8">Start your 14-day free trial. No credit card required.</p>
 
         <form onSubmit={handleRegister} className="flex flex-col gap-5">
+
+          {error && (
+            <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+              Account created! Check your email to confirm your address.
+            </div>
+          )}
+
           {/* Company Name */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="register-company" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
@@ -113,12 +141,15 @@ export default function RegisterForm() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+            disabled={loading}
+            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Create Workspace
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+            {loading ? "Creating workspace…" : "Create Workspace"}
+            {!loading && (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            )}
           </button>
         </form>
 

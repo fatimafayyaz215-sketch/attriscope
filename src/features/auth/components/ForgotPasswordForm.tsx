@@ -2,13 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { authService } from "@/services/auth.service";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
 
-  const handleReset = (e: React.FormEvent) => {
+  const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire up password reset
+    setLoading(true);
+    setError(null);
+    const { error } = await authService.forgotPassword(email);
+    if (error) {
+      setError(error.message);
+    } else {
+      setSent(true);
+    }
+    setLoading(false);
   };
 
   return (
@@ -19,6 +31,19 @@ export default function ForgotPasswordForm() {
       </p>
 
       <form onSubmit={handleReset} className="flex flex-col gap-6">
+
+        {error && (
+          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
+        {sent && (
+          <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+            Reset link sent — check your inbox.
+          </div>
+        )}
+
         {/* Email */}
         <div className="flex flex-col gap-2">
           <label htmlFor="reset-email" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
@@ -45,12 +70,15 @@ export default function ForgotPasswordForm() {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow"
+          disabled={loading || sent}
+          className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Send Reset Link
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
+          {loading ? "Sending…" : sent ? "Link Sent" : "Send Reset Link"}
+          {!loading && !sent && (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          )}
         </button>
 
         {/* Back to Login */}

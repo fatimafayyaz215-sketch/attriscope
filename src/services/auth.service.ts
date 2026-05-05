@@ -1,30 +1,44 @@
 /**
- * Auth Service
- * Example of a domain-specific service for backend integration.
+ * Auth Service — Supabase backend
  */
 
-import { apiClient } from "@/lib/api-client";
-import { LoginCredentials, AuthResponse, RegisterData } from "@/types/auth";
+import { createClient } from "@/lib/supabase/client";
+import type { LoginCredentials, RegisterData } from "@/types/auth";
 
 export const authService = {
-  login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    return apiClient<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
+  login: async ({ email, password }: LoginCredentials) => {
+    const supabase = createClient();
+    return supabase.auth.signInWithPassword({ email, password: password! });
+  },
+
+  register: async ({ name, email, password }: RegisterData) => {
+    const supabase = createClient();
+    return supabase.auth.signUp({
+      email,
+      password: password!,
+      options: { data: { full_name: name } },
     });
   },
 
-  register: async (data: RegisterData): Promise<AuthResponse> => {
-    return apiClient<AuthResponse>("/auth/register", {
-      method: "POST",
-      body: JSON.stringify(data),
+  loginWithGoogle: async () => {
+    const supabase = createClient();
+    return supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
   },
 
-  forgotPassword: async (email: string): Promise<{ message: string }> => {
-    return apiClient<{ message: string }>("/auth/forgot-password", {
-      method: "POST",
-      body: JSON.stringify({ email }),
+  forgotPassword: async (email: string) => {
+    const supabase = createClient();
+    return supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     });
+  },
+
+  signOut: async () => {
+    const supabase = createClient();
+    return supabase.auth.signOut();
   },
 };

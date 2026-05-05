@@ -1,10 +1,15 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { authService } from "@/services/auth.service";
 
 export default function TopBar() {
   const pathname = usePathname();
-  
+  const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   // Basic title mapping
   const titles: Record<string, string> = {
     '/dashboard': 'Dashboard Overview',
@@ -15,6 +20,22 @@ export default function TopBar() {
   };
 
   const title = titles[pathname] || 'Dashboard Overview';
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await authService.signOut();
+    router.push("/login");
+  };
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-40">
@@ -59,9 +80,31 @@ export default function TopBar() {
           </button>
 
           {/* User Profile */}
-          <button className="w-8 h-8 rounded-full bg-teal-800 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-white text-xs font-bold ml-2">
-            Z
-          </button>
+          <div className="relative ml-2" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="w-8 h-8 rounded-full bg-teal-800 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-white text-xs font-bold"
+            >
+              Z
+            </button>
+
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <p className="text-xs font-semibold text-gray-800 truncate">My Account</p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
       </div>
