@@ -23,7 +23,7 @@ export default function OnboardingStep3Page() {
                 Finalizing Your Data Intelligence
               </h1>
               <p className="text-gray-600 text-sm leading-relaxed mb-8">
-                Securely connect your customer data to activate ChurnGuard's predictive engine. We'll handle the heavy lifting of mapping and encryption.
+                Securely connect your customer data to activate ChurnGuard&apos;s predictive engine. We&apos;ll handle the heavy lifting of mapping and encryption.
               </p>
 
               {/* Graphic Placeholder */}

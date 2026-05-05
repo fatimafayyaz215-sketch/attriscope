@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function CustomerContextPanel() {
   return (
     <div className="flex flex-col gap-6">
@@ -7,9 +9,12 @@ export default function CustomerContextPanel() {
         
         <div className="flex items-start justify-between mb-8">
           <div className="flex items-center gap-4">
-            <img 
+            <Image 
               src="https://i.pravatar.cc/150?u=a042581f4e29026704d" 
               alt="Avatar" 
+              width={48}
+              height={48}
+              unoptimized
               className="w-12 h-12 rounded-lg object-cover" 
             />
             <div>

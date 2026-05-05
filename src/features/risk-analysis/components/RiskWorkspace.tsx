@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function RiskWorkspace() {
   const customers = [
     {
@@ -95,7 +97,7 @@ export default function RiskWorkspace() {
               <tr key={c.id} className={i === 0 ? "bg-blue-50/30" : "hover:bg-gray-50/50 transition-colors"}>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4">
-                    <img src={c.avatar} alt={c.name} className="w-10 h-10 rounded-full bg-gray-200 object-cover" />
+                    <Image src={c.avatar} alt={c.name} width={40} height={40} unoptimized className="w-10 h-10 rounded-full bg-gray-200 object-cover" />
                     <div>
                       <div className="font-bold text-gray-900">{c.name}</div>
                       <div className="text-[11px] text-gray-500">{c.plan}</div>

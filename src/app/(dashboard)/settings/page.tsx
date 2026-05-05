@@ -15,7 +15,7 @@ export default function SettingsPage() {
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Industry Context Calibration</h1>
         <p className="text-sm text-gray-500 max-w-2xl">
-          Adjust the AI's predictive weights based on your specific business model. Sector-specific calibrations optimize for different churn patterns.
+          Adjust the AI&apos;s predictive weights based on your specific business model. Sector-specific calibrations optimize for different churn patterns.
         </p>
       </div>
 

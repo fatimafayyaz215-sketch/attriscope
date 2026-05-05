@@ -26,7 +26,7 @@ export default function OnboardingStep2Page() {
               Weight Calibration
             </h1>
             <p className="text-gray-600 text-sm leading-relaxed mb-10 max-w-lg">
-              Fine-tune the weights for your predictive churn model to align with your business's unique risk factors and customer behavior patterns.
+              Fine-tune the weights for your predictive churn model to align with your business&apos;s unique risk factors and customer behavior patterns.
             </p>
 
             <div className="flex flex-col gap-6 flex-1">
@@ -104,7 +104,7 @@ export default function OnboardingStep2Page() {
                 <div className="h-full bg-gray-300 rounded-full" style={{ width: '22.4%' }}></div>
               </div>
               <p className="text-xs text-gray-500 italic leading-relaxed">
-                "Optimal calibration typically weights Usage Frequency at 40%+ for high-retention SaaS models."
+                &quot;Optimal calibration typically weights Usage Frequency at 40%+ for high-retention SaaS models.&quot;
               </p>
             </div>
 

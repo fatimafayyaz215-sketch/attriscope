@@ -65,7 +65,7 @@ export default function FormulaTransparency() {
           <h3 className="text-sm font-bold text-gray-900">Impact Analysis</h3>
         </div>
         <p className="text-xs text-gray-500 leading-relaxed mb-4">
-          Based on this tuning, your "At Risk" segment will grow by approximately <span className="text-red-600 font-bold">12%</span> but increase forecast accuracy by <span className="text-teal-600 font-bold">8.4%</span>.
+          Based on this tuning, your &quot;At Risk&quot; segment will grow by approximately <span className="text-red-600 font-bold">12%</span> but increase forecast accuracy by <span className="text-teal-600 font-bold">8.4%</span>.
         </p>
         <button className="text-blue-600 text-xs font-bold hover:underline flex items-center gap-1">
           View simulation report

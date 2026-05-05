@@ -30,7 +30,7 @@ export default function RiskIntelligencePanel() {
           <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">AI Insights</h3>
           <div className="bg-[#f8fafc] border border-gray-100 rounded-lg p-4">
             <p className="text-sm text-gray-600 italic leading-relaxed">
-              "User engagement has plummeted significantly. Primary stakeholders haven't logged in for 3 weeks, and API consumption dropped by 65% since last Tuesday. Sentiment analysis from the latest support tickets suggests frustration with recent downtime."
+              &quot;User engagement has plummeted significantly. Primary stakeholders haven&apos;t logged in for 3 weeks, and API consumption dropped by 65% since last Tuesday. Sentiment analysis from the latest support tickets suggests frustration with recent downtime.&quot;
             </p>
           </div>
         </div>

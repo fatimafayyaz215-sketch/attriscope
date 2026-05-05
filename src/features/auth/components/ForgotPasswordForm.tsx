@@ -15,7 +15,7 @@ export default function ForgotPasswordForm() {
     <div className="w-full max-w-md mx-auto flex flex-col justify-center">
       <h1 className="text-3xl font-bold text-gray-900 mb-3">Forgot your password?</h1>
       <p className="text-gray-500 text-sm mb-10 leading-relaxed">
-        Enter the email address associated with your account, and we'll send you a link to reset your password.
+        Enter the email address associated with your account, and we&apos;ll send you a link to reset your password.
       </p>
 
       <form onSubmit={handleReset} className="flex flex-col gap-6">

@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function ForgotPasswordLeftPanel() {
   return (
     <div className="hidden lg:flex w-1/2 bg-blue-700 text-white flex-col justify-between p-12">
@@ -12,7 +10,7 @@ export default function ForgotPasswordLeftPanel() {
         </div>
 
         <h1 className="text-4xl font-bold leading-tight mb-6 max-w-md">
-          Don't lose your competitive edge.
+          Don&apos;t lose your competitive edge.
         </h1>
         <p className="text-blue-100 text-sm leading-relaxed max-w-[480px]">
           Recover your account to continue predicting and preventing customer churn with our AI-driven insights. Your data-driven advantage is just a few steps away.

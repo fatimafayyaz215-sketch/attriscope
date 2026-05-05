@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMockupPath: string }) {
   const guidanceItems = [
     { title: "UTF-8 Encoding", desc: "Ensure your CSV is encoded in UTF-8 to prevent character corruption." },
@@ -55,9 +57,12 @@ export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMo
       {/* Pro Tip Card */}
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
         <div className="h-40 bg-gray-100 overflow-hidden">
-          <img 
+          <Image 
             src={dashboardMockupPath} 
             alt="Dashboard Mockup" 
+            width={400}
+            height={160}
+            unoptimized
             className="w-full h-full object-cover grayscale-[0.5] hover:grayscale-0 transition-all duration-700" 
           />
         </div>

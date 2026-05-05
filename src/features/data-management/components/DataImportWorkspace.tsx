@@ -12,7 +12,7 @@ export default function DataImportWorkspace() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Import Customer Data</h1>
         <p className="text-sm text-gray-500">
-          Upload your CSV files to synchronize customer profiles with ChurnGuard AI's risk engine.
+          Upload your CSV files to synchronize customer profiles with ChurnGuard AI&apos;s risk engine.
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export default function DataImportWorkspace() {
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="font-bold text-gray-900">{row.source}</span>
-                      <span className="text-[10px] text-gray-400 font-mono">"{row.example}"</span>
+                      <span className="text-[10px] text-gray-400 font-mono">&quot;{row.example}&quot;</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">

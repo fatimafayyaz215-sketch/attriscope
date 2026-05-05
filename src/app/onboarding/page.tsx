@@ -116,7 +116,7 @@ export default function OnboardingPage() {
             <div className="w-full md:w-1/2">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">Precision Calibration</h2>
               <p className="text-sm text-gray-600 leading-relaxed mb-6">
-                Different industries exhibit unique 'Churn Signatures'. By selecting your context, you enable our AI to weight specific behavioral signals higher than others.
+                Different industries exhibit unique &apos;Churn Signatures&apos;. By selecting your context, you enable our AI to weight specific behavioral signals higher than others.
               </p>
               
               <ul className="flex flex-col gap-3">

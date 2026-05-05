@@ -1,11 +1,10 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/request";
+import { NextResponse, type NextRequest } from "next/server";
 
 /**
  * Global Middleware
  * Used for protecting routes and handling session-based redirects.
  */
-export function proxy(request: NextRequest) {
+export function proxy(_request: NextRequest) { // eslint-disable-line @typescript-eslint/no-unused-vars
   // Example: Redirect unauthenticated users from /dashboard to /login
   // For now, we allow everything but provide the structure.
   
