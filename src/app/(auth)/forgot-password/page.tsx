@@ -9,11 +9,13 @@ export const metadata = {
 export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen bg-white flex">
-      {/* Left Panel (Hidden on mobile) */}
-      <ForgotPasswordLeftPanel />
+      {/* Left Panel – hidden on small screens */}
+      <div className="hidden md:block">
+        <ForgotPasswordLeftPanel />
+      </div>
 
       {/* Right Panel */}
-      <div className="flex-1 flex items-center justify-center p-8 sm:p-12">
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-8 md:p-12">
         <ForgotPasswordForm />
       </div>
     </div>
