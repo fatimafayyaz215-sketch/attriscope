@@ -24,23 +24,28 @@ export default function WeightSlider({ title, description, value, onChange }: We
         </div>
       </div>
       
-      <div className="relative h-2.5 bg-gray-100 rounded-full">
+      <div className="relative h-3 bg-gray-100 rounded-full mt-1">
         <div 
           className="absolute top-0 left-0 h-full bg-blue-100 rounded-full"
           style={{ width: '100%' }}
         />
         <div 
-          className="absolute top-0 left-0 h-full bg-blue-600 rounded-full transition-all duration-300"
+          className="absolute top-0 left-0 h-full bg-blue-600 rounded-full transition-all duration-150"
           style={{ width: `${value}%` }}
         />
-        {/* We use an invisible range input overlaid on top to capture clicks/drags */}
+        {/* Visible thumb */}
+        <div
+          className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-white border-[2.5px] border-blue-600 rounded-full shadow-md pointer-events-none z-10 transition-all duration-150"
+          style={{ left: `calc(${value}% - 10px)` }}
+        />
+        {/* Invisible range input overlaid for interaction */}
         <input 
           type="range" 
           min="0" 
           max="100" 
           value={value} 
           onChange={handleChange}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
         />
       </div>
     </div>

@@ -17,12 +17,19 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await authService.login({ email, password });
+    const { data, error } = await authService.login({ email, password });
     if (error) {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      // Check if the user has completed onboarding (has a settings row).
+      const supabase = (await import("@/lib/supabase/client")).createClient();
+      const { data: settings } = await supabase
+        .from("user_settings")
+        .select("id")
+        .eq("user_id", data.user!.id)
+        .maybeSingle();
+      router.push(settings ? "/dashboard" : "/onboarding");
     }
   };
 

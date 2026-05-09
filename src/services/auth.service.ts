@@ -16,7 +16,10 @@ export const authService = {
     return supabase.auth.signUp({
       email,
       password: password!,
-      options: { data: { full_name: name } },
+      options: {
+        data: { full_name: name },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
   },
 

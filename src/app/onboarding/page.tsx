@@ -50,22 +50,22 @@ export default function OnboardingPage() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("saas");
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col pt-[72px]">
+    <div className="min-h-screen bg-gray-50 flex flex-col pt-15 sm:pt-18">
       <OnboardingHeader />
 
-      <main className="flex-1 flex flex-col items-center py-12 px-6">
+      <main className="flex-1 flex flex-col items-center py-8 sm:py-12 px-4 sm:px-6">
         <div className="w-full max-w-5xl">
           
-          <div className="text-center mb-12">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-3 sm:mb-4">
               Select your industry to calibrate our predictive models
             </h1>
-            <p className="text-gray-600 text-base max-w-2xl mx-auto">
+            <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
               Our AI engines adapt their churn signals based on your specific business model and transaction volume dynamics.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {industries.map((ind) => (
               <IndustryCard
                 key={ind.id}
@@ -82,11 +82,11 @@ export default function OnboardingPage() {
           </div>
 
           {/* Calibration Info Card */}
-          <div className="bg-[#f4f4f9] rounded-2xl border border-gray-200 p-8 flex flex-col md:flex-row items-center gap-10 overflow-hidden shadow-sm">
+          <div className="bg-[#f4f4f9] rounded-2xl border border-gray-200 p-5 sm:p-8 flex flex-col md:flex-row items-center gap-6 sm:gap-10 overflow-hidden shadow-sm">
             
             {/* Tablet Mockup Placeholder */}
-            <div className="w-full md:w-1/2 bg-[#1a1f2c] rounded-2xl overflow-hidden shadow-2xl relative aspect-[16/10] border-[6px] border-gray-800">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 to-gray-900/90 flex flex-col p-5">
+            <div className="w-full md:w-1/2 bg-[#1a1f2c] rounded-2xl overflow-hidden shadow-2xl relative aspect-16/10 border-[6px] border-gray-800">
+              <div className="absolute inset-0 bg-linear-to-br from-blue-900/30 to-gray-900/90 flex flex-col p-5">
                  {/* Fake Dashboard UI */}
                  <div className="flex items-center gap-2 mb-6 opacity-40">
                    <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
@@ -100,7 +100,7 @@ export default function OnboardingPage() {
                     {[30, 45, 35, 60, 40, 75, 55, 80, 65, 90, 70, 85].map((h, i) => (
                       <div key={i} className="w-[6%] mx-[1%] relative group h-full flex items-end">
                         <div className="w-full bg-blue-500/40 rounded-t-sm transition-all duration-500" style={{ height: `${h}%` }}>
-                           <div className="absolute top-0 left-0 w-full h-[2px] bg-blue-400"></div>
+                           <div className="absolute top-0 left-0 w-full h-0.5 bg-blue-400"></div>
                         </div>
                       </div>
                     ))}

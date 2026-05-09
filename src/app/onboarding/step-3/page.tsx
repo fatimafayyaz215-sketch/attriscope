@@ -8,28 +8,28 @@ export default function OnboardingStep3Page() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col pt-[72px]">
+    <div className="min-h-screen bg-gray-50 flex flex-col pt-15 sm:pt-18">
       <OnboardingHeader step={3} title="Data Connection (Final)" />
 
-      <main className="flex-1 flex justify-center p-8">
-        <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-6">
+      <main className="flex-1 flex justify-center p-4 sm:p-8">
+        <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-4 sm:gap-6">
           
           {/* Left Column */}
-          <div className="w-full lg:w-[45%] flex flex-col gap-4">
+            <div className="w-full lg:w-[45%] flex flex-col gap-3 sm:gap-4">
             
             {/* Top Intro Box */}
-            <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
-              <h1 className="text-3xl text-blue-800 font-normal leading-tight mb-4 tracking-tight">
+            <div className="bg-white border border-gray-200 rounded-xl p-5 sm:p-8 shadow-sm">
+              <h1 className="text-2xl sm:text-3xl text-blue-800 font-normal leading-tight mb-3 sm:mb-4 tracking-tight">
                 Finalizing Your Data Intelligence
               </h1>
               <p className="text-gray-600 text-sm leading-relaxed mb-8">
-                Securely connect your customer data to activate ChurnGuard&apos;s predictive engine. We&apos;ll handle the heavy lifting of mapping and encryption.
+                Securely connect your customer data to activate ChurnGuardAI&apos;s predictive engine. We&apos;ll handle the heavy lifting of mapping and encryption.
               </p>
 
               {/* Graphic Placeholder */}
-              <div className="w-full aspect-[2/1] bg-[#0B1521] rounded-lg overflow-hidden relative flex items-center justify-center border border-gray-800 shadow-inner">
+              <div className="w-full aspect-2/1 bg-[#0B1521] rounded-lg overflow-hidden relative flex items-center justify-center border border-gray-800 shadow-inner">
                 {/* Abstract Cloud/Circuit Graphic */}
-                <div className="absolute inset-0 bg-gradient-to-t from-teal-900/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-teal-900/20 to-transparent"></div>
                 
                 {/* Cloud Outline */}
                 <svg className="w-48 h-auto opacity-30 text-teal-400 absolute" viewBox="0 0 24 24" fill="currentColor">
@@ -47,7 +47,7 @@ export default function OnboardingStep3Page() {
                 </div>
 
                 {/* Core Chip */}
-                <div className="relative z-10 w-16 h-16 bg-gradient-to-br from-yellow-600 to-amber-700 rounded-lg transform rotate-45 border-4 border-amber-400/50 shadow-[0_0_30px_rgba(251,191,36,0.4)] flex items-center justify-center">
+                <div className="relative z-10 w-16 h-16 bg-linear-to-br from-yellow-600 to-amber-700 rounded-lg transform rotate-45 border-4 border-amber-400/50 shadow-[0_0_30px_rgba(251,191,36,0.4)] flex items-center justify-center">
                   <div className="w-8 h-8 border-2 border-amber-200/50 -rotate-45 flex items-center justify-center">
                     <div className="w-3 h-3 bg-amber-200"></div>
                   </div>
@@ -97,10 +97,10 @@ export default function OnboardingStep3Page() {
           </div>
 
           {/* Right Column */}
-          <div className="w-full lg:w-[55%] flex flex-col gap-4">
+            <div className="w-full lg:w-[55%] flex flex-col gap-3 sm:gap-4">
             
             {/* Upload Box */}
-            <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
+            <div className="bg-white border border-gray-200 rounded-xl p-5 sm:p-8 shadow-sm">
               <h2 className="text-sm font-semibold text-gray-800 mb-4">Required Columns Guide</h2>
               
               {/* Pills */}
@@ -151,7 +151,7 @@ export default function OnboardingStep3Page() {
             </div>
 
             {/* Empty State Box */}
-            <div className="flex-1 bg-white border border-gray-200 rounded-xl p-10 flex flex-col items-center justify-center text-center shadow-sm min-h-[200px]">
+            <div className="flex-1 bg-white border border-gray-200 rounded-xl p-10 flex flex-col items-center justify-center text-center shadow-sm min-h-50">
               <svg className="w-16 h-16 text-gray-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
