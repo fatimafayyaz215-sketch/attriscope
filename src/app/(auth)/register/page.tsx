@@ -30,7 +30,7 @@ export default function RegisterPage() {
           style={{ maxWidth: "900px", minHeight: "600px" }}
         >
           {/* Left panel – hidden on small screens */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex self-stretch">
             <LoginLeftPanel />
           </div>
 

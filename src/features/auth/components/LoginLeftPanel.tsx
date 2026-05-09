@@ -22,20 +22,39 @@ const features = [
 export default function LoginLeftPanel() {
   return (
     <div
-      className="flex flex-col justify-between p-10 text-white"
-      style={{ width: "340px", minWidth: "340px", background: "#1d4ed8", overflow: "hidden" }}
+      className="relative flex flex-col pt-10 px-10 pb-10 text-white overflow-hidden h-full"
+      style={{
+        width: "360px",
+        minWidth: "360px",
+        background: "linear-gradient(160deg, #2563eb 0%, #1d4ed8 50%, #1e3a8a 100%)",
+      }}
     >
-      <div>
+      {/* Decorative background orbs */}
+      <div
+        className="pointer-events-none absolute -top-16 -right-16 w-64 h-64 rounded-full"
+        style={{ background: "rgba(255,255,255,0.07)" }}
+      />
+      <div
+        className="pointer-events-none absolute -bottom-20 -left-12 w-72 h-72 rounded-full"
+        style={{ background: "rgba(255,255,255,0.06)" }}
+      />
+      <div
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full"
+        style={{ background: "rgba(255,255,255,0.04)" }}
+      />
+
+      {/* Content */}
+      <div className="relative">
         <h2 className="text-3xl font-bold leading-tight mb-4">
           Predict risk before it happens.
         </h2>
-        <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
-          Join over 500+ enterprise companies using ChurnIQ to automate
-          customer retention and secure recurring revenue.
+        <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>
+          AI-powered churn prediction that helps you identify at-risk customers
+          and take action before they leave.
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 mt-10">
+      <div className="relative flex flex-col gap-5 mt-auto">
         {features.map((f) => (
           <div key={f.title} className="flex items-start gap-3">
             <div
@@ -46,7 +65,7 @@ export default function LoginLeftPanel() {
             </div>
             <div>
               <p className="font-semibold text-sm">{f.title}</p>
-              <p className="text-xs leading-relaxed mt-0.5" style={{ color: "rgba(255,255,255,0.70)" }}>
+              <p className="text-xs leading-relaxed mt-0.5" style={{ color: "rgba(255,255,255,0.68)" }}>
                 {f.description}
               </p>
             </div>

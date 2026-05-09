@@ -172,14 +172,14 @@ export default function LoginForm() {
             Sign up
           </Link>
         </p>
-        <div className="mt-6 flex flex-col items-center gap-3">
+        {/* <div className="mt-6 flex flex-col items-center gap-3">
           <p className="text-xs text-gray-400 tracking-widest uppercase">Trusted by industry leaders</p>
           <div className="flex items-center gap-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="w-10 h-7 bg-gray-200 rounded opacity-60" aria-hidden="true" />
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
     </>

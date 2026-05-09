@@ -30,7 +30,7 @@ export default function LoginPage() {
           style={{ maxWidth: "900px", minHeight: "560px" }}
         >
           {/* Left panel – hidden on small screens */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex self-stretch">
             <LoginLeftPanel />
           </div>
 

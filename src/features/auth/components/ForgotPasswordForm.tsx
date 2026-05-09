@@ -24,13 +24,13 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col justify-center">
-      <h1 className="text-3xl font-bold text-gray-900 mb-3">Forgot your password?</h1>
-      <p className="text-gray-500 text-sm mb-10 leading-relaxed">
+    <div className="flex flex-col justify-center">
+      <h1 className="text-2xl font-bold text-gray-900 mb-1">Forgot your password?</h1>
+      <p className="text-gray-500 text-sm mb-8 leading-relaxed">
         Enter the email address associated with your account, and we&apos;ll send you a link to reset your password.
       </p>
 
-      <form onSubmit={handleReset} className="flex flex-col gap-6">
+      <form onSubmit={handleReset} className="flex flex-col gap-5">
 
         {error && (
           <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
@@ -71,7 +71,7 @@ export default function ForgotPasswordForm() {
         <button
           type="submit"
           disabled={loading || sent}
-          className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? "Sending…" : sent ? "Link Sent" : "Send Reset Link"}
           {!loading && !sent && (
@@ -83,7 +83,7 @@ export default function ForgotPasswordForm() {
 
         {/* Back to Login */}
         <div className="text-center mt-2">
-          <Link href="/login" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors">
+          <Link href="/login" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -91,24 +91,6 @@ export default function ForgotPasswordForm() {
           </Link>
         </div>
       </form>
-
-      {/* Divider */}
-      <div className="flex items-center gap-4 my-10">
-        <div className="flex-1 h-px bg-gray-200" />
-        <span className="text-xs text-gray-400 uppercase tracking-widest font-medium">or contact</span>
-        <div className="flex-1 h-px bg-gray-200" />
-      </div>
-
-      {/* Support Link */}
-      <div className="text-center">
-        <Link href="/support" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors">
-          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 10v-4a6 6 0 10-12 0v4m0 4h2a2 2 0 002-2v-4a2 2 0 00-2-2H6m12 8h-2a2 2 0 01-2-2v-4a2 2 0 012-2h2m-6 4v6m0 0H8m4 0h4" />
-          </svg>
-          Request assistance from Support
-        </Link>
-      </div>
-
     </div>
   );
 }
