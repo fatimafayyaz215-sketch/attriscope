@@ -22,14 +22,9 @@ export default function LoginForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      // Check if the user has completed onboarding (has a settings row).
-      const supabase = (await import("@/lib/supabase/client")).createClient();
-      const { data: settings } = await supabase
-        .from("user_settings")
-        .select("id")
-        .eq("user_id", data.user!.id)
-        .maybeSingle();
-      router.push(settings ? "/dashboard" : "/onboarding");
+      // user_metadata.onboarding_completed is set when the user finishes step 3.
+      const onboarded = data.user?.user_metadata?.onboarding_completed === true;
+      router.push(onboarded ? "/dashboard" : "/onboarding");
     }
   };
 

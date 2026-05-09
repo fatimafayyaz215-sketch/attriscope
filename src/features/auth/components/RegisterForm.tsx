@@ -227,9 +227,9 @@ export default function RegisterForm() {
             />
             <span className="text-xs text-gray-500 leading-relaxed">
               I agree to the{" "}
-              <Link href="/terms" className="text-blue-700 font-semibold hover:underline">Terms of Service</Link>
+              Terms of Service
               {" "}and{" "}
-              <Link href="/privacy" className="text-blue-700 font-semibold hover:underline">Privacy Policy</Link>.
+              Privacy Policy.
             </span>
           </label>
 

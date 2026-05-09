@@ -1,11 +1,19 @@
 ﻿"use client";
 
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import OnboardingHeader from "@/features/onboarding/components/OnboardingHeader";
 import OnboardingFooter from "@/features/onboarding/components/OnboardingFooter";
 
 export default function OnboardingStep3Page() {
   const router = useRouter();
+
+  /** Mark onboarding done in user metadata, then navigate to dashboard. */
+  const finish = async () => {
+    const supabase = createClient();
+    await supabase.auth.updateUser({ data: { onboarding_completed: true } });
+    router.push("/dashboard");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col pt-14 sm:pt-16">
@@ -135,15 +143,15 @@ export default function OnboardingStep3Page() {
               </div>
 
               {/* Main CTA */}
-              <button className="w-full bg-[#148e7f] hover:bg-[#117a6d] active:scale-[0.99] text-white font-medium py-3.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 shadow-sm mb-4">
-                Finish Setup & Enter Dashboard
+              <button onClick={finish} className="w-full bg-[#148e7f] hover:bg-[#117a6d] active:scale-[0.99] text-white font-medium py-3.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 shadow-sm mb-4">
+                Finish Setup &amp; Enter Dashboard
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </button>
 
               <div className="text-center">
-                <button className="text-sm font-bold tracking-widest uppercase text-gray-400 hover:text-gray-600 transition-colors">
+                <button onClick={finish} className="text-sm font-bold tracking-widest uppercase text-gray-400 hover:text-gray-600 transition-colors">
                   Skip For Now
                 </button>
               </div>
@@ -165,7 +173,7 @@ export default function OnboardingStep3Page() {
 
       <OnboardingFooter 
         onBack={() => router.push('/onboarding/step-2')}
-        onContinue={() => router.push('/dashboard')}
+        onContinue={finish}
         continueText="FINISH SETUP"
         continueIcon={
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +181,7 @@ export default function OnboardingStep3Page() {
           </svg>
         }
         middleContent={
-          <button className="flex flex-col items-center justify-center gap-1 text-[10px] font-bold tracking-widest uppercase text-gray-500 hover:text-gray-800 transition-colors cursor-pointer">
+          <button onClick={finish} className="flex flex-col items-center justify-center gap-1 text-[10px] font-bold tracking-widest uppercase text-gray-500 hover:text-gray-800 transition-colors cursor-pointer">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
