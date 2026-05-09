@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useState, useCallback } from "react";
 import Papa from "papaparse";
@@ -89,7 +89,7 @@ export default function DataImportWorkspace() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Import Customer Data</h1>
         <p className="text-sm text-gray-500">
-          Upload your CSV files to synchronize customer profiles with ChurnIQ&apos;s risk engine.
+          Upload your CSV files to synchronize customer profiles with ChurnGuard AI&apos;s risk engine.
         </p>
       </div>
 

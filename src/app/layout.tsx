@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ChurnIQ — Predict. Retain. Grow.",
+  title: "ChurnGuard AI — Predict. Retain. Grow.",
   description: "AI-powered customer churn prediction platform that helps you identify at-risk customers and take action before they leave.",
 };
 

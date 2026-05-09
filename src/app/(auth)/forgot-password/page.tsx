@@ -1,10 +1,10 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import ForgotPasswordLeftPanel from "@/features/auth/components/ForgotPasswordLeftPanel";
 import ForgotPasswordForm from "@/features/auth/components/ForgotPasswordForm";
 
 export const metadata = {
-  title: "Forgot Password — ChurnIQ",
-  description: "Recover your ChurnIQ account.",
+  title: "Forgot Password — ChurnGuard AI",
+  description: "Recover your ChurnGuard AI account.",
 };
 
 export default function ForgotPasswordPage() {
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <span className="text-indigo-900 font-bold text-base tracking-tight">ChurnIQ</span>
+          <span className="text-indigo-900 font-bold text-base tracking-tight">ChurnGuard AI</span>
         </Link>
       </header>
 
@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
 
       {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="text-center text-xs text-gray-400 py-4">
-        © 2026 ChurnIQ. All rights reserved. Built for high-stakes enterprise retention.
+        © 2026 ChurnGuard AI. All rights reserved. Built for high-stakes enterprise retention.
       </footer>
 
     </div>

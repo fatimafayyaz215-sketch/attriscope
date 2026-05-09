@@ -14,9 +14,9 @@ export default function RiskDistributionChart() {
   }, [dataVersion]);
 
   const pct = (n: number) => stats && stats.total > 0 ? Math.round((n / stats.total) * 100) : 0;
-  const highPct = stats ? pct(stats.high) : 55;
-  const medPct = stats ? pct(stats.medium) : 40;
-  const lowPct = stats ? pct(stats.low) : 90;
+  const highPct = stats ? pct(stats.high) : 0;
+  const medPct = stats ? pct(stats.medium) : 0;
+  const lowPct = stats ? pct(stats.low) : 0;
   // normalise bar heights relative to the tallest bar
   const maxPct = Math.max(highPct, medPct, lowPct, 1);
   const barH = (v: number) => `${Math.round((v / maxPct) * 100)}%`;
@@ -30,21 +30,21 @@ export default function RiskDistributionChart() {
         )}
       </div>
 
-      <div className="flex-1 flex items-end justify-between px-6 pb-6 border-b border-gray-100 min-h-[200px] gap-4">
+      <div className="flex-1 flex items-end justify-between px-6 pb-6 border-b border-gray-100 min-h-80 gap-4">
         <div className="w-1/3 flex flex-col items-center gap-3">
-          <span className="text-xs font-bold text-red-600">{highPct}%</span>
+          <span className="text-xs font-bold text-red-600">{highPct > 0 ? `${highPct}%` : "—"}</span>
           <div className="w-full bg-[#E53E3E] rounded-t-sm transition-all hover:opacity-90" style={{ height: barH(highPct), minHeight: "4px" }} />
           <span className="text-xs font-semibold text-gray-600">High</span>
           {stats && <span className="text-[10px] text-gray-400">{stats.high}</span>}
         </div>
         <div className="w-1/3 flex flex-col items-center gap-3">
-          <span className="text-xs font-bold text-amber-600">{medPct}%</span>
+          <span className="text-xs font-bold text-amber-600">{medPct > 0 ? `${medPct}%` : "—"}</span>
           <div className="w-full bg-[#D69E2E] rounded-t-sm transition-all hover:opacity-90" style={{ height: barH(medPct), minHeight: "4px" }} />
           <span className="text-xs font-semibold text-gray-600">Med</span>
           {stats && <span className="text-[10px] text-gray-400">{stats.medium}</span>}
         </div>
         <div className="w-1/3 flex flex-col items-center gap-3">
-          <span className="text-xs font-bold text-teal-600">{lowPct}%</span>
+          <span className="text-xs font-bold text-teal-600">{lowPct > 0 ? `${lowPct}%` : "—"}</span>
           <div className="w-full bg-[#148E7F] rounded-t-sm transition-all hover:opacity-90" style={{ height: barH(lowPct), minHeight: "4px" }} />
           <span className="text-xs font-semibold text-gray-600">Low</span>
           {stats && <span className="text-[10px] text-gray-400">{stats.low}</span>}

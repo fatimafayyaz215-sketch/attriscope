@@ -1,10 +1,10 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import LoginLeftPanel from "@/features/auth/components/LoginLeftPanel";
 import LoginForm from "@/features/auth/components/LoginForm";
 
 export const metadata = {
-  title: "Sign In — ChurnIQ",
-  description: "Sign in to your ChurnIQ account to monitor and prevent customer churn.",
+  title: "Sign In — ChurnGuard AI",
+  description: "Sign in to your ChurnGuard AI account to monitor and prevent customer churn.",
 };
 
 export default function LoginPage() {
@@ -46,7 +46,7 @@ export default function LoginPage() {
 
       {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="text-center text-xs text-gray-400 py-4">
-        © 2026 ChurnIQ. All rights reserved. Built for high-stakes enterprise retention.
+        © 2026 ChurnGuard AI. All rights reserved. Built for high-stakes enterprise retention.
       </footer>
 
     </div>

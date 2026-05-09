@@ -1,5 +1,5 @@
--- ============================================================
--- ChurnIQ — Supabase Schema
+﻿-- ============================================================
+-- ChurnGuard AI — Supabase Schema
 -- Run this in the Supabase SQL Editor to set up the database.
 -- ============================================================
 

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 
 /**
  * Sample API Route
@@ -8,7 +8,7 @@ export async function GET() {
   return NextResponse.json({
     status: "online",
     version: "1.0.0",
-    message: "ChurnIQ API is operational",
+    message: "ChurnGuard AI API is operational",
     timestamp: new Date().toISOString()
   });
 }

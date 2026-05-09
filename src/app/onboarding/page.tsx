@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -50,7 +50,7 @@ export default function OnboardingPage() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("saas");
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col pt-15 sm:pt-18">
+    <div className="min-h-screen bg-gray-50 flex flex-col pt-14 sm:pt-16">
       <OnboardingHeader />
 
       <main className="flex-1 flex flex-col items-center py-8 sm:py-12 px-4 sm:px-6">

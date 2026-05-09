@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRouter } from "next/navigation";
 import OnboardingHeader from "@/features/onboarding/components/OnboardingHeader";
@@ -8,7 +8,7 @@ export default function OnboardingStep3Page() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col pt-15 sm:pt-18">
+    <div className="min-h-screen bg-gray-50 flex flex-col pt-14 sm:pt-16">
       <OnboardingHeader step={3} title="Data Connection (Final)" />
 
       <main className="flex-1 flex justify-center p-4 sm:p-8">

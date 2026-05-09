@@ -1,9 +1,9 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import LoginLeftPanel from "@/features/auth/components/LoginLeftPanel";
 import RegisterForm from "@/features/auth/components/RegisterForm";
 
 export const metadata = {
-  title: "Create an Account — ChurnIQ",
+  title: "Create an Account — ChurnGuard AI",
   description: "Start your 14-day free trial. No credit card required.",
 };
 
@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
       {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="text-center text-xs text-gray-400 py-4">
-        © 2026 ChurnIQ. All rights reserved. Built for high-stakes enterprise retention.
+        © 2026 ChurnGuard AI. All rights reserved. Built for high-stakes enterprise retention.
       </footer>
 
     </div>
