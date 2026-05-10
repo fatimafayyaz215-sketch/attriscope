@@ -1,9 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
 import { useChurnStore } from "@/store/churn-store";
 
 interface Stats { total: number; high: number; medium: number; low: number; }
+
+const BARS = [
+  { key: "high",   label: "High",   color: "#ef4444", bg: "#fef2f2" },
+  { key: "medium", label: "Med",    color: "#f59e0b", bg: "#fffbeb" },
+  { key: "low",    label: "Low",    color: "#10b981", bg: "#ecfdf5" },
+];
+
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: { payload: { label: string; value: number; pct: number; color: string } }[] }) {
+  if (!active || !payload?.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 text-xs">
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
+        <p className="font-bold text-gray-800">{d.label} Risk</p>
+      </div>
+      <p className="text-gray-600">{d.value.toLocaleString()} customers</p>
+      <p className="text-gray-400">{d.pct}% of total</p>
+    </div>
+  );
+}
 
 export default function RiskDistributionChart() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -14,46 +36,76 @@ export default function RiskDistributionChart() {
   }, [dataVersion]);
 
   const pct = (n: number) => stats && stats.total > 0 ? Math.round((n / stats.total) * 100) : 0;
-  const highPct = stats ? pct(stats.high) : 0;
-  const medPct = stats ? pct(stats.medium) : 0;
-  const lowPct = stats ? pct(stats.low) : 0;
-  // normalise bar heights relative to the tallest bar
-  const maxPct = Math.max(highPct, medPct, lowPct, 1);
-  const barH = (v: number) => `${Math.round((v / maxPct) * 100)}%`;
+
+  const chartData = BARS.map((b) => ({
+    label: b.label,
+    color: b.color,
+    bg: b.bg,
+    value: stats ? stats[b.key as keyof Stats] as number : 0,
+    pct: stats ? pct(stats[b.key as keyof Stats] as number) : 0,
+  }));
+
+  const maxVal = Math.max(...chartData.map((d) => d.value), 1);
+  // Y-axis ceiling: nearest clean number above maxVal (min 5 so empty chart still shows scale)
+  const yMax = Math.max(Math.ceil(maxVal * 1.25), 5);
+
+  const hasData = stats && stats.total > 0;
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm h-full flex flex-col">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-1">
         <h2 className="text-base font-bold text-gray-900">Risk Distribution</h2>
-        {stats && (
-          <span className="text-xs text-gray-400">{stats.total.toLocaleString()} total</span>
-        )}
+        <span className="text-xs text-gray-400">{stats ? `${stats.total.toLocaleString()} total` : "No data"}</span>
+      </div>
+      <p className="text-xs text-gray-400 mb-5">Customer count by churn risk level</p>
+
+      <div className="flex-1 min-h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} barCategoryGap="35%" margin={{ top: 24, right: 8, left: -16, bottom: 0 }}>
+            <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="3 3" />
+            <XAxis
+              dataKey="label"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fontWeight: 700, fill: "#374151" }}
+            />
+            <YAxis
+              allowDecimals={false}
+              domain={[0, yMax]}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 11, fill: "#9ca3af" }}
+              width={36}
+            />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f8fafc", radius: 6 }} />
+            <Bar dataKey="value" radius={[8, 8, 2, 2]} maxBarSize={88} isAnimationActive={true}>
+              {chartData.map((d, i) => (
+                <Cell key={i} fill={d.color} fillOpacity={hasData ? 1 : 0.25} />
+              ))}
+              <LabelList
+                dataKey="value"
+                position="top"
+                formatter={(v) => (typeof v === "number" && v > 0) ? v.toLocaleString() : ""}
+                style={{ fontSize: 12, fontWeight: 800, fill: "#1f2937" }}
+              />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
 
-      <div className="flex-1 flex items-end justify-between px-6 pb-6 border-b border-gray-100 min-h-80 gap-4">
-        <div className="w-1/3 flex flex-col items-center gap-3">
-          <span className="text-xs font-bold text-red-600">{highPct > 0 ? `${highPct}%` : "—"}</span>
-          <div className="w-full bg-[#E53E3E] rounded-t-sm transition-all hover:opacity-90" style={{ height: barH(highPct), minHeight: "4px" }} />
-          <span className="text-xs font-semibold text-gray-600">High</span>
-          {stats && <span className="text-[10px] text-gray-400">{stats.high}</span>}
+      {/* Legend row */}
+      <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+        <div className="flex gap-4">
+          {BARS.map((b) => (
+            <div key={b.key} className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: b.color }} />
+              <span className="text-[11px] font-semibold text-gray-500">{b.label}</span>
+            </div>
+          ))}
         </div>
-        <div className="w-1/3 flex flex-col items-center gap-3">
-          <span className="text-xs font-bold text-amber-600">{medPct > 0 ? `${medPct}%` : "—"}</span>
-          <div className="w-full bg-[#D69E2E] rounded-t-sm transition-all hover:opacity-90" style={{ height: barH(medPct), minHeight: "4px" }} />
-          <span className="text-xs font-semibold text-gray-600">Med</span>
-          {stats && <span className="text-[10px] text-gray-400">{stats.medium}</span>}
-        </div>
-        <div className="w-1/3 flex flex-col items-center gap-3">
-          <span className="text-xs font-bold text-teal-600">{lowPct > 0 ? `${lowPct}%` : "—"}</span>
-          <div className="w-full bg-[#148E7F] rounded-t-sm transition-all hover:opacity-90" style={{ height: barH(lowPct), minHeight: "4px" }} />
-          <span className="text-xs font-semibold text-gray-600">Low</span>
-          {stats && <span className="text-[10px] text-gray-400">{stats.low}</span>}
-        </div>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-        <span className="font-medium">Total Tracked</span>
-        <span className="font-bold text-gray-900">{stats ? stats.total.toLocaleString() : "—"} Customers</span>
+        <span className="text-xs font-bold text-gray-900">
+          {stats ? `${stats.total.toLocaleString()} total` : "—"}
+        </span>
       </div>
     </div>
   );

@@ -11,6 +11,8 @@ export default function RiskWorkspace() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "high" | "medium" | "low">("all");
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   // Sync search from URL param when navigated from TopBar
   useEffect(() => {
@@ -30,7 +32,11 @@ export default function RiskWorkspace() {
       .finally(() => setLoading(false));
   }, [filter, search, setCustomers]);
 
-  const displayCustomers = customers;
+  // Reset to page 1 whenever filter or search changes
+  useEffect(() => { setPage(1); }, [filter, search]);
+
+  const totalPages = Math.max(1, Math.ceil(customers.length / PAGE_SIZE));
+  const pagedCustomers = customers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const high = customers.filter((c) => c.risk_level === "high").length;
   const churnPct = customers.length > 0 ? Math.round((high / customers.length) * 100 * 10) / 10 : 0;
@@ -51,20 +57,20 @@ export default function RiskWorkspace() {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Risk Analysis Workspace</h1>
           <p className="text-sm text-gray-500">Predictive churn scoring across your customer base.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Search */}
-          <div className="relative">
+          <div className="relative flex-1 min-w-40">
             <input
               type="text"
               placeholder="Search customers…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white"
+              className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white"
             />
             <svg className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </div>
@@ -79,8 +85,8 @@ export default function RiskWorkspace() {
             <option value="medium">Medium Risk</option>
             <option value="low">Low Risk</option>
           </select>
-          <button onClick={exportCsv} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          <button onClick={exportCsv} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap">
+            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
             Export CSV
           </button>
         </div>
@@ -92,7 +98,7 @@ export default function RiskWorkspace() {
           <div className="p-16 flex justify-center">
             <div className="w-8 h-8 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
           </div>
-        ) : displayCustomers.length === 0 ? (
+        ) : pagedCustomers.length === 0 ? (
           <div className="p-16 text-center">
             <p className="text-gray-500 text-sm mb-3">No customers found. Upload a CSV to get started.</p>
             <button onClick={() => router.push("/data-management")} className="text-blue-700 text-sm font-bold hover:underline">Go to Data Management →</button>
@@ -110,7 +116,7 @@ export default function RiskWorkspace() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {displayCustomers.map((c) => {
+              {pagedCustomers.map((c) => {
                 const isSelected = c.id === selectedCustomerId;
                 const factors = [
                   { label: `${c.days_inactive}d inactive`, val: c.days_inactive / 90 },
@@ -135,7 +141,7 @@ export default function RiskWorkspace() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-3">
-                        <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden flex-shrink-0">
+                        <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden shrink-0">
                           <div className={`h-full ${barColor}`} style={{ width: `${c.risk_score}%` }} />
                         </div>
                         <span className={`font-bold ${scoreColor}`}>{c.risk_score}</span>
@@ -160,6 +166,54 @@ export default function RiskWorkspace() {
               })}
             </tbody>
           </table>
+          </div>
+        )}
+        {/* Pagination */}
+        {!loading && customers.length > PAGE_SIZE && (
+          <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-t border-gray-100">
+            <p className="text-xs text-gray-500">
+              Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, customers.length)} of {customers.length} customers
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-1.5 text-xs font-medium rounded border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                ← Prev
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                .reduce<(number | "...")[]>((acc, p, idx, arr) => {
+                  if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("...");
+                  acc.push(p);
+                  return acc;
+                }, [])
+                .map((p, idx) =>
+                  p === "..." ? (
+                    <span key={`ellipsis-${idx}`} className="px-2 text-xs text-gray-400">…</span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p as number)}
+                      className={`w-8 h-8 text-xs font-medium rounded border transition-colors ${
+                        page === p
+                          ? "bg-blue-600 border-blue-600 text-white"
+                          : "border-gray-200 bg-white hover:bg-gray-50 text-gray-700"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                )}
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="px-3 py-1.5 text-xs font-medium rounded border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                Next →
+              </button>
+            </div>
           </div>
         )}
       </div>

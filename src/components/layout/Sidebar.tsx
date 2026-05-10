@@ -69,7 +69,8 @@ export default function Sidebar() {
       <div className="p-4 border-t border-gray-200 bg-gray-50/50 shrink-0">
         <Link
           href="/data-management"
-          className="block w-full bg-[#0a235c] hover:bg-[#071944] text-white font-medium py-2.5 rounded-lg text-sm transition-colors shadow-sm text-center"
+          className="block w-full bg-[#0a235c] hover:bg-[#071944] font-medium py-2.5 rounded-lg text-sm transition-colors shadow-sm text-center"
+          style={{ color: "#ffffff" }}
         >
           New Analysis
         </Link>
