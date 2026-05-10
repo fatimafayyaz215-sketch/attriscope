@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   if (!apiKey) return NextResponse.json({ error: "Gemini API key not configured" }, { status: 500 });
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
   const riskReasons: string[] = [];
   if (customer.days_inactive > 14) riskReasons.push(`has not logged in for ${customer.days_inactive} days`);

@@ -11,10 +11,12 @@ interface TrendPoint { week: string; engagement: number; count: number; }
 
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number; color: string }[]; label?: string }) {
   if (!active || !payload?.length) return null;
+  const visible = payload.filter((p) => p.name !== "EngagementArea");
+  if (!visible.length) return null;
   return (
     <div className="bg-white border border-gray-100 rounded-2xl shadow-2xl px-5 py-4 text-xs min-w-40">
       <p className="font-bold text-gray-800 mb-3 text-[11px] uppercase tracking-widest border-b border-gray-100 pb-2">{label}</p>
-      {payload.map((p) => (
+      {visible.map((p) => (
         <div key={p.name} className="flex items-center justify-between gap-6 mt-2">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: p.color }} />
@@ -158,10 +160,11 @@ export default function EngagementTrendChart() {
             <Area
               yAxisId="right"
               dataKey="engagement"
-              name="Engagement"
+              name="EngagementArea"
               fill="url(#areaGrad)"
               stroke="transparent"
               isAnimationActive
+              legendType="none"
             />
 
             <Line

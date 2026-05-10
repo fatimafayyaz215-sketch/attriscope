@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   if (!apiKey) return NextResponse.json({ error: "Gemini API key not configured" }, { status: 500 });
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
   const prompt = `You are a customer success expert. Analyse this at-risk customer and explain in 2–3 plain-English sentences why they are likely to churn. Be specific and actionable. Do NOT use markdown.
 
