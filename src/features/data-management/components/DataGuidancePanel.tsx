@@ -32,14 +32,18 @@ export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMo
           ))}
         </ul>
 
-        <button className="w-full mt-6 flex items-center justify-center gap-2 text-blue-600 text-xs font-bold hover:underline">
+        <a
+          href="/sample-customers.csv"
+          download="sample-customers.csv"
+          className="w-full mt-6 flex items-center justify-center gap-2 text-blue-600 text-xs font-bold hover:underline"
+        >
           Download Sample Template
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-        </button>
+        </a>
       </div>
 
       {/* Automated Sync Card */}
-      <div className="bg-[#eff6ff] border border-blue-100 rounded-xl p-6 shadow-sm relative overflow-hidden group">
+      {/* <div className="bg-[#eff6ff] border border-blue-100 rounded-xl p-6 shadow-sm relative overflow-hidden group">
         <div className="relative z-10">
           <h3 className="text-sm font-bold text-blue-900 mb-2">Automated Data Sync</h3>
           <p className="text-xs text-blue-700/80 leading-relaxed mb-5">
@@ -52,7 +56,7 @@ export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMo
         <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
           <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
         </div>
-      </div>
+      </div> */}
 
       {/* Pro Tip Card */}
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
