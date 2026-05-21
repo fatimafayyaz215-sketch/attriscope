@@ -3,13 +3,13 @@
 export type RiskLevel = "high" | "medium" | "low";
 
 export interface ChurnScore {
-  /** x₁ — 30%: Days since last login (raw number of days) */
+  /** x₁ — 25%: Days since last login (raw number of days) */
   daysInactive: number;
-  /** x₂ — 25%: Number of unresolved support tickets */
-  supportComplaints: number;
-  /** x₃ — 25%: Usage drop ratio 0–1 = (lastMonth - current) / lastMonth */
+  /** x₂ — 25%: Usage drop ratio 0–1 = (lastMonth - current) / lastMonth */
   usageDrop: number;
-  /** x₄ — 20%: Payment delay binary — 0 = clear, 1 = delayed / missed */
+  /** x₃ — 25%: Number of unresolved support tickets */
+  supportComplaints: number;
+  /** x₄ — 25%: Payment delay binary — 0 = clear, 1 = delayed / missed */
   paymentDelay: 0 | 1;
   /** Final weighted score 0–100 */
   total: number;

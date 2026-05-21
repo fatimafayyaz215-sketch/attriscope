@@ -20,10 +20,10 @@ export async function GET() {
   return NextResponse.json(
     data ?? {
       industry: "saas",
-      weight_inactivity: 30,
+      weight_inactivity: 25,
       weight_usage: 25,
       weight_support: 25,
-      weight_payment: 20,
+      weight_payment: 25,
     }
   );
 }
@@ -39,10 +39,10 @@ export async function POST(request: NextRequest) {
   const payload = {
     user_id: user.id,
     industry: industry ?? "saas",
-    weight_inactivity: weight_inactivity ?? 30,
+    weight_inactivity: weight_inactivity ?? 25,
     weight_usage: weight_usage ?? 25,
     weight_support: weight_support ?? 25,
-    weight_payment: weight_payment ?? 20,
+    weight_payment: weight_payment ?? 25,
     updated_at: new Date().toISOString(),
   };
 

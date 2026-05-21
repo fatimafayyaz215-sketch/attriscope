@@ -9,6 +9,11 @@ export default function FormulaTransparency() {
   const w2 = (weights.usage / (total || 100)).toFixed(2);
   const w3 = (weights.support / (total || 100)).toFixed(2);
   const w4 = (weights.payment / (total || 100)).toFixed(2);
+  const defaultProfile =
+    weights.inactivity === 25 &&
+    weights.usage === 25 &&
+    weights.support === 25 &&
+    weights.payment === 25;
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -73,6 +78,9 @@ export default function FormulaTransparency() {
               &nbsp;&nbsp;{w3}×z + {w4}×p<br />
               ) × 100
             </div>
+            <p className="text-[10px] text-gray-400 mt-3 leading-relaxed">
+              Engine note: coefficients are normalized by total weight, so this always behaves as a weighted average even if total is not exactly 100.
+            </p>
           </div>
         </div>
       </div>
@@ -88,6 +96,35 @@ export default function FormulaTransparency() {
           Payment delay contributes{" "}
           <span className="text-purple-600 font-bold">{weights.payment}%</span>.
         </p>
+
+        <div className="mt-5 border-t border-gray-100 pt-5">
+          <h4 className="text-xs font-bold text-gray-900 mb-3">How Prediction Works</h4>
+          <div className="text-xs text-gray-600 leading-relaxed space-y-3">
+            <p>
+              <span className="font-bold text-gray-900">Step 1:</span> Convert each signal to a 0-1 scale.
+              Inactivity is capped at 90 days, support complaints at 10 tickets, usage drop is clamped to 0-1,
+              and payment delay is binary (0 or 1).
+            </p>
+            <p>
+              <span className="font-bold text-gray-900">Step 2:</span> Multiply each normalized signal by its configured weight.
+              Current normalized coefficients are {w1}, {w2}, {w3}, and {w4}.
+            </p>
+            <p>
+              <span className="font-bold text-gray-900">Step 3:</span> Divide by total weight and multiply by 100 to get final risk score.
+              Risk bands: <span className="font-semibold text-red-600">High: 70+</span>,{" "}
+              <span className="font-semibold text-amber-600">Medium: 40-69</span>,{" "}
+              <span className="font-semibold text-teal-600">Low: 0-39</span>.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-lg border border-blue-100 bg-blue-50 px-4 py-3">
+          <p className="text-xs text-blue-900 leading-relaxed">
+            <span className="font-bold">Default profile:</span> 25% each signal. {defaultProfile
+              ? "You are currently using the balanced default profile."
+              : "Your profile is customized from the 25/25/25/25 baseline."}
+          </p>
+        </div>
       </div>
     </div>
   );

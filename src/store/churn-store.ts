@@ -46,7 +46,7 @@ interface ChurnStore {
 export const useChurnStore = create<ChurnStore>((set) => ({
   customers: [],
   selectedCustomerId: null,
-  weights: { inactivity: 30, usage: 25, support: 25, payment: 20 },
+  weights: { inactivity: 25, usage: 25, support: 25, payment: 25 },
   industry: "saas",
   dataVersion: 0,
   sidebarOpen: false,

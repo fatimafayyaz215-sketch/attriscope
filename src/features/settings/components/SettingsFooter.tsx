@@ -52,7 +52,7 @@ export default function SettingsFooter() {
   };
 
   const resetDefaults = () => {
-    setWeights({ inactivity: 30, usage: 25, support: 25, payment: 20 });
+    setWeights({ inactivity: 25, usage: 25, support: 25, payment: 25 });
     setIndustry("saas");
   };
 

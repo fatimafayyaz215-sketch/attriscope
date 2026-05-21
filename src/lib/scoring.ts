@@ -8,10 +8,10 @@ export interface ScoringWeights {
 }
 
 export const DEFAULT_WEIGHTS: ScoringWeights = {
-  inactivity: 30,
+  inactivity: 25,
   usage: 25,
   support: 25,
-  payment: 20,
+  payment: 25,
 };
 
 /**
@@ -20,10 +20,10 @@ export const DEFAULT_WEIGHTS: ScoringWeights = {
  *   Score = Σ(normalised_factor × weight) / Σ(weights) × 100
  *
  * Factors:
- *   x₁ – Login/Inactivity  (weight 30 %): days since last login, capped at 90
+ *   x₁ – Login/Inactivity  (weight 25 %): days since last login, capped at 90
  *   x₂ – Usage Drop        (weight 25 %): ratio 0–1, (prev − cur) / prev
  *   x₃ – Support Complaints(weight 25 %): ticket count, capped at 10
- *   x₄ – Payment Delays    (weight 20 %): binary 0 / 1
+ *   x₄ – Payment Delays    (weight 25 %): binary 0 / 1
  */
 export function computeChurnScore(
   daysInactive: number,

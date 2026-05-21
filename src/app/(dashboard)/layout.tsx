@@ -1,5 +1,6 @@
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
+import AppAssistantChatbot from "@/components/layout/AppAssistantChatbot";
 
 export default function DashboardLayout({
   children,
@@ -15,6 +16,7 @@ export default function DashboardLayout({
           {children}
         </main>
       </div>
+      <AppAssistantChatbot />
     </div>
   );
 }

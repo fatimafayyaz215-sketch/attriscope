@@ -11,10 +11,10 @@ export default function OnboardingStep2Page() {
   const [saving, setSaving] = useState(false);
 
   // Defaults match scoring.ts DEFAULT_WEIGHTS
-  const [inactivity, setInactivity] = useState(30);
+  const [inactivity, setInactivity] = useState(25);
   const [usage, setUsage] = useState(25);
   const [support, setSupport] = useState(25);
-  const [payment, setPayment] = useState(20);
+  const [payment, setPayment] = useState(25);
 
   const total = inactivity + usage + support + payment;
 
