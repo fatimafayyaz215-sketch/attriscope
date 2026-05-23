@@ -36,13 +36,20 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { industry, weight_inactivity, weight_usage, weight_support, weight_payment } = body;
 
+  // Fetch existing row so we never accidentally overwrite fields not included in this request
+  const { data: existing } = await supabase
+    .from("user_settings")
+    .select("industry, weight_inactivity, weight_usage, weight_support, weight_payment")
+    .eq("user_id", user.id)
+    .single();
+
   const payload = {
     user_id: user.id,
-    industry: industry ?? "saas",
-    weight_inactivity: weight_inactivity ?? 25,
-    weight_usage: weight_usage ?? 25,
-    weight_support: weight_support ?? 25,
-    weight_payment: weight_payment ?? 25,
+    industry:           industry           ?? existing?.industry           ?? "saas",
+    weight_inactivity:  weight_inactivity  ?? existing?.weight_inactivity  ?? 25,
+    weight_usage:       weight_usage       ?? existing?.weight_usage       ?? 25,
+    weight_support:     weight_support     ?? existing?.weight_support     ?? 25,
+    weight_payment:     weight_payment     ?? existing?.weight_payment     ?? 25,
     updated_at: new Date().toISOString(),
   };
 

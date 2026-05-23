@@ -48,6 +48,21 @@ const industries = [
 export default function OnboardingPage() {
   const router = useRouter();
   const [selectedIndustry, setSelectedIndustry] = useState<string>("saas");
+  const [saving, setSaving] = useState(false);
+
+  const saveAndContinue = async () => {
+    setSaving(true);
+    try {
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ industry: selectedIndustry }),
+      });
+    } finally {
+      setSaving(false);
+      router.push("/onboarding/step-2");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col pt-14 sm:pt-16">
@@ -145,8 +160,9 @@ export default function OnboardingPage() {
 
       <OnboardingFooter 
         onBack={() => router.push('/')}
-        onContinue={() => router.push('/onboarding/step-2')}
-        canContinue={!!selectedIndustry}
+        onContinue={saveAndContinue}
+        continueText={saving ? "Saving…" : "Continue"}
+        canContinue={!!selectedIndustry && !saving}
       />
     </div>
   );
