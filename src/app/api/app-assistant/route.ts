@@ -17,30 +17,38 @@ Product areas and routes:
 Main workflow:
 1) Onboarding: pick industry, calibrate weights, connect/import data.
 2) Upload CSV in Data Management.
-3) App computes churn score per customer using four factors.
+3) App computes a churn risk score (0-100) per customer using four signals.
 4) Review high-risk customers in Risk Analysis and Dashboard widgets.
 5) Draft and send retention emails in Outreach Hub.
 
-Scoring formula used by the app:
-- Inputs: inactivity days, usage drop ratio, unresolved support complaints, payment delay flag.
-- Weights are user-configurable in Settings.
-- Default weights are 25% each.
-- Normalized weighted scoring:
-  Score = ((w1*x1 + w2*x2 + w3*x3 + w4*x4) / (w1 + w2 + w3 + w4)) * 100
-- Signal normalization:
-  x1 = min(daysInactive / 90, 1)
-  x2 = clamp(usageDrop, 0, 1)
-  x3 = min(supportComplaints / 10, 1)
-  x4 = paymentDelay (0 or 1)
-- Risk bands:
-  high >= 70, medium >= 40 and < 70, low < 40
+How scoring works:
+- Four signals are measured: Login/Inactivity, Usage Drop, Support Complaints, Payment Delay.
+- Each signal is normalized based on the customer's billing cycle before scoring.
+- Billing cycle caps (monthly plan): inactivity capped at 28 days, support tickets capped at 5.
+- Billing cycle caps (yearly plan): inactivity capped at 85 days, support tickets capped at 9.
+- This ensures monthly and yearly customers are judged fairly on the same scale.
+- If billing_cycle column is not in the CSV, the system defaults to yearly caps.
+- Weights are user-configurable in Settings (default: 25% each = equal priority).
+- Risk bands: High >= 70, Medium 40-69, Low < 40.
 
-Data guidance:
-- CSV supports mapped columns (name/email/company and scoring signals).
-- Upload processing reads user settings and applies saved weights.
+Weight / priority guidance:
+- The four signals each have a weight slider in Settings.
+- If all four signals matter equally, set each to 25%.
+- If one signal (e.g. payment delay) is the biggest churn indicator for the business, raise that slider higher.
+- Total recommended to be 100%, but the formula self-adjusts even if it isn't.
+- Use Reset to Default anytime to return to 25% / 25% / 25% / 25%.
+
+CSV upload guidance:
+- Supported columns: customer_id, name, email, company, last_login_at, days_inactive, current_sessions, previous_sessions, support_complaints, payment_delay, billing_cycle.
+- Column names are auto-detected — common naming variations are handled automatically.
+- If days_inactive is missing but last_login_at is provided, the app calculates inactivity automatically.
+- If both are provided, days_inactive takes priority.
+- billing_cycle values: monthly (also accepts: month, mo, mth); anything else defaults to yearly.
 
 Response behavior:
-- Answer only app-related questions (features, workflow, settings, formula, navigation).
+- Answer only app-related questions (features, workflow, settings, scoring, navigation).
+- Do NOT expose or explain the internal scoring formula equation.
+- Explain scoring in plain language: signals, weights, billing cycle fairness, risk bands.
 - If question is outside app functionality, say you can only help with ChurnGuard AI usage.
 - Keep responses practical and concise.
 - Format answers in Markdown:
@@ -52,33 +60,42 @@ Response behavior:
 function getRuleBasedAnswer(question: string): string {
   const q = question.toLowerCase();
 
-  if (q.includes("formula") || q.includes("weight") || q.includes("prediction") || q.includes("score")) {
+  if (q.includes("formula") || q.includes("weight") || q.includes("prediction") || q.includes("score") || q.includes("billing") || q.includes("cycle")) {
     return [
-      "The churn prediction score uses 4 signals with configurable weights.",
+      "**How ChurnGuard AI scores churn risk:**",
       "",
-      "Default setup: 25% each (inactivity, usage drop, support complaints, payment delay).",
+      "Each customer gets a **Risk Score from 0 to 100** based on 4 signals:",
+      "- **Login / Inactivity** — days since last login",
+      "- **Usage Drop** — decline in sessions vs previous period",
+      "- **Support Complaints** — number of unresolved support tickets",
+      "- **Payment Delay** — late or missed payment (yes/no)",
       "",
-      "How it works:",
-      "1) Each signal is normalized to 0-1.",
-      "2) The app computes a weighted average and multiplies by 100.",
-      "3) Final bands are high (>=70), medium (40-69), and low (<40).",
+      "**Billing Cycle Fairness:**",
+      "Scoring caps adjust based on the customer's plan so monthly and yearly customers are judged fairly:",
+      "- Monthly plan: inactivity cap = 28 days, support cap = 5 tickets",
+      "- Yearly plan: inactivity cap = 85 days, support cap = 9 tickets",
       "",
-      "Formula:",
-      "Score = ((w1*x1 + w2*x2 + w3*x3 + w4*x4) / (w1+w2+w3+w4)) * 100",
+      "**Risk levels:** High ≥ 70 · Medium 40–69 · Low < 40",
       "",
-      "You can adjust weights in Settings, and the formula will automatically normalize by total weight.",
+      "**Weights:** Default is 25% each. Adjust in `Settings` based on what signals churn in your business.",
+      "If all 4 matter equally → keep each at 25%.",
     ].join("\n");
   }
 
-  if (q.includes("upload") || q.includes("csv") || q.includes("data")) {
+  if (q.includes("upload") || q.includes("csv") || q.includes("data") || q.includes("import") || q.includes("column")) {
     return [
-      "To upload customer data:",
-      "1) Open Data Management.",
-      "2) Upload your CSV.",
-      "3) Map detected columns (name, email, inactivity, usage, support, payment).",
-      "4) Confirm import.",
+      "**To upload customer data:**",
+      "1) Open `Data Management`.",
+      "2) Upload your CSV file.",
+      "3) Column names are auto-detected — review and adjust the mapping if needed.",
+      "4) Click **Process Data** to import.",
       "",
-      "The app then calculates churn scores for each customer using your saved settings weights.",
+      "**Supported columns:** customer\_id, name, email, company, last\_login\_at, days\_inactive, current\_sessions, previous\_sessions, support\_complaints, payment\_delay, billing\_cycle.",
+      "",
+      "**Tips:**",
+      "- No `days_inactive` column? Provide `last_login_at` and the app calculates it automatically.",
+      "- `billing_cycle` accepts: monthly (or month / mo / mth) and yearly. Defaults to yearly if missing.",
+      "- Scores use your saved weight settings from `Settings`.",
     ].join("\n");
   }
 
@@ -100,13 +117,19 @@ function getRuleBasedAnswer(question: string): string {
     ].join("\n");
   }
 
-  if (q.includes("setting") || q.includes("industry")) {
+  if (q.includes("setting") || q.includes("industry") || q.includes("reset") || q.includes("default")) {
     return [
-      "In Settings you can:",
-      "- Select your industry profile.",
-      "- Tune the four scoring weights.",
-      "- Review the live formula transparency panel.",
-      "- Save or reset settings to defaults.",
+      "**In Settings you can:**",
+      "- Select your **industry profile**.",
+      "- Tune the **four scoring weights** using sliders.",
+      "- Review the live **signal priority panel** to see current weight distribution.",
+      "- **Save** your weights to apply them to future uploads.",
+      "- **Reset to Default** to restore all weights to 25% each (equal priority).",
+      "",
+      "**Weight tips:**",
+      "- All 4 signals equally important → set each to **25%**.",
+      "- One signal matters more → raise that slider above the others.",
+      "- Total is recommended to be 100%.",
     ].join("\n");
   }
 

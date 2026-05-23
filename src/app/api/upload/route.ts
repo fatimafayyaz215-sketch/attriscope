@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Papa from "papaparse";
 import { createClient } from "@/lib/supabase/server";
-import { computeChurnScore, DEFAULT_WEIGHTS, ScoringWeights } from "@/lib/scoring";
+import { computeChurnScore, DEFAULT_WEIGHTS, ScoringWeights, BillingCycle } from "@/lib/scoring";
 import type { MappedField } from "@/lib/column-detector";
 
 type Mapping = Record<string, MappedField>;
@@ -91,7 +91,13 @@ export async function POST(request: NextRequest) {
     const supportComplaints = Math.max(0, parseInt(getField(row, "support_complaints", mapping)) || 0);
     const paymentDelay = parsePaymentDelay(getField(row, "payment_delay", mapping));
 
-    const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights);
+    // Billing cycle — normalise common variants, default to 'yearly'
+    const cycleRaw = getField(row, "billing_cycle", mapping).toLowerCase().trim();
+    const billingCycle: BillingCycle = /^(monthly|month|mo|mth|mthly|1month|30days?)$/.test(cycleRaw)
+      ? "monthly"
+      : "yearly";
+
+    const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights, billingCycle);
 
     // Last login timestamp
     let lastLoginAt: string | null = null;

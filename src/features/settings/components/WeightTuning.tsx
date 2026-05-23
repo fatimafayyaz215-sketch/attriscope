@@ -112,6 +112,30 @@ export default function WeightTuning() {
         </div>
 
       </div>
+
+      {/* Priority instructions */}
+      <div className="mt-8 pt-6 border-t border-gray-100">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-4">How to Set Your Priorities</p>
+        <div className="flex flex-col gap-3 text-xs text-gray-500 leading-relaxed">
+          <div className="flex gap-2.5 items-start">
+            <span className="text-blue-600 font-bold shrink-0 mt-0.5">→</span>
+            <p>Think about <span className="font-semibold text-gray-700">what usually signals a customer is about to leave</span> in your business — and give that signal a higher weight.</p>
+          </div>
+          <div className="flex gap-2.5 items-start">
+            <span className="text-blue-600 font-bold shrink-0 mt-0.5">→</span>
+            <p>If <span className="font-semibold text-gray-700">all 4 signals are equally important</span>, set each to <span className="font-semibold text-blue-700">25%</span> — the system treats them as equal priorities.</p>
+          </div>
+          <div className="flex gap-2.5 items-start">
+            <span className="text-blue-600 font-bold shrink-0 mt-0.5">→</span>
+            <p>If one signal matters more — for example, <span className="font-semibold text-gray-700">payment delays are your strongest churn indicator</span> — raise that slider higher than the rest.</p>
+          </div>
+          <div className="flex gap-2.5 items-start">
+            <span className="text-blue-600 font-bold shrink-0 mt-0.5">→</span>
+            <p>The total is recommended to be <span className="font-semibold text-gray-700">100%</span>. Use <span className="font-semibold text-gray-700">Reset to Default</span> anytime to go back to equal weights (25% each).</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

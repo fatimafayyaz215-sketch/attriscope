@@ -14,6 +14,7 @@ export type MappedField =
   | "previous_sessions"
   | "support_complaints"
   | "payment_delay"
+  | "billing_cycle"
   | "ignore";
 
 export const FIELD_LABELS: Record<MappedField, string> = {
@@ -27,6 +28,7 @@ export const FIELD_LABELS: Record<MappedField, string> = {
   previous_sessions: "Previous Sessions",
   support_complaints: "Support Tickets",
   payment_delay: "Payment Delay (0/1)",
+  billing_cycle: "Billing Cycle (monthly/yearly)",
   ignore: "Ignore Column",
 };
 
@@ -41,6 +43,7 @@ const PATTERNS: Record<MappedField, RegExp> = {
   previous_sessions: /^(previous_?sessions|last_?month_?sessions|prior_?sessions|prev_?sessions|previous_?usage|prior_?usage|last_?month_?usage|prev_?month_?sessions|prior_month_usage)$/i,
   support_complaints: /^(support_?tickets|tickets|complaints|open_?tickets|support_?complaints|ticket_?count|support_?count|num_?tickets)$/i,
   payment_delay: /^(payment_?delay|payment_?status|late_?payment|missed_?payment|overdue|payment_?overdue|is_?late)$/i,
+  billing_cycle: /^(billing_?cycle|plan_?type|subscription_?type|plan|billing_?period|subscription_?cycle|cycle|tier)$/i,
   ignore: /^$/,
 };
 

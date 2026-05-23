@@ -37,7 +37,6 @@ export default function OnboardingStep2Page() {
   const impactBg  = `hsl(227, ${Math.max(s - 8, 40)}%, ${Math.min(l + 7, 60)}%)`;
 
   // Normalized proportions — exactly what the scoring engine computes
-  const norm = (v: number) => total > 0 ? (v / total).toFixed(2) : "0.00";
   const pct  = (v: number) => total > 0 ? Math.round((v / total) * 100) : 0;
 
   const saveAndContinue = async () => {
@@ -81,7 +80,7 @@ export default function OnboardingStep2Page() {
             <div className="flex flex-col gap-4 sm:gap-6 flex-1">
               <WeightSlider
                 title="Inactivity Period"
-                description="Days since last user authentication (capped at 90 days)"
+                description="Days since last login — cap adjusts by plan: 28 days (monthly), 85 days (yearly)"
                 value={inactivity}
                 onChange={setInactivity}
                 color="#2548B4"
@@ -95,7 +94,7 @@ export default function OnboardingStep2Page() {
               />
               <WeightSlider
                 title="Support Tickets"
-                description="Volume of unresolved support complaints (capped at 10)"
+                description="Unresolved support tickets — cap adjusts by plan: 5 (monthly), 9 (yearly)"
                 value={support}
                 onChange={setSupport}
                 color="#0d9488"
@@ -125,23 +124,24 @@ export default function OnboardingStep2Page() {
                 <h3 className="font-semibold text-base sm:text-lg text-blue-50">Live Predictive Engine</h3>
               </div>
 
-              {/* Formula — shows real normalized coefficients */}
+              {/* Priority setup box */}
               <div
                 className="rounded-lg p-4 sm:p-5 mb-4 border border-blue-800/50 transition-colors duration-500"
                 style={{ backgroundColor: formulaBg }}
               >
-                <p className="text-[10px] font-bold text-blue-300 tracking-widest uppercase mb-2 sm:mb-3">
-                  Formula Transparency
+                <p className="text-[10px] font-bold text-blue-300 tracking-widest uppercase mb-3">
+                  Priority Setup
                 </p>
-                <p className="font-mono text-[11px] sm:text-sm text-blue-100 leading-relaxed">
-                  RiskScore =<br />
-                  &nbsp; ({norm(inactivity)} × inactivity)<br />
-                  &nbsp; + ({norm(usage)} × usage_drop)<br />
-                  &nbsp; + ({norm(support)} × support)<br />
-                  &nbsp; + ({norm(payment)} × payment)
-                </p>
-                <p className="text-[9px] text-blue-400 mt-2">
-                  Coefficients = weight ÷ total ({total}) — automatically normalized
+                <div className="flex flex-col gap-2">
+                  {signals.map((sig) => (
+                    <div key={sig.label} className="flex justify-between items-center">
+                      <span className="text-[11px] text-blue-200">{sig.label}</span>
+                      <span className="text-sm font-bold text-white">{sig.value}%</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[9px] text-blue-400 mt-3 leading-relaxed">
+                  If all 4 signals matter equally — keep each at 25%. Raise a slider to give that signal more influence on the risk score.
                 </p>
               </div>
 
