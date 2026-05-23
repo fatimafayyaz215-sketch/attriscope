@@ -41,6 +41,9 @@ interface ChurnStore {
   bumpDataVersion: () => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
+  assistantOpen: boolean;
+  setAssistantOpen: (open: boolean) => void;
+  toggleAssistant: () => void;
 }
 
 export const useChurnStore = create<ChurnStore>((set) => ({
@@ -50,6 +53,7 @@ export const useChurnStore = create<ChurnStore>((set) => ({
   industry: "saas",
   dataVersion: 0,
   sidebarOpen: false,
+  assistantOpen: false,
 
   setCustomers: (customers) => set({ customers }),
   selectCustomer: (id) => set({ selectedCustomerId: id }),
@@ -64,4 +68,6 @@ export const useChurnStore = create<ChurnStore>((set) => ({
   bumpDataVersion: () => set((state) => ({ dataVersion: state.dataVersion + 1 })),
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  setAssistantOpen: (open) => set({ assistantOpen: open }),
+  toggleAssistant: () => set((state) => ({ assistantOpen: !state.assistantOpen })),
 }));

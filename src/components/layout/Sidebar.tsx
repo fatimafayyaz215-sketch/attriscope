@@ -15,7 +15,7 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { sidebarOpen, setSidebarOpen } = useChurnStore();
+  const { sidebarOpen, setSidebarOpen, toggleAssistant } = useChurnStore();
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -66,7 +66,17 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom Actions */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50/50 shrink-0">
+      <div className="p-4 border-t border-gray-200 bg-gray-50/50 shrink-0 flex flex-col items-center gap-2">
+        <button
+          type="button"
+          onClick={toggleAssistant}
+          className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-semibold transition-colors"
+        >
+          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4v-4z" />
+          </svg>
+          Ask Assistant
+        </button>
         <Link
           href="/data-management"
           className="block w-full bg-[#0a235c] hover:bg-[#071944] font-medium py-2.5 rounded-lg text-sm transition-colors shadow-sm text-center"

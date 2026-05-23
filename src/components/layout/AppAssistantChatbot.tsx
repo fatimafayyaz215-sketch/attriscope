@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, ReactNode, useMemo, useRef, useState } from "react";
+import { useChurnStore } from "@/store/churn-store";
 
 type Message = {
   role: "user" | "assistant";
@@ -121,9 +122,7 @@ function renderAssistantContent(content: string) {
 }
 
 export default function AppAssistantChatbot() {
-  const [open, setOpen] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const { assistantOpen, setAssistantOpen } = useChurnStore();
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -136,9 +135,6 @@ export default function AppAssistantChatbot() {
   ]);
 
   const listRef = useRef<HTMLDivElement | null>(null);
-  const dragOffsetRef = useRef({ x: 0, y: 0 });
-  const dragMovedRef = useRef(false);
-  const suppressClickRef = useRef(false);
 
   const history = useMemo(() => messages.slice(-8), [messages]);
 
@@ -187,64 +183,10 @@ export default function AppAssistantChatbot() {
     await askAssistant(input);
   };
 
-  useEffect(() => {
-    if (position) return;
-
-    // Default dock: left side, just above the sidebar's "New Analysis" action.
-    const x = 16;
-    const y = Math.max(8, window.innerHeight - 150);
-    setPosition({ x, y });
-  }, [position]);
-
-  const clampToViewport = (x: number, y: number) => {
-    const maxX = Math.max(8, window.innerWidth - 190);
-    const maxY = Math.max(8, window.innerHeight - 60);
-    return {
-      x: Math.min(Math.max(8, x), maxX),
-      y: Math.min(Math.max(8, y), maxY),
-    };
-  };
-
-  const handlePointerDown: React.PointerEventHandler<HTMLButtonElement> = (e) => {
-    if (!position) return;
-    dragMovedRef.current = false;
-    setDragging(true);
-
-    dragOffsetRef.current = {
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    };
-
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-
-  const handlePointerMove: React.PointerEventHandler<HTMLButtonElement> = (e) => {
-    if (!dragging) return;
-
-    const next = clampToViewport(
-      e.clientX - dragOffsetRef.current.x,
-      e.clientY - dragOffsetRef.current.y,
-    );
-    setPosition(next);
-
-    if (!dragMovedRef.current) {
-      const dx = Math.abs(e.movementX);
-      const dy = Math.abs(e.movementY);
-      if (dx + dy > 2) dragMovedRef.current = true;
-    }
-  };
-
-  const handlePointerUp: React.PointerEventHandler<HTMLButtonElement> = () => {
-    if (!dragging) return;
-    setDragging(false);
-    if (dragMovedRef.current) suppressClickRef.current = true;
-  };
-
-  if (!position) return null;
-
   return (
     <>
-      {open && (
+      {/* Chatbot panel */}
+      {assistantOpen && (
         <div className="fixed right-4 bottom-4 sm:right-6 sm:bottom-6 z-50 w-[min(92vw,420px)] h-[min(72vh,620px)] bg-white border border-gray-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100 bg-blue-50/50 flex items-start justify-between gap-3">
             <div>
@@ -253,7 +195,7 @@ export default function AppAssistantChatbot() {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => setAssistantOpen(false)}
               className="text-gray-500 hover:text-gray-800 text-sm font-bold"
               aria-label="Close assistant"
             >
@@ -318,33 +260,23 @@ export default function AppAssistantChatbot() {
         </div>
       )}
 
-      <div className="fixed z-50" style={{ left: position.x, top: position.y }}>
-        <button
-          type="button"
-          onClick={() => {
-            if (suppressClickRef.current) {
-              suppressClickRef.current = false;
-              return;
-            }
-            setOpen((v) => !v);
-          }}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          className="ml-auto flex items-center gap-2 px-4 py-3 rounded-full bg-blue-700 hover:bg-blue-800 text-white text-sm font-bold shadow-lg"
-          aria-label="Ask Assistant"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4v-4z"
-            />
-          </svg>
-          {open ? "Hide Assistant" : "Ask Assistant"}
-        </button>
-      </div>
+      {/* Mobile-only floating action button (sidebar is hidden on mobile) */}
+      <button
+        type="button"
+        onClick={() => setAssistantOpen(!assistantOpen)}
+        className="lg:hidden fixed right-4 bottom-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-blue-700 hover:bg-blue-800 text-white text-sm font-bold shadow-lg"
+        aria-label="Ask Assistant"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4v-4z"
+          />
+        </svg>
+        {assistantOpen ? "Hide" : "Ask Assistant"}
+      </button>
     </>
   );
 }
