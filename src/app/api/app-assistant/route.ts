@@ -46,7 +46,7 @@ Response behavior:
 - Format answers in Markdown:
   - use short section headers when useful,
   - use bullet points or numbered steps for instructions,
-  - use **bold**, *italics*, and `inline code` for emphasis (for routes, use inline code).
+  - use **bold**, *italics*, and \`inline code\` for emphasis (for routes, use inline code).
 `;
 
 function getRuleBasedAnswer(question: string): string {
