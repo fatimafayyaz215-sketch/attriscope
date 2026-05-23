@@ -78,14 +78,14 @@ export default function FormulaTransparency() {
               &nbsp;&nbsp;{w3}×z + {w4}×p<br />
               ) × 100
             </div>
-            <p className="text-[10px] text-gray-400 mt-3 leading-relaxed">
+            {/* <p className="text-[10px] text-gray-400 mt-3 leading-relaxed">
               Engine note: coefficients are normalized by total weight, so this always behaves as a weighted average even if total is not exactly 100.
-            </p>
+            </p> */}
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+      {/* <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-4 text-amber-500">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
           <h3 className="text-sm font-bold text-gray-900">Impact Preview</h3>
@@ -125,7 +125,7 @@ export default function FormulaTransparency() {
               : "Your profile is customized from the 25/25/25/25 baseline."}
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
