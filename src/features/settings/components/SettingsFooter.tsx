@@ -43,6 +43,7 @@ export default function SettingsFooter() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Save failed");
+
       setSavedAt(new Date().toLocaleString());
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Save failed");
@@ -51,9 +52,34 @@ export default function SettingsFooter() {
     }
   };
 
-  const resetDefaults = () => {
-    setWeights({ inactivity: 25, usage: 25, support: 25, payment: 25 });
-    setIndustry("saas");
+  const resetDefaults = async () => {
+    const defaultWeights = { inactivity: 25, usage: 25, support: 25, payment: 25 };
+
+    // Update store immediately so sliders reflect defaults right away
+    setWeights(defaultWeights);
+
+    setSaving(true);
+    setError("");
+    try {
+      // Persist defaults to the database
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          industry,
+          weight_inactivity: 25,
+          weight_usage: 25,
+          weight_support: 25,
+          weight_payment: 25,
+        }),
+      });
+
+      setSavedAt(new Date().toLocaleString());
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Reset failed");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
