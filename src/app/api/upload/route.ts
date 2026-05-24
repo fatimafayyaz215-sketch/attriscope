@@ -3,6 +3,7 @@ import Papa from "papaparse";
 import { createClient } from "@/lib/supabase/server";
 import { computeChurnScore, DEFAULT_WEIGHTS, ScoringWeights, BillingCycle } from "@/lib/scoring";
 import type { MappedField } from "@/lib/column-detector";
+import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
 type Mapping = Record<string, MappedField>;
 
@@ -69,18 +70,17 @@ export async function POST(request: NextRequest) {
     const email = getField(row, "email", mapping).toLowerCase();
     const company = getField(row, "company", mapping);
 
-    // Days inactive
-    let daysInactive = 0;
     const rawDays = getField(row, "days_inactive", mapping);
     const rawLogin = getField(row, "last_login_at", mapping);
-    if (rawDays) {
-      daysInactive = Math.max(0, parseInt(rawDays) || 0);
-    } else if (rawLogin) {
+
+    let lastLoginAt: string | null = null;
+    if (rawLogin) {
       const d = new Date(rawLogin);
-      if (!isNaN(d.getTime())) {
-        daysInactive = Math.max(0, Math.floor((Date.now() - d.getTime()) / 86_400_000));
-      }
+      if (!isNaN(d.getTime())) lastLoginAt = d.toISOString();
     }
+
+    const rawDaysFallback = Math.max(0, parseInt(rawDays, 10) || 0);
+    const daysInactive = computeDaysInactiveFromLastLogin(lastLoginAt, rawDaysFallback);
 
     // Usage drop
     let usageDrop = 0;
@@ -100,11 +100,6 @@ export async function POST(request: NextRequest) {
     const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights, billingCycle);
 
     // Last login timestamp
-    let lastLoginAt: string | null = null;
-    if (rawLogin) {
-      const d = new Date(rawLogin);
-      if (!isNaN(d.getTime())) lastLoginAt = d.toISOString();
-    }
     if (!lastLoginAt && daysInactive > 0) {
       lastLoginAt = new Date(Date.now() - daysInactive * 86_400_000).toISOString();
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { DEFAULT_INDUSTRY, getIndustryDefaultWeights } from "@/lib/industry-defaults";
 
 export interface CustomerRow {
   id: string;
@@ -49,8 +50,8 @@ interface ChurnStore {
 export const useChurnStore = create<ChurnStore>((set) => ({
   customers: [],
   selectedCustomerId: null,
-  weights: { inactivity: 25, usage: 25, support: 25, payment: 25 },
-  industry: "saas",
+  weights: getIndustryDefaultWeights(DEFAULT_INDUSTRY),
+  industry: DEFAULT_INDUSTRY,
   dataVersion: 0,
   sidebarOpen: false,
   assistantOpen: false,

@@ -1,8 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
+import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
+
+const GEMINI_MODELS = ["gemini-2.5-flash-lite", "gemini-3.1-flash-lite"] as const;
+const ASSISTANT_TIMEOUT_MS = 12000;
+
+function isRetryableGeminiError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /(503|429|500|502|504|service unavailable|high demand|temporar|overloaded|try again later)/i.test(msg);
+}
+
+async function generateGeminiTextWithFallback(genAI: GoogleGenerativeAI, prompt: string): Promise<string> {
+  let lastErr: unknown;
+
+  for (const modelName of GEMINI_MODELS) {
+    for (let attempt = 0; attempt < 1; attempt++) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const result = await Promise.race([
+          model.generateContent(prompt),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Assistant generation timed out")), ASSISTANT_TIMEOUT_MS),
+          ),
+        ]);
+        return result.response.text();
+      } catch (err: unknown) {
+        lastErr = err;
+        const canRetrySameModel = isRetryableGeminiError(err) && attempt < 0;
+        if (canRetrySameModel) {
+          await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+          continue;
+        }
+        break;
+      }
+    }
+  }
+
+  throw lastErr ?? new Error("Gemini request failed");
+}
 
 const APP_KNOWLEDGE_BASE = `
 You are the in-product assistant for ChurnGuard AI.
@@ -39,16 +77,17 @@ Weight / priority guidance:
 - Use Reset to Default anytime to return to 25% / 25% / 25% / 25%.
 
 CSV upload guidance:
-- Supported columns: customer_id, name, email, company, last_login_at, days_inactive, current_sessions, previous_sessions, support_complaints, payment_delay, billing_cycle.
+- Supported columns: customer_id, name, email, company, last_login_at, current_sessions, previous_sessions, support_complaints, payment_delay, billing_cycle.
 - Column names are auto-detected — common naming variations are handled automatically.
-- If days_inactive is missing but last_login_at is provided, the app calculates inactivity automatically.
-- If both are provided, days_inactive takes priority.
+- Inactivity is derived from last_login_at at read time.
 - billing_cycle values: monthly (also accepts: month, mo, mth); anything else defaults to yearly.
 
 Response behavior:
 - Answer only app-related questions (features, workflow, settings, scoring, navigation).
 - Do NOT expose or explain the internal scoring formula equation.
 - Explain scoring in plain language: signals, weights, billing cycle fairness, risk bands.
+- When asked how to re-engage inactive or high-risk customers, provide actionable plays (offer types, cadence, channels, and follow-up steps).
+- Use recent churn analyses from this workspace as context when available, and reference concrete risk signals.
 - If question is outside app functionality, say you can only help with ChurnGuard AI usage.
 - Keep responses practical and concise.
 - Format answers in Markdown:
@@ -59,6 +98,32 @@ Response behavior:
 
 function getRuleBasedAnswer(question: string): string {
   const q = question.toLowerCase();
+
+  if (
+    q.includes("inactive") ||
+    q.includes("re-engage") ||
+    q.includes("bring back") ||
+    q.includes("retention") ||
+    q.includes("offer") ||
+    q.includes("voucher") ||
+    q.includes("discount") ||
+    q.includes("loyalty")
+  ) {
+    return [
+      "**Customer Re-engagement Playbook**",
+      "",
+      "Use this 3-step flow for inactive or high-risk customers:",
+      "1) **Segment by reason**: inactivity, usage drop, support issues, or payment friction.",
+      "2) **Match the offer to the reason**:",
+      "- Inactivity: time-limited voucher, monthly discount, or reactivation bonus.",
+      "- Usage drop: feature-specific onboarding, personalized walkthrough, success check-in.",
+      "- Support complaints: priority support callback + issue-resolution incentive.",
+      "- Payment delay: flexible plan options, grace extension, billing reminder campaign.",
+      "3) **Run a follow-up cadence**: Day 0 email, Day 3 reminder, Day 7 final personalized outreach.",
+      "",
+      "**Best practice:** personalize message tone and offer value by risk level, then track response and conversion in Outreach Hub.",
+    ].join("\n");
+  }
 
   if (q.includes("formula") || q.includes("weight") || q.includes("prediction") || q.includes("score") || q.includes("billing") || q.includes("cycle")) {
     return [
@@ -90,10 +155,10 @@ function getRuleBasedAnswer(question: string): string {
       "3) Column names are auto-detected — review and adjust the mapping if needed.",
       "4) Click **Process Data** to import.",
       "",
-      "**Supported columns:** customer\_id, name, email, company, last\_login\_at, days\_inactive, current\_sessions, previous\_sessions, support\_complaints, payment\_delay, billing\_cycle.",
+      "**Supported columns:** customer\_id, name, email, company, last\_login\_at, current\_sessions, previous\_sessions, support\_complaints, payment\_delay, billing\_cycle.",
       "",
       "**Tips:**",
-      "- No `days_inactive` column? Provide `last_login_at` and the app calculates it automatically.",
+      "- Provide `last_login_at` and the app calculates inactivity automatically.",
       "- `billing_cycle` accepts: monthly (or month / mo / mth) and yearly. Defaults to yearly if missing.",
       "- Scores use your saved weight settings from `Settings`.",
     ].join("\n");
@@ -158,6 +223,8 @@ export async function POST(request: NextRequest) {
 
   const trimmedQuestion = question.trim();
   const fallback = getRuleBasedAnswer(trimmedQuestion);
+  const lowerQuestion = trimmedQuestion.toLowerCase();
+  const needsAnalysisContext = /(churn|risk|inactive|inactivity|re-?engage|retention|offer|voucher|discount|loyalty|campaign|customer)/i.test(lowerQuestion);
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -175,24 +242,48 @@ export async function POST(request: NextRequest) {
       .map((h) => `${h.role.toUpperCase()}: ${h.content}`)
       .join("\n");
 
+    let recentAnalysisContext = "(Recent analysis context skipped for this question type.)";
+    if (needsAnalysisContext) {
+      const { data: recentAnalyses } = await supabase
+        .from("customers")
+        .select("name, risk_score, risk_level, last_login_at, days_inactive, usage_drop, support_complaints, payment_delay, ai_explanation, created_at")
+        .eq("user_id", user.id)
+        .not("ai_explanation", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(4);
+
+      recentAnalysisContext = (recentAnalyses ?? []).length > 0
+        ? (recentAnalyses ?? [])
+            .map((c, idx) => {
+              const usagePct = Math.round(Number(c.usage_drop ?? 0) * 100);
+              const dynamicDays = computeDaysInactiveFromLastLogin(c.last_login_at, c.days_inactive);
+              const shortAnalysis = (c.ai_explanation ?? "").replace(/\s+/g, " ").slice(0, 140);
+              return `${idx + 1}. ${c.name} (${c.risk_level?.toUpperCase()} ${c.risk_score}/100) - inactive ${dynamicDays}d, usage ${usagePct}%, support ${c.support_complaints}, payment ${c.payment_delay ? "yes" : "no"}. Analysis: ${shortAnalysis}`;
+            })
+            .join("\n")
+        : "(No recent AI analyses available yet. Ask user to run analysis in Risk Analysis if needed.)";
+    }
+
     const prompt = `
 ${APP_KNOWLEDGE_BASE}
 
 Conversation history:
 ${conversationText || "(no previous history)"}
 
+Recent churn analyses (most recent first):
+${recentAnalysisContext}
+
 User question:
 ${trimmedQuestion}
 
 Write a clear, practical response focused on app functionality.
 Do not invent non-existent screens or features.
+When relevant, give concrete re-engagement recommendations (offers, campaigns, and next-step actions).
 Format the final response as Markdown with readable structure.
 `;
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
-    const result = await model.generateContent(prompt);
-    const answer = result.response.text().trim();
+    const answer = (await generateGeminiTextWithFallback(genAI, prompt)).trim();
 
     return NextResponse.json({ answer: answer || fallback, source: "gemini" });
   } catch {

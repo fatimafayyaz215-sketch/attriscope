@@ -16,7 +16,7 @@ export default function CustomerContextPanel() {
   const [sortBy, setSortBy] = useState<SortKey>("risk_score");
   const [filterLevel, setFilterLevel] = useState<FilterLevel>("all");
 
-  const effectiveId = urlCustomerId ?? selectedCustomerId;
+  const effectiveId = selectedCustomerId ?? urlCustomerId;
 
   // Always load customers on mount so the picker works
   useEffect(() => {

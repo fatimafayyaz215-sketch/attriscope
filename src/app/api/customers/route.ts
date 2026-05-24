@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -26,5 +27,10 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ customers: data ?? [] });
+  const customers = (data ?? []).map((customer) => ({
+    ...customer,
+    days_inactive: computeDaysInactiveFromLastLogin(customer.last_login_at, customer.days_inactive),
+  }));
+
+  return NextResponse.json({ customers });
 }

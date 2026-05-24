@@ -59,8 +59,8 @@ export default function RiskDistributionChart() {
       </div>
       <p className="text-xs text-gray-400 mb-5">Customer count by churn risk level</p>
 
-      <div className="flex-1 min-h-80">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="flex-1 min-h-80 min-w-0">
+        <ResponsiveContainer width="100%" height={320}>
           <BarChart data={chartData} barCategoryGap="35%" margin={{ top: 24, right: 8, left: -16, bottom: 0 }}>
             <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="3 3" />
             <XAxis

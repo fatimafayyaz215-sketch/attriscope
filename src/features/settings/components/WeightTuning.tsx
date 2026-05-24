@@ -1,14 +1,15 @@
 "use client";
 
 import { useChurnStore } from "@/store/churn-store";
+import { capWeightUpdate, sumWeights } from "@/lib/industry-defaults";
 
 export default function WeightTuning() {
   const { weights, setWeights } = useChurnStore();
 
   const update = (key: keyof typeof weights, val: string) =>
-    setWeights({ ...weights, [key]: parseInt(val) });
+    setWeights(capWeightUpdate(weights, key, parseInt(val, 10) || 0));
 
-  const total = weights.inactivity + weights.usage + weights.support + weights.payment;
+  const total = sumWeights(weights);
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm h-full">
@@ -18,7 +19,7 @@ export default function WeightTuning() {
       </div>
       <p className="text-xs text-gray-400 mb-8 ml-9">
         Total weight: <span className={`font-bold ${total === 100 ? "text-teal-600" : "text-amber-600"}`}>{total}%</span>
-        {total !== 100 && <span className="ml-1 text-amber-600">(should equal 100%)</span>}
+        {total !== 100 && <span className="ml-1 text-amber-600">({100 - total}% remaining)</span>}
       </p>
 
       <div className="flex flex-col gap-12">
@@ -131,7 +132,7 @@ export default function WeightTuning() {
           </div>
           <div className="flex gap-2.5 items-start">
             <span className="text-blue-600 font-bold shrink-0 mt-0.5">→</span>
-            <p>The total is recommended to be <span className="font-semibold text-gray-700">100%</span>. Use <span className="font-semibold text-gray-700">Reset to Default</span> anytime to go back to equal weights (25% each).</p>
+            <p>The total cannot exceed <span className="font-semibold text-gray-700">100%</span>. Use <span className="font-semibold text-gray-700">Reset to Default</span> to restore the current industry profile.</p>
           </div>
         </div>
       </div>

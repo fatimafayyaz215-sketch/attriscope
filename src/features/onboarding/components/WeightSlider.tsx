@@ -5,10 +5,11 @@ interface WeightSliderProps {
   description: string;
   value: number;
   onChange: (value: number) => void;
+  maxValue?: number;
   color?: string; // hex or CSS color for the filled track + thumb
 }
 
-export default function WeightSlider({ title, description, value, onChange, color = "#2548B4" }: WeightSliderProps) {
+export default function WeightSlider({ title, description, value, onChange, maxValue = 100, color = "#2548B4" }: WeightSliderProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(Number(e.target.value));
   };
@@ -43,7 +44,7 @@ export default function WeightSlider({ title, description, value, onChange, colo
         <input
           type="range"
           min="0"
-          max="100"
+          max={maxValue}
           value={value}
           onChange={handleChange}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"

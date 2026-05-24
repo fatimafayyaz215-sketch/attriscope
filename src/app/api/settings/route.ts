@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { DEFAULT_INDUSTRY, getIndustryDefaultWeights, sumWeights } from "@/lib/industry-defaults";
 
 export async function GET() {
   const supabase = await createClient();
@@ -17,13 +18,14 @@ export async function GET() {
   }
 
   // Return defaults if no settings row yet
+  const defaultWeights = getIndustryDefaultWeights(DEFAULT_INDUSTRY);
   return NextResponse.json(
     data ?? {
-      industry: "saas",
-      weight_inactivity: 25,
-      weight_usage: 25,
-      weight_support: 25,
-      weight_payment: 25,
+      industry: DEFAULT_INDUSTRY,
+      weight_inactivity: defaultWeights.inactivity,
+      weight_usage: defaultWeights.usage,
+      weight_support: defaultWeights.support,
+      weight_payment: defaultWeights.payment,
     }
   );
 }
@@ -43,13 +45,37 @@ export async function POST(request: NextRequest) {
     .eq("user_id", user.id)
     .single();
 
+  const nextIndustry = industry ?? existing?.industry ?? DEFAULT_INDUSTRY;
+  const industryDefaults = getIndustryDefaultWeights(nextIndustry);
+  const isWeightsPayloadProvided = [weight_inactivity, weight_usage, weight_support, weight_payment].some((value) => value != null);
+
+  const resolvedWeights = isWeightsPayloadProvided
+    ? {
+        inactivity: weight_inactivity ?? existing?.weight_inactivity ?? industryDefaults.inactivity,
+        usage: weight_usage ?? existing?.weight_usage ?? industryDefaults.usage,
+        support: weight_support ?? existing?.weight_support ?? industryDefaults.support,
+        payment: weight_payment ?? existing?.weight_payment ?? industryDefaults.payment,
+      }
+    : industry !== undefined
+    ? industryDefaults
+    : {
+        inactivity: existing?.weight_inactivity ?? industryDefaults.inactivity,
+        usage: existing?.weight_usage ?? industryDefaults.usage,
+        support: existing?.weight_support ?? industryDefaults.support,
+        payment: existing?.weight_payment ?? industryDefaults.payment,
+      };
+
+  if (sumWeights(resolvedWeights) > 100) {
+    return NextResponse.json({ error: "Total weights cannot exceed 100%" }, { status: 400 });
+  }
+
   const payload = {
     user_id: user.id,
-    industry:           industry           ?? existing?.industry           ?? "saas",
-    weight_inactivity:  weight_inactivity  ?? existing?.weight_inactivity  ?? 25,
-    weight_usage:       weight_usage       ?? existing?.weight_usage       ?? 25,
-    weight_support:     weight_support     ?? existing?.weight_support     ?? 25,
-    weight_payment:     weight_payment     ?? existing?.weight_payment     ?? 25,
+    industry: nextIndustry,
+    weight_inactivity: resolvedWeights.inactivity,
+    weight_usage: resolvedWeights.usage,
+    weight_support: resolvedWeights.support,
+    weight_payment: resolvedWeights.payment,
     updated_at: new Date().toISOString(),
   };
 

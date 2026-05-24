@@ -126,6 +126,7 @@ export default function AppAssistantChatbot() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [assistantExpanded, setAssistantExpanded] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -187,45 +188,71 @@ export default function AppAssistantChatbot() {
     <>
       {/* Chatbot panel */}
       {assistantOpen && (
-        <div className="fixed right-4 bottom-4 sm:right-6 sm:bottom-6 z-50 w-[min(92vw,420px)] h-[min(72vh,620px)] bg-white border border-gray-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div className={`fixed z-50 bg-white border border-gray-200 shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
+          assistantExpanded
+            ? "inset-4 sm:inset-6 rounded-3xl"
+            : "right-4 bottom-4 sm:right-6 sm:bottom-6 w-[min(92vw,420px)] h-[min(72vh,620px)] rounded-2xl"
+        }`}>
           <div className="px-4 py-3 border-b border-gray-100 bg-blue-50/50 flex items-start justify-between gap-3">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-widest text-blue-700">App Assistant</p>
               <h3 className="text-sm font-bold text-gray-900">ChurnGuard Help Chat</h3>
             </div>
-            <button
-              type="button"
-              onClick={() => setAssistantOpen(false)}
-              className="text-gray-500 hover:text-gray-800 text-sm font-bold"
-              aria-label="Close assistant"
-            >
-              Close
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setAssistantExpanded((open) => !open)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 transition-colors"
+                aria-label={assistantExpanded ? "Minimize assistant" : "Expand assistant"}
+                title={assistantExpanded ? "Minimize" : "Open full page"}
+              >
+                {assistantExpanded ? (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 3H5a2 2 0 00-2 2v3m16 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 3h6m0 0v6m0-6l-7 7M9 21H3m0 0v-6m0 6l7-7" />
+                  </svg>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAssistantExpanded(false);
+                  setAssistantOpen(false);
+                }}
+                className="text-gray-500 hover:text-gray-800 text-sm font-bold"
+                aria-label="Close assistant"
+              >
+                Close
+              </button>
+            </div>
           </div>
 
-          <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4 bg-gray-50/40">
+          <div ref={listRef} className={`flex-1 overflow-y-auto px-4 py-4 bg-gray-50/40 ${assistantExpanded ? "sm:px-6 sm:py-5" : ""}`}>
             <div className="flex flex-col gap-3">
               {messages.map((m, i) => (
                 <div
                   key={`${m.role}-${i}`}
-                  className={`max-w-[88%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                  className={`rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
                     m.role === "assistant"
-                      ? "bg-white border border-gray-200 text-gray-800"
-                      : "ml-auto bg-blue-700 text-white whitespace-pre-wrap"
+                      ? `bg-white border border-gray-200 text-gray-800 ${assistantExpanded ? "max-w-[78%]" : "max-w-[88%]"}`
+                      : `ml-auto bg-blue-700 text-white whitespace-pre-wrap ${assistantExpanded ? "max-w-[78%]" : "max-w-[88%]"}`
                   }`}
                 >
                   {m.role === "assistant" ? renderAssistantContent(m.content) : m.content}
                 </div>
               ))}
               {sending && (
-                <div className="max-w-[88%] rounded-xl px-3.5 py-2.5 text-sm bg-white border border-gray-200 text-gray-500">
+                <div className={`rounded-xl px-3.5 py-2.5 text-sm bg-white border border-gray-200 text-gray-500 ${assistantExpanded ? "max-w-[78%]" : "max-w-[88%]"}`}>
                   Thinking...
                 </div>
               )}
             </div>
           </div>
 
-          <div className="px-4 pt-3 pb-2 border-t border-gray-100 bg-white">
+          <div className={`pt-3 pb-2 border-t border-gray-100 bg-white ${assistantExpanded ? "px-5 sm:px-6" : "px-4"}`}>
             <div className="flex flex-wrap gap-2 mb-3">
               {QUICK_QUESTIONS.map((q) => (
                 <button
@@ -263,7 +290,10 @@ export default function AppAssistantChatbot() {
       {/* Mobile-only floating action button (sidebar is hidden on mobile) */}
       <button
         type="button"
-        onClick={() => setAssistantOpen(!assistantOpen)}
+        onClick={() => {
+          if (assistantOpen) setAssistantExpanded(false);
+          setAssistantOpen(!assistantOpen);
+        }}
         className="lg:hidden fixed right-4 bottom-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-blue-700 hover:bg-blue-800 text-white text-sm font-bold shadow-lg"
         aria-label="Ask Assistant"
       >

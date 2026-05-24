@@ -1,9 +1,10 @@
 "use client";
 
 import { useChurnStore } from "@/store/churn-store";
+import { getIndustryDefaultWeights } from "@/lib/industry-defaults";
 
 export default function IndustrySelector() {
-  const { industry, setIndustry } = useChurnStore();
+  const { industry, setIndustry, setWeights } = useChurnStore();
 
   const industries = [
     {
@@ -49,7 +50,10 @@ export default function IndustrySelector() {
             <button
               key={ind.id}
               type="button"
-              onClick={() => setIndustry(ind.id)}
+              onClick={() => {
+                setIndustry(ind.id);
+                setWeights(getIndustryDefaultWeights(ind.id));
+              }}
               className={`bg-white border-2 rounded-xl p-6 relative transition-all cursor-pointer hover:shadow-md text-left ${active ? "border-blue-600 shadow-sm" : "border-gray-200"}`}
             >
               {active && (

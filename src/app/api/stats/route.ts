@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
 export async function GET() {
   const supabase = await createClient();
@@ -11,7 +12,7 @@ export async function GET() {
   // Aggregate counts by risk level
   const { data: customers, error } = await supabase
     .from("customers")
-    .select("risk_level, risk_score, days_inactive, usage_drop, created_at")
+    .select("risk_level, risk_score, days_inactive, last_login_at, usage_drop, created_at")
     .eq("user_id", user.id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -24,12 +25,17 @@ export async function GET() {
     ? Math.round(customers!.reduce((s, c) => s + Math.max(0, Number(c.risk_score) || 0), 0) / total)
     : 0;
 
+  const withDynamicInactivity = (customers ?? []).map((c) => ({
+    ...c,
+    days_inactive: computeDaysInactiveFromLastLogin(c.last_login_at, c.days_inactive),
+  }));
+
   // Weekly engagement trend (last 4 weeks, based on avg usage_drop per week-bucket)
   // We bucket customers by their days_inactive into 4 weekly bins
   const trend = [1, 2, 3, 4].map((week) => {
     const minDays = (week - 1) * 7;
     const maxDays = week * 7;
-    const bucket = customers?.filter((c) => c.days_inactive >= minDays && c.days_inactive < maxDays) ?? [];
+    const bucket = withDynamicInactivity.filter((c) => c.days_inactive >= minDays && c.days_inactive < maxDays);
     const avgDrop = bucket.length > 0
       ? bucket.reduce((s, c) => s + Number(c.usage_drop), 0) / bucket.length
       : 0;

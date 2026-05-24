@@ -1,43 +1,68 @@
 ﻿"use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import OnboardingHeader from "@/features/onboarding/components/OnboardingHeader";
 import OnboardingFooter from "@/features/onboarding/components/OnboardingFooter";
 import WeightSlider from "@/features/onboarding/components/WeightSlider";
+import { DEFAULT_INDUSTRY, capWeightUpdate, getIndustryDefaultWeights, sumWeights } from "@/lib/industry-defaults";
+
+type WeightKey = "inactivity" | "usage" | "support" | "payment";
 
 export default function OnboardingStep2Page() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const [loadingDefaults, setLoadingDefaults] = useState(true);
 
-  // Defaults match scoring.ts DEFAULT_WEIGHTS
-  const [inactivity, setInactivity] = useState(25);
-  const [usage, setUsage] = useState(25);
-  const [support, setSupport] = useState(25);
-  const [payment, setPayment] = useState(25);
+  const initialWeights = getIndustryDefaultWeights(DEFAULT_INDUSTRY);
+  const [inactivity, setInactivity] = useState(initialWeights.inactivity);
+  const [usage, setUsage] = useState(initialWeights.usage);
+  const [support, setSupport] = useState(initialWeights.support);
+  const [payment, setPayment] = useState(initialWeights.payment);
 
-  const total = inactivity + usage + support + payment;
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d.error) {
+          setInactivity(d.weight_inactivity);
+          setUsage(d.weight_usage);
+          setSupport(d.weight_support);
+          setPayment(d.weight_payment);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingDefaults(false));
+  }, []);
 
-  // Signals for Impact Analysis — real proportional contribution to scoring
+  const weights = { inactivity, usage, support, payment };
+  const total = sumWeights(weights);
+
+  const updateWeight = (key: WeightKey, nextValue: number) => {
+    const nextWeights = capWeightUpdate(weights, key, nextValue);
+    setInactivity(nextWeights.inactivity);
+    setUsage(nextWeights.usage);
+    setSupport(nextWeights.support);
+    setPayment(nextWeights.payment);
+  };
+
   const signals = useMemo(() => [
     { label: "Inactivity", value: inactivity, color: "#2548B4" },
-    { label: "Usage Drop", value: usage,      color: "#d97706" },
-    { label: "Support",    value: support,    color: "#0d9488" },
-    { label: "Payment",    value: payment,    color: "#7c3aed" },
+    { label: "Usage Drop", value: usage, color: "#d97706" },
+    { label: "Support", value: support, color: "#0d9488" },
+    { label: "Payment", value: payment, color: "#7c3aed" },
   ], [inactivity, usage, support, payment]);
 
   const dominant = [...signals].sort((a, b) => b.value - a.value)[0];
 
-  // Blue shade driven by average weight
   const avg = useMemo(() => total / 4, [total]);
   const l = Math.round(50 - avg * 0.25);
   const s = Math.round(58 + avg * 0.22);
-  const engineBg  = `hsl(227, ${s}%, ${l}%)`;
+  const engineBg = `hsl(227, ${s}%, ${l}%)`;
   const formulaBg = `hsl(227, ${Math.min(s + 6, 95)}%, ${Math.max(l - 9, 10)}%)`;
-  const impactBg  = `hsl(227, ${Math.max(s - 8, 40)}%, ${Math.min(l + 7, 60)}%)`;
+  const impactBg = `hsl(227, ${Math.max(s - 8, 40)}%, ${Math.min(l + 7, 60)}%)`;
 
-  // Normalized proportions — exactly what the scoring engine computes
-  const pct  = (v: number) => total > 0 ? Math.round((v / total) * 100) : 0;
+  const pct = (v: number) => total > 0 ? Math.round((v / total) * 100) : 0;
 
   const saveAndContinue = async () => {
     setSaving(true);
@@ -47,9 +72,9 @@ export default function OnboardingStep2Page() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           weight_inactivity: inactivity,
-          weight_usage:      usage,
-          weight_support:    support,
-          weight_payment:    payment,
+          weight_usage: usage,
+          weight_support: support,
+          weight_payment: payment,
         }),
       });
     } finally {
@@ -71,10 +96,10 @@ export default function OnboardingStep2Page() {
               Weight Calibration
             </h1>
             <p className="text-gray-600 text-sm leading-relaxed mb-2 sm:mb-4 max-w-lg">
-              Set how much each risk signal contributes to a customer&apos;s churn score. These weights are saved and applied every time you upload customer data.
+              Set how much each risk signal contributes to a customer&apos;s churn score. This screen is preloaded from your selected industry profile and these weights are saved for future uploads.
             </p>
             <p className="text-[11px] text-gray-400 mb-6 sm:mb-8 max-w-lg">
-              The scoring engine divides by the total — so proportions matter, not the exact numbers. You can adjust these anytime in Settings.
+              The total cannot go above 100%. You can adjust these anytime in Settings.
             </p>
 
             <div className="flex flex-col gap-4 sm:gap-6 flex-1">
@@ -82,28 +107,28 @@ export default function OnboardingStep2Page() {
                 title="Inactivity Period"
                 description="Days since last login — cap adjusts by plan: 28 days (monthly), 85 days (yearly)"
                 value={inactivity}
-                onChange={setInactivity}
+                onChange={(value) => updateWeight("inactivity", value)}
                 color="#2548B4"
               />
               <WeightSlider
                 title="Usage Frequency"
                 description="Logins and feature interaction events"
                 value={usage}
-                onChange={setUsage}
+                onChange={(value) => updateWeight("usage", value)}
                 color="#d97706"
               />
               <WeightSlider
                 title="Support Tickets"
                 description="Unresolved support tickets — cap adjusts by plan: 5 (monthly), 9 (yearly)"
                 value={support}
-                onChange={setSupport}
+                onChange={(value) => updateWeight("support", value)}
                 color="#0d9488"
               />
               <WeightSlider
                 title="Payment Delays"
                 description="Late or missed subscription payments (binary signal)"
                 value={payment}
-                onChange={setPayment}
+                onChange={(value) => updateWeight("payment", value)}
                 color="#7c3aed"
               />
             </div>
@@ -141,7 +166,7 @@ export default function OnboardingStep2Page() {
                   ))}
                 </div>
                 <p className="text-[9px] text-blue-400 mt-3 leading-relaxed">
-                  If all 4 signals matter equally — keep each at 25%. Raise a slider to give that signal more influence on the risk score.
+                  These weights come from your selected industry profile. You can rebalance them here as long as the total stays at or below 100%.
                 </p>
               </div>
 
@@ -187,22 +212,20 @@ export default function OnboardingStep2Page() {
               </p>
               <div className="flex justify-between text-sm font-medium text-gray-800 mb-2">
                 <span>Sum of all weights</span>
-                <span className={total === 100 ? "text-teal-600 font-bold" : total > 100 ? "text-red-500 font-bold" : "text-amber-600 font-bold"}>
+                <span className={total === 100 ? "text-teal-600 font-bold" : "text-amber-600 font-bold"}>
                   {total}
                 </span>
               </div>
               <div className="w-full h-1.5 bg-gray-100 rounded-full mb-3">
                 <div
-                  className={`h-full rounded-full transition-all duration-300 ${total === 100 ? "bg-teal-500" : total > 100 ? "bg-red-400" : "bg-amber-400"}`}
+                  className={`h-full rounded-full transition-all duration-300 ${total === 100 ? "bg-teal-500" : "bg-amber-400"}`}
                   style={{ width: `${Math.min((total / 100) * 100, 100)}%` }}
                 />
               </div>
               <p className="text-[11px] text-gray-500 leading-relaxed">
                 {total === 100
-                  ? "Weights sum to 100 — cleanly normalized."
-                  : total > 100
-                  ? `${total - 100} over 100. The formula still works correctly (it normalizes automatically), but 100 is the conventional target.`
-                  : `${100 - total} unallocated. The formula normalizes automatically — this is fine.`}
+                  ? "Weights sum to 100 — the full budget is allocated."
+                  : `${100 - total}% remains available for allocation.`}
               </p>
             </div>
 
@@ -215,7 +238,7 @@ export default function OnboardingStep2Page() {
         onBack={() => router.push("/onboarding")}
         onContinue={saveAndContinue}
         continueText={saving ? "Saving…" : "Save & Continue"}
-        canContinue={!saving}
+        canContinue={!saving && !loadingDefaults}
       />
     </div>
   );
