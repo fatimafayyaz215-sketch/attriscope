@@ -109,8 +109,17 @@ export default function SettingsFooter() {
     setRecalculating(true);
     setError("");
     try {
+      // Send the currently-selected weights so recalculation uses the active
+      // industry formula even if the user hasn't pressed "Save Settings" yet.
       const res = await fetch("/api/settings/recalculate", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          weight_inactivity: weights.inactivity,
+          weight_usage: weights.usage,
+          weight_support: weights.support,
+          weight_payment: weights.payment,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Recalculation failed");

@@ -1,8 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { detectColumn, type MappedField } from "@/lib/column-detector";
 import { BillingCycle, computeChurnScore, DEFAULT_WEIGHTS, type ScoringWeights } from "@/lib/scoring";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
+
+const BATCH_SIZE = 500;
 
 type Mapping = Record<string, MappedField>;
 
@@ -33,7 +35,7 @@ function buildMappingFromRawData(rawData: unknown): { mapping: Mapping; row: Rec
   return { mapping, row };
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -44,20 +46,49 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data: settingsRow } = await supabase
-    .from("user_settings")
-    .select("weight_inactivity, weight_usage, weight_support, weight_payment")
-    .eq("user_id", user.id)
-    .single();
+  // Prefer weights sent by the client (reflects current UI selection incl. unsaved industry changes).
+  // Fall back to DB-persisted settings only if no weights are provided.
+  let weights: ScoringWeights = DEFAULT_WEIGHTS;
+  let bodyWeightsProvided = false;
+  try {
+    const body = await request.json();
+    if (body && typeof body === "object") {
+      const { weight_inactivity, weight_usage, weight_support, weight_payment } = body as Record<string, unknown>;
+      if (
+        typeof weight_inactivity === "number" &&
+        typeof weight_usage === "number" &&
+        typeof weight_support === "number" &&
+        typeof weight_payment === "number"
+      ) {
+        weights = {
+          inactivity: weight_inactivity,
+          usage: weight_usage,
+          support: weight_support,
+          payment: weight_payment,
+        };
+        bodyWeightsProvided = true;
+      }
+    }
+  } catch {
+    // no body / invalid JSON — fall through to DB lookup
+  }
 
-  const weights: ScoringWeights = settingsRow
-    ? {
+  if (!bodyWeightsProvided) {
+    const { data: settingsRow } = await supabase
+      .from("user_settings")
+      .select("weight_inactivity, weight_usage, weight_support, weight_payment")
+      .eq("user_id", user.id)
+      .single();
+
+    if (settingsRow) {
+      weights = {
         inactivity: settingsRow.weight_inactivity,
         usage: settingsRow.weight_usage,
         support: settingsRow.weight_support,
         payment: settingsRow.weight_payment,
-      }
-    : DEFAULT_WEIGHTS;
+      };
+    }
+  }
 
   const { data: customers, error: customersErr } = await supabase
     .from("customers")
@@ -73,7 +104,10 @@ export async function POST() {
     return NextResponse.json({ updated: 0 });
   }
 
-  let updated = 0;
+  // Compute all scores in memory first (fast, no DB round-trips)
+  const now = new Date().toISOString();
+  const updateRows: Record<string, unknown>[] = [];
+
   for (const customer of customers) {
     const { mapping, row } = buildMappingFromRawData(customer.raw_data);
 
@@ -104,25 +138,29 @@ export async function POST() {
 
     const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights, billingCycle);
 
-    const { error: updateErr } = await supabase
-      .from("customers")
-      .update({
-        last_login_at: lastLoginAt,
-        days_inactive: daysInactive,
-        usage_drop: usageDrop,
-        support_complaints: supportComplaints,
-        payment_delay: paymentDelay,
-        risk_score: score,
-        risk_level: level,
-        ai_explanation: null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", customer.id)
-      .eq("user_id", user.id);
+    updateRows.push({
+      id: customer.id,
+      user_id: user.id,
+      last_login_at: lastLoginAt,
+      days_inactive: daysInactive,
+      usage_drop: usageDrop,
+      support_complaints: supportComplaints,
+      payment_delay: paymentDelay,
+      risk_score: score,
+      risk_level: level,
+      ai_explanation: null,
+      updated_at: now,
+    });
+  }
 
-    if (!updateErr) {
-      updated += 1;
-    }
+  // Bulk upsert in batches — ~500x fewer network round-trips vs one UPDATE per row
+  let updated = 0;
+  for (let i = 0; i < updateRows.length; i += BATCH_SIZE) {
+    const chunk = updateRows.slice(i, i + BATCH_SIZE);
+    const { error: upsertErr } = await supabase
+      .from("customers")
+      .upsert(chunk, { onConflict: "id" });
+    if (!upsertErr) updated += chunk.length;
   }
 
   return NextResponse.json({ updated });
