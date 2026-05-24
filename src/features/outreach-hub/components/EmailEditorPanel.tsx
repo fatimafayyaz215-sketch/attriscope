@@ -122,7 +122,9 @@ export default function EmailEditorPanel() {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={generateEmail}
+            onClick={() => {
+              void generateEmail();
+            }}
             disabled={generating}
             className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50"
           >
@@ -201,7 +203,9 @@ export default function EmailEditorPanel() {
         </div>
         <div className="flex items-center gap-3 ml-auto">
           <button
-            onClick={generateEmail}
+            onClick={() => {
+              void generateEmail();
+            }}
             disabled={generating}
             className="px-5 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50"
           >
