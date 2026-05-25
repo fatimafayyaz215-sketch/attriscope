@@ -13,6 +13,7 @@ export default function OnboardingStep2Page() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [loadingDefaults, setLoadingDefaults] = useState(true);
+  const [industry, setIndustry] = useState<string>(DEFAULT_INDUSTRY);
 
   const initialWeights = getIndustryDefaultWeights(DEFAULT_INDUSTRY);
   const [inactivity, setInactivity] = useState(initialWeights.inactivity);
@@ -25,6 +26,7 @@ export default function OnboardingStep2Page() {
       .then((r) => r.json())
       .then((d) => {
         if (!d.error) {
+          setIndustry(d.industry ?? DEFAULT_INDUSTRY);
           setInactivity(d.weight_inactivity);
           setUsage(d.weight_usage);
           setSupport(d.weight_support);
@@ -44,6 +46,15 @@ export default function OnboardingStep2Page() {
     setUsage(nextWeights.usage);
     setSupport(nextWeights.support);
     setPayment(nextWeights.payment);
+  };
+
+  const applyIndustryPreset = (nextIndustry: string) => {
+    setIndustry(nextIndustry);
+    const preset = getIndustryDefaultWeights(nextIndustry);
+    setInactivity(preset.inactivity);
+    setUsage(preset.usage);
+    setSupport(preset.support);
+    setPayment(preset.payment);
   };
 
   const signals = useMemo(() => [
@@ -71,6 +82,7 @@ export default function OnboardingStep2Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          industry,
           weight_inactivity: inactivity,
           weight_usage: usage,
           weight_support: support,
@@ -101,6 +113,25 @@ export default function OnboardingStep2Page() {
             <p className="text-[11px] text-gray-400 mb-6 sm:mb-8 max-w-lg">
               The total cannot go above 100%. You can adjust these anytime in Settings.
             </p>
+
+            <div className="mb-6 sm:mb-8">
+              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">
+                Industry Profile
+              </label>
+              <select
+                value={industry}
+                onChange={(e) => applyIndustryPreset(e.target.value)}
+                className="w-full max-w-sm bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              >
+                <option value="saas">Software / SaaS</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="education">Education</option>
+                <option value="others">Others (25% each)</option>
+              </select>
+              <p className="mt-2 text-[11px] text-gray-500">
+                Choose Others for balanced defaults where each formula weight is set to 25%.
+              </p>
+            </div>
 
             <div className="flex flex-col gap-4 sm:gap-6 flex-1">
               <WeightSlider

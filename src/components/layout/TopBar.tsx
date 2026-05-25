@@ -7,16 +7,28 @@ import { authService } from "@/services/auth.service";
 import { useChurnStore } from "@/store/churn-store";
 import { createClient } from "@/lib/supabase/client";
 
+type SearchResult = {
+  id: string;
+  name: string;
+  email: string;
+  company: string | null;
+};
+
 export default function TopBar() {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [userInitials, setUserInitials] = useState("CG");
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("User");
   const menuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const toggleSidebar = useChurnStore((s) => s.toggleSidebar);
+  const selectCustomer = useChurnStore((s) => s.selectCustomer);
 
   // Fetch user info for avatar initials
   useEffect(() => {
@@ -57,10 +69,51 @@ export default function TopBar() {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const q = search.trim();
+    if (q.length < 2) {
+      setSearchResults([]);
+      setSearchOpen(false);
+      setSearchLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const res = await fetch(`/api/customers?limit=8&search=${encodeURIComponent(q)}`, { signal: controller.signal });
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          setSearchResults([]);
+          setSearchOpen(true);
+          return;
+        }
+        setSearchResults(Array.isArray(data.customers) ? data.customers : []);
+        setSearchOpen(true);
+      } catch {
+        if (!controller.signal.aborted) {
+          setSearchResults([]);
+          setSearchOpen(true);
+        }
+      } finally {
+        if (!controller.signal.aborted) setSearchLoading(false);
+      }
+    }, 350);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [search]);
 
   const handleLogout = async () => {
     setMenuOpen(false);
@@ -71,8 +124,15 @@ export default function TopBar() {
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && search.trim()) {
       router.push(`/risk-analysis?q=${encodeURIComponent(search.trim())}`);
-      setSearch("");
+      setSearchOpen(false);
     }
+  };
+
+  const handlePickCustomer = (customer: SearchResult) => {
+    selectCustomer(customer.id);
+    setSearch(customer.name);
+    setSearchOpen(false);
+    router.push(`/risk-analysis?q=${encodeURIComponent(customer.name)}`);
   };
 
   return (
@@ -96,7 +156,7 @@ export default function TopBar() {
       <div className="flex items-center gap-3 md:gap-4 shrink-0">
 
         {/* Search – visible md+ */}
-        <div className="relative hidden md:block">
+        <div className="relative hidden md:block" ref={searchRef}>
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -107,9 +167,37 @@ export default function TopBar() {
             placeholder="Search customers…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onFocus={() => {
+              if (search.trim().length >= 2) setSearchOpen(true);
+            }}
             onKeyDown={handleSearch}
             className="w-56 lg:w-72 bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 focus:bg-white transition-all placeholder:text-gray-400"
           />
+
+          {searchOpen && (
+            <div className="absolute right-0 mt-2 w-80 max-h-80 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-xl z-50">
+              {searchLoading ? (
+                <div className="px-4 py-3 text-xs text-gray-500">Searching...</div>
+              ) : searchResults.length === 0 ? (
+                <div className="px-4 py-3 text-xs text-gray-500">No customers found</div>
+              ) : (
+                <ul className="py-1">
+                  {searchResults.map((customer) => (
+                    <li key={customer.id}>
+                      <button
+                        type="button"
+                        onClick={() => handlePickCustomer(customer)}
+                        className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                      >
+                        <p className="text-sm font-medium text-gray-800 truncate">{customer.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{customer.email || customer.company || "No details"}</p>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="h-6 w-px bg-gray-200 hidden md:block" />

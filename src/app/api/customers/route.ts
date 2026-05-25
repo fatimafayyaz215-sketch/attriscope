@@ -22,7 +22,10 @@ export async function GET(request: NextRequest) {
     .limit(limit);
 
   if (level) query = query.eq("risk_level", level);
-  if (search) query = query.ilike("name", `%${search}%`);
+  if (search) {
+    const q = search.replaceAll(",", " ");
+    query = query.or(`name.ilike.%${q}%,email.ilike.%${q}%,company.ilike.%${q}%`);
+  }
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

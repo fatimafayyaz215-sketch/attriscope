@@ -5,6 +5,64 @@ import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
 const GEMINI_MODELS = ["gemini-2.5-flash-lite", "gemini-3.1-flash-lite"] as const;
 const GENERATION_TIMEOUT_MS = 12000;
+type Tone = "professional" | "friendly" | "urgent" | "discount" | "event";
+
+function isTone(value: unknown): value is Tone {
+  return value === "professional" || value === "friendly" || value === "urgent" || value === "discount" || value === "event";
+}
+
+function getSubjectForTone(tone: Tone, eventName: string | null): string {
+  if (tone === "discount") return "A little welcome-back offer for you";
+  if (tone === "event" && eventName) return `${eventName} check-in from our team`;
+  if (tone === "event") return "Checking in and here to help";
+  if (tone === "urgent") return "Quick check-in — can we help?";
+  if (tone === "friendly") return "We miss you — can we support you?";
+  return "Quick check-in — can we help?";
+}
+
+function buildPrompt(tone: Tone, customerName: string, reasonString: string, eventName: string | null): string {
+  const toneInstruction =
+    tone === "discount"
+      ? "Write a retention email that includes a clear discount or incentive offer to encourage reactivation."
+      : tone === "event"
+        ? "Write a retention email with an event-based angle."
+        : `Write a ${tone} retention email to win back an at-risk customer.`;
+
+  const toneRules =
+    tone === "discount"
+      ? [
+          "- Include one concrete, time-bound discount or incentive offer (for example: percentage off, free add-on, or waived fee)",
+          "- Keep the offer realistic and concise",
+        ]
+      : tone === "event"
+        ? [
+            eventName
+              ? `- Use ${eventName} as the event context and tie it naturally to re-engagement in one short sentence`
+              : "- Keep this event-based but still focused on customer re-engagement",
+            "- Keep the event mention subtle and professional",
+          ]
+        : [];
+
+  return `${toneInstruction} The email should be warm, specific, and offer a clear next step.
+
+Customer name: ${customerName}
+Risk indicators: ${reasonString}
+Sender: Your Customer Success Team
+
+Rules:
+- Keep it under 200 words
+- Personalise it with the specific risk indicators
+- Keep it clearly outreach-focused and engagement-oriented
+- Mention one concrete benefit the customer gets by returning
+- End with a clear call to action (book a call, reply, etc.)
+- Output ONLY the email body text (do not include any subject line)
+- Do not write "Subject:" or any subject-like header
+- Do not mention any company name (including customer company names)
+- Use neutral wording like "we", "our", "our team" instead of company names/placeholders
+- Use the actual customer name
+- Plain text only, no markdown
+${toneRules.join("\n")}`;
+}
 
 function isRetryableGeminiError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
@@ -64,13 +122,20 @@ function sanitizeEmailBody(rawBody: string, company?: string | null): string {
   return body;
 }
 
-function buildFallbackEmailBody(customer: { name: string }, reasonString: string): string {
+function buildFallbackEmailBody(customer: { name: string }, reasonString: string, tone: Tone, eventName: string | null): string {
+  const secondParagraph =
+    tone === "discount"
+      ? "We would love to help you get more value. As a welcome-back offer, we can provide a limited-time discount on your next billing cycle if you reactivate this week."
+      : tone === "event" && eventName
+        ? `Since today is ${eventName}, we wanted to reach out personally and make it easy to reconnect.`
+        : "We would love to help you get more value. If helpful, we can offer a short onboarding refresh plus a time-bound incentive to support reactivation.";
+
   return [
     `Hi ${customer.name},`,
     "",
     `We wanted to check in because ${reasonString}.`,
     "",
-    "We would love to help you get more value. If helpful, we can offer a short onboarding refresh plus a time-bound incentive to support reactivation.",
+    secondParagraph,
     "",
     "Would you be open to a quick 15-minute check-in this week?",
     "",
@@ -86,8 +151,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { customerId, tone = "professional" } = await request.json();
+  const requestBody = await request.json();
+  const customerId = typeof requestBody?.customerId === "string" ? requestBody.customerId : "";
+  const tone: Tone = isTone(requestBody?.tone) ? requestBody.tone : "professional";
+  const eventNameInput = typeof requestBody?.eventName === "string" ? requestBody.eventName.trim() : "";
   if (!customerId) return NextResponse.json({ error: "Missing customerId" }, { status: 400 });
+  if (tone === "event" && !eventNameInput) {
+    return NextResponse.json({ error: "Missing event name for event-based tone" }, { status: 400 });
+  }
 
   // Fetch the customer
   const { data: customer, error: custErr } = await supabase
@@ -102,9 +173,6 @@ export async function POST(request: NextRequest) {
   const dynamicDaysInactive = computeDaysInactiveFromLastLogin(customer.last_login_at, customer.days_inactive);
 
   // Fetch sender's profile (auth user email as fallback sender name)
-  const { data: authUser } = await supabase.auth.getUser();
-  const senderEmail = authUser.user?.email ?? "the team";
-
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "Gemini API key not configured" }, { status: 500 });
 
@@ -117,34 +185,19 @@ export async function POST(request: NextRequest) {
   if (customer.payment_delay) riskReasons.push("has a delayed payment");
 
   const reasonString = riskReasons.length > 0 ? riskReasons.join(", ") : "shows signs of disengagement";
+  const eventName = tone === "event" ? eventNameInput : null;
 
-  const prompt = `Write a ${tone} retention email to win back an at-risk customer. The email should be warm, specific, and offer a clear next step.
-
-Customer name: ${customer.name}
-Risk indicators: ${reasonString}
-Sender: Your Customer Success Team
-
-Rules:
-- Keep it under 200 words
-- Personalise it with the specific risk indicators
-- End with a clear call to action (book a call, reply, etc.)
-- Output ONLY the email body text (do not include any subject line)
-- Do not write "Subject:" or any subject-like header
-- Do not mention any company name (including customer company names)
-- Use neutral wording like "we", "our", "our team" instead of company names/placeholders
-- Use the actual customer name
-- Plain text only, no markdown`;
-
-  const subject = "Quick check-in — can we help?";
-  let body = "";
+  const prompt = buildPrompt(tone, customer.name, reasonString, eventName);
+  const subject = getSubjectForTone(tone, eventName);
+  let emailBody = "";
   let source: "gemini" | "fallback" = "gemini";
 
   try {
     const generatedBody = await generateGeminiTextWithFallback(genAI, prompt);
-    body = sanitizeEmailBody(generatedBody, customer.company);
+    emailBody = sanitizeEmailBody(generatedBody, customer.company);
   } catch {
     source = "fallback";
-    body = buildFallbackEmailBody(customer, reasonString);
+    emailBody = buildFallbackEmailBody(customer, reasonString, tone, eventName);
   }
 
   // Upsert the email draft (one draft per customer, overwrite on regenerate)
@@ -159,7 +212,7 @@ Rules:
   if (existingEmail.data?.id) {
     await supabase
       .from("outreach_emails")
-      .update({ subject, body })
+      .update({ subject, body: emailBody })
       .eq("id", existingEmail.data.id);
   } else {
     await supabase.from("outreach_emails").insert({
@@ -167,10 +220,10 @@ Rules:
       customer_id: customerId,
       to_email: customer.email,
       subject,
-      body,
+      body: emailBody,
       status: "draft",
     });
   }
 
-  return NextResponse.json({ subject, body, toEmail: customer.email, source });
+  return NextResponse.json({ subject, body: emailBody, toEmail: customer.email, source });
 }
