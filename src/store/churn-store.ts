@@ -33,18 +33,12 @@ interface ChurnStore {
   weights: StoreWeights;
   industry: string;
   dataVersion: number;
-  sidebarOpen: boolean;
   setCustomers: (customers: CustomerRow[]) => void;
   selectCustomer: (id: string | null) => void;
   setWeights: (weights: StoreWeights) => void;
   setIndustry: (industry: string) => void;
   updateCustomer: (id: string, update: Partial<CustomerRow>) => void;
   bumpDataVersion: () => void;
-  toggleSidebar: () => void;
-  setSidebarOpen: (open: boolean) => void;
-  assistantOpen: boolean;
-  setAssistantOpen: (open: boolean) => void;
-  toggleAssistant: () => void;
 }
 
 export const useChurnStore = create<ChurnStore>((set) => ({
@@ -53,8 +47,6 @@ export const useChurnStore = create<ChurnStore>((set) => ({
   weights: getIndustryDefaultWeights(DEFAULT_INDUSTRY),
   industry: DEFAULT_INDUSTRY,
   dataVersion: 0,
-  sidebarOpen: false,
-  assistantOpen: false,
 
   setCustomers: (customers) => set({ customers }),
   selectCustomer: (id) => set({ selectedCustomerId: id }),
@@ -67,8 +59,4 @@ export const useChurnStore = create<ChurnStore>((set) => ({
       ),
     })),
   bumpDataVersion: () => set((state) => ({ dataVersion: state.dataVersion + 1 })),
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  setAssistantOpen: (open) => set({ assistantOpen: open }),
-  toggleAssistant: () => set((state) => ({ assistantOpen: !state.assistantOpen })),
 }));

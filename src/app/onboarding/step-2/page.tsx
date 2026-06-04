@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import OnboardingHeader from "@/features/onboarding/components/OnboardingHeader";
 import OnboardingFooter from "@/features/onboarding/components/OnboardingFooter";
 import WeightSlider from "@/features/onboarding/components/WeightSlider";
-import { DEFAULT_INDUSTRY, capWeightUpdate, getIndustryDefaultWeights, sumWeights } from "@/lib/industry-defaults";
+import { DEFAULT_INDUSTRY, capWeightUpdate, getIndustryDefaultWeights, normalizeIndustry, sumWeights } from "@/lib/industry-defaults";
 
 type WeightKey = "inactivity" | "usage" | "support" | "payment";
 
@@ -26,7 +26,7 @@ export default function OnboardingStep2Page() {
       .then((r) => r.json())
       .then((d) => {
         if (!d.error) {
-          setIndustry(d.industry ?? DEFAULT_INDUSTRY);
+          setIndustry(normalizeIndustry(d.industry));
           setInactivity(d.weight_inactivity);
           setUsage(d.weight_usage);
           setSupport(d.weight_support);
@@ -126,11 +126,7 @@ export default function OnboardingStep2Page() {
                 <option value="saas">Software / SaaS</option>
                 <option value="entertainment">Entertainment</option>
                 <option value="education">Education</option>
-                <option value="others">Others (25% each)</option>
               </select>
-              <p className="mt-2 text-[11px] text-gray-500">
-                Choose Others for balanced defaults where each formula weight is set to 25%.
-              </p>
             </div>
 
             <div className="flex flex-col gap-4 sm:gap-6 flex-1">

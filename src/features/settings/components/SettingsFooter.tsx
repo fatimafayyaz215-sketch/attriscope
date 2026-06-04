@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useChurnStore } from "@/store/churn-store";
-import { getIndustryDefaultWeights } from "@/lib/industry-defaults";
+import { notifyAdvisorIndustryChanged } from "@/lib/advisor-events";
+import { getIndustryDefaultWeights, normalizeIndustry } from "@/lib/industry-defaults";
 
 export default function SettingsFooter() {
   const { weights, industry, setWeights, setIndustry, bumpDataVersion, setCustomers } = useChurnStore();
@@ -26,7 +27,7 @@ export default function SettingsFooter() {
             support: d.weight_support,
             payment: d.weight_payment,
           });
-          setIndustry(d.industry);
+          setIndustry(normalizeIndustry(d.industry));
         }
       })
       .catch(() => {});
@@ -66,6 +67,7 @@ export default function SettingsFooter() {
       if (!res.ok) throw new Error(data.error ?? "Save failed");
 
       setSavedAt(new Date().toLocaleString());
+      notifyAdvisorIndustryChanged(industry);
       showToast("Settings saved");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Save failed");

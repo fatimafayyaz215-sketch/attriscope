@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { DEFAULT_INDUSTRY, getIndustryDefaultWeights, sumWeights } from "@/lib/industry-defaults";
+import { DEFAULT_INDUSTRY, getIndustryDefaultWeights, normalizeIndustry, sumWeights } from "@/lib/industry-defaults";
 
 export async function GET() {
   const supabase = await createClient();
@@ -19,8 +19,12 @@ export async function GET() {
 
   // Return defaults if no settings row yet
   const defaultWeights = getIndustryDefaultWeights(DEFAULT_INDUSTRY);
+  const industry = normalizeIndustry(data?.industry);
+
   return NextResponse.json(
-    data ?? {
+    data
+      ? { ...data, industry }
+      : {
       industry: DEFAULT_INDUSTRY,
       weight_inactivity: defaultWeights.inactivity,
       weight_usage: defaultWeights.usage,
@@ -45,7 +49,7 @@ export async function POST(request: NextRequest) {
     .eq("user_id", user.id)
     .single();
 
-  const nextIndustry = industry ?? existing?.industry ?? DEFAULT_INDUSTRY;
+  const nextIndustry = normalizeIndustry(industry ?? existing?.industry ?? DEFAULT_INDUSTRY);
   const industryDefaults = getIndustryDefaultWeights(nextIndustry);
   const isWeightsPayloadProvided = [weight_inactivity, weight_usage, weight_support, weight_payment].some((value) => value != null);
 

@@ -14,7 +14,7 @@ type SearchResult = {
   company: string | null;
 };
 
-export default function TopBar() {
+export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -27,7 +27,6 @@ export default function TopBar() {
   const [userName, setUserName] = useState("User");
   const menuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
-  const toggleSidebar = useChurnStore((s) => s.toggleSidebar);
   const selectCustomer = useChurnStore((s) => s.selectCustomer);
 
   // Fetch user info for avatar initials
@@ -141,9 +140,9 @@ export default function TopBar() {
       {/* Left: hamburger + title */}
       <div className="flex items-center gap-3 min-w-0">
         <button
-          onClick={toggleSidebar}
+          onClick={onMenuClick}
           className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors shrink-0"
-          aria-label="Toggle menu"
+          aria-label="Open menu"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
