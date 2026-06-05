@@ -33,11 +33,11 @@ export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMo
         </ul>
 
         <a
-          href="/sample-customers.csv"
-          download="sample-customers.csv"
+          href="/saas-sample-customers.csv"
+          download="saas-sample-customers.csv"
           className="w-full mt-6 flex items-center justify-center gap-2 text-blue-600 text-xs font-bold hover:underline"
         >
-          Download Sample Template
+          Download SaaS Test CSV (500 customers)
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
         </a>
       </div>

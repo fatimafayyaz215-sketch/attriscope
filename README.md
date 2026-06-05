@@ -90,7 +90,7 @@ For production (Vercel), set the same `NEXT_PUBLIC_*` variables under **Project 
 
 ## Scoring Fields & RavenStack Dataset
 
-ChurnGuard scores each customer using **4 signals**. The upload CSV must include these columns (see `public/sample-customers.csv` for the template).
+ChurnGuard scores each customer using **4 signals**. The upload CSV must include these columns (see `public/saas-sample-customers.csv` for the test template).
 
 | # | App column(s) | What it measures |
 |---|---------------|------------------|
@@ -153,6 +153,17 @@ customer_id,name,email,company,last_login_at,current_sessions,previous_sessions,
 ```
 
 Upload via **Data Management** in the app. Identity fields: `customer_id` ← `account_id`, `name`/`company` ← `account_name`, `email` ← generated (dataset has no email).
+
+### Regenerate the test CSV
+
+```bash
+python datasets/saas/build_upload_csv.py
+```
+
+Writes **500 rows** to:
+
+- `datasets/saas/saas-sample-customers.csv`
+- `public/saas-sample-customers.csv` (downloadable in Data Management)
 
 ---
 
