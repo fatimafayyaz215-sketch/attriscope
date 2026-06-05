@@ -37,7 +37,7 @@ const PATTERNS: Record<MappedField, RegExp> = {
   name: /^(customer_?name|full_?name|client_?name|first_?name|account_?name|^name$)$/i,
   email: /^(email|email_?address|contact_?email|user_?email)$/i,
   company: /^(company|company_?name|org|organization|account|business)$/i,
-  last_login_at: /^(last_?login|last_?login_?date|last_?activity|last_?active|last_?seen|last_?visit|last_?access|lastlogin)$/i,
+  last_login_at: /^(last_?login(_?at)?|last_?login_?date|last_?activity|last_?active|last_?seen|last_?visit|last_?access|lastlogin)$/i,
   days_inactive: /^(days_?inactive|inactive_?days|days_?since_?login|days_?without_?login)$/i,
   current_sessions: /^(sessions|current_?sessions|session_?count|monthly_?sessions|monthly_?usage|current_?usage|feature_?usage|logins|monthly_?logins|usage)$/i,
   previous_sessions: /^(previous_?sessions|last_?month_?sessions|prior_?sessions|prev_?sessions|previous_?usage|prior_?usage|last_?month_?usage|prev_?month_?sessions|prior_month_usage)$/i,

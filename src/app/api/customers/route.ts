@@ -37,3 +37,35 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({ customers });
 }
+
+export async function DELETE() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { count, error: countErr } = await supabase
+    .from("customers")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
+  if (countErr) {
+    return NextResponse.json({ error: countErr.message }, { status: 500 });
+  }
+
+  const { error: deleteErr } = await supabase
+    .from("customers")
+    .delete()
+    .eq("user_id", user.id);
+
+  if (deleteErr) {
+    return NextResponse.json({ error: deleteErr.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true, deleted: count ?? 0 });
+}
