@@ -9,12 +9,13 @@
 1. [Overview](#overview)
 2. [Tech Stack](#tech-stack)
 3. [Getting Started](#getting-started)
-4. [Google Sign-In Configuration](#google-sign-in-configuration)
-5. [Folder Structure](#folder-structure)
-6. [CSS Variables & Design Tokens](#css-variables--design-tokens)
-7. [Naming Conventions](#naming-conventions)
-8. [Best Practices](#best-practices)
-9. [Scripts](#scripts)
+4. [Scoring Fields & RavenStack Dataset](#scoring-fields--ravenstack-dataset)
+5. [Google Sign-In Configuration](#google-sign-in-configuration)
+6. [Folder Structure](#folder-structure)
+7. [CSS Variables & Design Tokens](#css-variables--design-tokens)
+8. [Naming Conventions](#naming-conventions)
+9. [Best Practices](#best-practices)
+10. [Scripts](#scripts)
 
 ---
 
@@ -84,6 +85,74 @@ Copy `.env.example` to `.env.local` and fill in:
 > Google OAuth credentials are **not** stored in `.env.local`. They are configured in the Supabase dashboard (see below).
 
 For production (Vercel), set the same `NEXT_PUBLIC_*` variables under **Project Settings → Environment Variables**, then redeploy if you change them.
+
+---
+
+## Scoring Fields & RavenStack Dataset
+
+ChurnGuard scores each customer using **4 signals**. The upload CSV must include these columns (see `public/sample-customers.csv` for the template).
+
+| # | App column(s) | What it measures |
+|---|---------------|------------------|
+| 1 | `last_login_at` | Days since last activity (inactivity) |
+| 2 | `current_sessions` + `previous_sessions` | Usage drop (recent vs prior period) |
+| 3 | `support_complaints` | Support ticket load |
+| 4 | `payment_delay` | Billing/payment risk (`0` = OK, `1` = risk) |
+
+The built-in **sample CSV is synthetic**. For FYP, we use the **RavenStack** Kaggle dataset (`datasets/saas/`). It has **5 files** and **many rows per customer** — the app needs **one row per customer**, so we derive the 4 fields first, then upload.
+
+### RavenStack source files
+
+| File | Role |
+|------|------|
+| `ravenstack_accounts.csv` | Customer master (`account_id`, `account_name`) |
+| `ravenstack_subscriptions.csv` | Billing (`billing_frequency`, `auto_renew_flag`, `downgrade_flag`) |
+| `ravenstack_feature_usage.csv` | Daily usage (`usage_date`, `usage_count`) — linked via `subscription_id` |
+| `ravenstack_support_tickets.csv` | Support tickets per `account_id` |
+| `ravenstack_churn_events.csv` | Churn history (optional, for validation) |
+
+**Join path:** `accounts` → `subscriptions` → `feature_usage` (usage has no `account_id`; join through `subscription_id`).
+
+### How we derive the 4 fields
+
+#### 1. Inactivity → `last_login_at`
+
+- **Source:** `ravenstack_feature_usage.csv` (join to `account_id` via subscriptions)
+- **Rule:** For each customer, take the **latest `usage_date`** = last time they used the product
+- **Note:** Each usage row is **one feature on one day**; `usage_count` is how many times that feature was used that day
+
+#### 2. Usage drop → `current_sessions` + `previous_sessions`
+
+- **Source:** `ravenstack_feature_usage.csv`
+- **Rule:** Pick a snapshot date (e.g. last date in the dataset). For each customer:
+  - **`current_sessions`** = sum of all `usage_count` in the **last 30 days**
+  - **`previous_sessions`** = sum of all `usage_count` in the **30 days before that**
+- The app then computes: `usage_drop = (previous - current) / previous`
+
+#### 3. Support complaints → `support_complaints`
+
+- **Source:** `ravenstack_support_tickets.csv`
+- **Rule:** For each `account_id`, **count ticket rows** (optionally only tickets in the last 90 days)
+- **Example:** `A-2e4581` has 2 ticket rows → `support_complaints = 2`
+
+#### 4. Payment delay → `payment_delay` (proxy)
+
+- **Source:** `ravenstack_subscriptions.csv`
+- **Rule:** RavenStack has **no real late-payment column**. Use the latest subscription per customer:
+  - `payment_delay = 1` if `auto_renew_flag` is false **or** `downgrade_flag` is true
+  - otherwise `payment_delay = 0`
+- Document in FYP reports that this is a **billing proxy**, not actual payment failure data
+- **`billing_cycle`:** map `billing_frequency` → `monthly` or `yearly` (helps scoring caps; separate from `payment_delay`)
+
+### Output CSV for upload
+
+After derivation, export **one row per customer** with columns like:
+
+```csv
+customer_id,name,email,company,last_login_at,current_sessions,previous_sessions,support_complaints,payment_delay,billing_cycle
+```
+
+Upload via **Data Management** in the app. Identity fields: `customer_id` ← `account_id`, `name`/`company` ← `account_name`, `email` ← generated (dataset has no email).
 
 ---
 
