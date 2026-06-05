@@ -9,11 +9,12 @@
 1. [Overview](#overview)
 2. [Tech Stack](#tech-stack)
 3. [Getting Started](#getting-started)
-4. [Folder Structure](#folder-structure)
-5. [CSS Variables & Design Tokens](#css-variables--design-tokens)
-6. [Naming Conventions](#naming-conventions)
-7. [Best Practices](#best-practices)
-8. [Scripts](#scripts)
+4. [Google Sign-In Configuration](#google-sign-in-configuration)
+5. [Folder Structure](#folder-structure)
+6. [CSS Variables & Design Tokens](#css-variables--design-tokens)
+7. [Naming Conventions](#naming-conventions)
+8. [Best Practices](#best-practices)
+9. [Scripts](#scripts)
 
 ---
 
@@ -31,7 +32,7 @@ Next.js is a React framework that provides:
 
 ## Implemented Features
 
-- **Authentication Flow**: [Login](http://localhost:3000/login), [Registration](http://localhost:3000/register), and [Forgot Password](http://localhost:3000/forgot-password) screens with modular split-panel designs.
+- **Authentication Flow**: [Login](http://localhost:3000/login), [Registration](http://localhost:3000/register), and [Forgot Password](http://localhost:3000/forgot-password) screens with modular split-panel designs. Login supports **email/password** and **Google OAuth** (via Supabase).
 - **Onboarding Wizard**: A 3-step configuration flow for [Industry Selection](http://localhost:3000/onboarding), [Weight Calibration](http://localhost:3000/onboarding/step-2), and [Data Connection](http://localhost:3000/onboarding/step-3).
 - **Dashboard Overview**: The main application shell featuring a persistent sidebar and custom [Dashboard Widgets](http://localhost:3000/dashboard) (KPI Cards, Risk Charts, and Alerts).
 - **Risk Analysis**: A specialized [Risk Analysis Workspace](http://localhost:3000/risk-analysis) for predictive scoring, featuring a sticky intelligence panel.
@@ -45,9 +46,11 @@ Next.js is a React framework that provides:
 
 | Layer       | Technology                      |
 |-------------|---------------------------------|
-| Framework   | Next.js 15 (App Router)         |
+| Framework   | Next.js 16 (App Router)         |
 | Language    | TypeScript                      |
 | Styling     | Tailwind CSS v4 + CSS Variables |
+| Auth & DB   | Supabase (Auth, PostgreSQL, RLS)|
+| AI          | Google Gemini (optional)        |
 | Linting     | ESLint + eslint-config-next     |
 | Package Mgr | npm                             |
 
@@ -67,6 +70,107 @@ npm run dev
 ```
 
 Open http://localhost:3000 in your browser.
+
+### Environment variables
+
+Copy `.env.example` to `.env.local` and fill in:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL (Project Settings → API) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase `anon` public key |
+| `GEMINI_API_KEY` | No | Enables AI explanations, email drafting, and the in-app assistant |
+
+> Google OAuth credentials are **not** stored in `.env.local`. They are configured in the Supabase dashboard (see below).
+
+For production (Vercel), set the same `NEXT_PUBLIC_*` variables under **Project Settings → Environment Variables**, then redeploy if you change them.
+
+---
+
+## Google Sign-In Configuration
+
+Google login is already implemented in code (`src/services/auth.service.ts` → `loginWithGoogle()`, callback at `src/app/auth/callback/route.ts`). Teammates only need to configure **Google Cloud Console** and **Supabase** — no code changes required.
+
+**Production URL:** https://churn-prediction-navy.vercel.app
+
+### How the OAuth flow works
+
+1. User clicks **Google** on `/login`
+2. Supabase redirects to Google
+3. Google returns to Supabase: `https://<PROJECT_REF>.supabase.co/auth/v1/callback`
+4. Supabase redirects to your app: `https://<your-domain>/auth/callback`
+5. The callback route exchanges the auth code for a session and sends the user to `/onboarding` or `/dashboard`
+
+### Step 1 — Google Cloud Console
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) and select (or create) a project.
+2. Go to **Google Auth Platform → Overview** and click **Get started** if prompted.
+3. Complete the setup wizard:
+   - **App name:** ChurnGuard AI
+   - **Audience:** External (any Google account)
+   - **Developer contact:** your team email
+4. Under **Audience → Test users**, add Gmail addresses that may sign in while the app is in **Testing** mode.
+5. Go to **Clients → Create client**:
+   - **Application type:** Web application
+   - **Authorized JavaScript origins:**
+     ```
+     https://churn-prediction-navy.vercel.app
+     http://localhost:3000
+     ```
+   - **Authorized redirect URIs** (Supabase callback — **not** your Vercel URL):
+     ```
+     https://<PROJECT_REF>.supabase.co/auth/v1/callback
+     ```
+     Replace `<PROJECT_REF>` with the ref from `NEXT_PUBLIC_SUPABASE_URL` (e.g. `fwqsygqaemrgaenmlhfp`).
+6. Copy the **Client ID** and **Client Secret**.
+
+### Step 2 — Supabase
+
+1. Open [Supabase Dashboard](https://supabase.com/dashboard) → your project.
+2. **Authentication → Providers → Google**
+   - Turn **Enable Sign in with Google** ON
+   - Paste the **Client ID** and **Client Secret** from Google Cloud
+   - Click **Save**
+3. **Authentication → URL Configuration**
+   - **Site URL:** `https://churn-prediction-navy.vercel.app` (or your deployment URL)
+   - **Redirect URLs** — add all of:
+     ```
+     https://churn-prediction-navy.vercel.app/**
+     https://churn-prediction-navy.vercel.app/auth/callback
+     http://localhost:3000/**
+     http://localhost:3000/auth/callback
+     ```
+
+### Step 3 — Vercel (production)
+
+Confirm these environment variables match the same Supabase project:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://<PROJECT_REF>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_anon_key>
+```
+
+Redeploy after changing env vars.
+
+### Step 4 — Verify
+
+1. Open `/login` on your deployment (or `http://localhost:3000/login` locally).
+2. Click **Google** and sign in with a test-user Gmail.
+3. First-time users land on `/onboarding`; returning users go to `/dashboard`.
+
+### Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Unsupported provider: provider is not enabled` | Google not enabled in Supabase | Enable Google under **Authentication → Providers**, paste Client ID + Secret, click **Save** |
+| `redirect_uri_mismatch` | Wrong redirect URI in Google Cloud | Use only `https://<PROJECT_REF>.supabase.co/auth/v1/callback` |
+| Redirect to `/login?error=auth_callback_failed` | App callback URL not allowed | Add `https://<your-domain>/auth/callback` to Supabase **Redirect URLs** |
+| `Access blocked` / app in Testing | Gmail not a test user | Add the account under Google Cloud **Audience → Test users** |
+| Works locally, fails on Vercel | Different Supabase project or missing env vars | Align Vercel `NEXT_PUBLIC_SUPABASE_*` with `.env.local` and redeploy |
+
+### Going live (optional)
+
+When ready for any Google user (not just test users), publish the OAuth consent screen in Google Cloud (**Audience** → move from Testing to **In production**). Google may require app verification for sensitive scopes; basic `email` / `profile` / `openid` scopes typically do not.
 
 ---
 
