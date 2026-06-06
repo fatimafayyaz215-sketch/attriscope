@@ -109,7 +109,7 @@ The built-in **sample CSV is synthetic**. For FYP, we use the **RavenStack** Kag
 | `ravenstack_subscriptions.csv` | Billing (`billing_frequency`, `auto_renew_flag`, `downgrade_flag`) |
 | `ravenstack_feature_usage.csv` | Daily usage (`usage_date`, `usage_count`) — linked via `subscription_id` |
 | `ravenstack_support_tickets.csv` | Support tickets per `account_id` |
-| `ravenstack_churn_events.csv` | Churn history (optional, for validation) |
+| `ravenstack_churn_events.csv` | Churn event log (reason, date — not used as primary validation label) |
 
 **Join path:** `accounts` → `subscriptions` → `feature_usage` (usage has no `account_id`; join through `subscription_id`).
 
@@ -164,6 +164,29 @@ Writes **500 rows** to:
 
 - `datasets/saas/saas-sample-customers.csv`
 - `public/saas-sample-customers.csv` (downloadable in Data Management)
+
+### Validate the scoring formula (FYP)
+
+Ground truth uses **`churn_flag`** on `ravenstack_accounts.csv` (`True` = churned, `False` = stayed). This is the official yes/no label per account (~22% churn rate in the sample).
+
+```bash
+python datasets/saas/validate_formula.py
+```
+
+**Prediction rule:** score ≥ 70 → predicted churn; score &lt; 70 → predicted stay (matches the app’s high-risk band).
+
+**Outputs:**
+
+- `datasets/saas/validation_results.csv` — per-customer scores vs `churn_flag`
+- `datasets/saas/validation_threshold_sweep.csv` — metrics at thresholds 40, 50, 60, 70
+
+Report **precision, recall, F1**, and the confusion matrix (TP/TN/FP/FN), not accuracy alone.
+
+To optionally compare against the churn *events* log (not recommended for the main FYP result):
+
+```bash
+python datasets/saas/validate_formula.py --compare-events
+```
 
 ---
 

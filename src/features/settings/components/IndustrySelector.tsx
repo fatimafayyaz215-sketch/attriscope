@@ -20,7 +20,7 @@ export default function IndustrySelector() {
     {
       id: "saas",
       name: "Software / SaaS",
-      desc: "Calibration for recurring B2B licenses. Prioritizes feature adoption and API usage.",
+      desc: "Usage drop 45%, payment delay 30%, support 15%, inactivity 10% — tuned for B2B SaaS churn patterns.",
       tags: ["B2B", "STICKY"],
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>

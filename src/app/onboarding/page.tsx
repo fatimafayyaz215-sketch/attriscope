@@ -22,7 +22,7 @@ const industries = [
     id: "saas",
     title: "Software / SaaS",
     badge: "B2B, STICKY",
-    description: "Optimizes for account-level health scores, feature utilization patterns, and renewal cycle dependencies.",
+    description: "Weights usage drop (45%) and payment delay (30%) highest — the strongest SaaS churn signals. Support 15%, inactivity 10%.",
     recommended: true,
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

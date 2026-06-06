@@ -66,15 +66,16 @@ How scoring works:
 - Billing cycle caps (yearly plan): inactivity capped at 85 days, support tickets capped at 9.
 - This ensures monthly and yearly customers are judged fairly on the same scale.
 - If billing_cycle column is not in the CSV, the system defaults to yearly caps.
-- Weights are user-configurable in Settings (default: 25% each = equal priority).
+- Weights are user-configurable in Settings. Industry presets apply on onboarding and Reset to Default.
+- SaaS preset (default industry): inactivity 10%, usage 45%, support 15%, payment 30%.
 - Risk bands: High >= 70, Medium 40-69, Low < 40.
 
 Weight / priority guidance:
 - The four signals each have a weight slider in Settings.
-- If all four signals matter equally, set each to 25%.
-- If one signal (e.g. payment delay) is the biggest churn indicator for the business, raise that slider higher.
+- SaaS profile prioritizes usage drop (45%) and payment delay (30%) as the strongest churn signals.
+- If all four signals matter equally for your business, set each to 25%.
 - Total recommended to be 100%, but the formula self-adjusts even if it isn't.
-- Use Reset to Default anytime to return to 25% / 25% / 25% / 25%.
+- Use Reset to Default to restore the current industry profile (SaaS: 10/45/15/30).
 
 CSV upload guidance:
 - Supported columns: customer_id, name, email, company, last_login_at, current_sessions, previous_sessions, support_complaints, payment_delay, billing_cycle.
@@ -142,8 +143,8 @@ function getRuleBasedAnswer(question: string): string {
       "",
       "**Risk levels:** High ≥ 70 · Medium 40–69 · Low < 40",
       "",
-      "**Weights:** Default is 25% each. Adjust in `Settings` based on what signals churn in your business.",
-      "If all 4 matter equally → keep each at 25%.",
+      "**Weights:** SaaS preset (default): inactivity 10%, usage 45%, support 15%, payment 30%. Adjust in `Settings` or use Reset to Default for your industry profile.",
+      "If all 4 matter equally for your business → set each to 25%.",
     ].join("\n");
   }
 
@@ -189,7 +190,7 @@ function getRuleBasedAnswer(question: string): string {
       "- Tune the **four scoring weights** using sliders.",
       "- Review the live **signal priority panel** to see current weight distribution.",
       "- **Save** your weights to apply them to future uploads.",
-      "- **Reset to Default** to restore all weights to 25% each (equal priority).",
+      "- **Reset to Default** to restore your industry profile (SaaS: 10/45/15/30).",
       "",
       "**Weight tips:**",
       "- All 4 signals equally important → set each to **25%**.",
