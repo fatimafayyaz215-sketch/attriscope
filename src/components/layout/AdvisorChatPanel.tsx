@@ -6,6 +6,7 @@ import { ADVISOR_QUICK_PROMPTS, ADVISOR_WELCOME_EXAMPLE, ADVISOR_WELCOME_TOPICS 
 import { ADVISOR_INDUSTRY_CHANGED } from "@/lib/advisor-events";
 import type { Industry } from "@/lib/industry";
 import { useAdvisorChat } from "@/components/layout/advisor-chat-context";
+import AdvisorMessageBody from "@/components/layout/AdvisorMessageBody";
 
 type ChatMessage = {
   id: string;
@@ -385,13 +386,13 @@ export default function AdvisorChatPanel() {
               <div
                 key={m.id}
                 className={[
-                  "text-xs leading-relaxed rounded-xl px-3 py-2.5 whitespace-pre-wrap break-words max-w-[92%]",
+                  "text-xs leading-relaxed rounded-xl px-3 py-2.5 break-words max-w-[92%]",
                   m.role === "user"
-                    ? "bg-blue-700 text-white ml-auto"
+                    ? "bg-blue-700 text-white ml-auto whitespace-pre-wrap"
                     : "bg-white text-gray-800 border border-gray-200 shadow-sm",
                 ].join(" ")}
               >
-                {m.content}
+                {m.role === "assistant" ? <AdvisorMessageBody content={m.content} /> : m.content}
               </div>
             ))
           )}

@@ -56,10 +56,11 @@ Response behavior:
 - Use recent churn analyses from this workspace as context when available, and reference concrete risk signals.
 - If question is outside app functionality, say you can only help with ChurnGuard AI usage.
 - Keep responses practical and concise.
-- Format answers in Markdown:
-  - use short section headers when useful,
-  - use bullet points or numbered steps for instructions,
-  - use **bold**, *italics*, and \`inline code\` for emphasis (for routes, use inline code).
+- Format answers for readable chat UI:
+  - use short section headers on their own line (optional, plain text — no # symbols),
+  - use bullet points (- item) or numbered steps (1. step) for instructions,
+  - use **bold** for emphasis and \`inline code\` for routes or field names,
+  - do not use ### headers or *** triple asterisks.
 `;
 
 function getRuleBasedAnswer(question: string): string {
@@ -121,7 +122,7 @@ function getRuleBasedAnswer(question: string): string {
       "3) Column names are auto-detected — review and adjust the mapping if needed.",
       "4) Click **Process Data** to import.",
       "",
-      "**Supported columns:** customer\_id, name, email, company, last\_login\_at, current\_sessions, previous\_sessions, support\_complaints, payment\_delay, billing\_cycle.",
+      "**Supported columns:** `customer_id`, `name`, `email`, `company`, `last_login_at`, `current_sessions`, `previous_sessions`, `support_complaints`, `payment_delay`, `billing_cycle`.",
       "",
       "**Tips:**",
       "- Provide `last_login_at` and the app calculates inactivity automatically.",
@@ -244,7 +245,7 @@ ${trimmedQuestion}
 Write a clear, practical response focused on app functionality.
 Do not invent non-existent screens or features.
 When relevant, give concrete re-engagement recommendations (offers, campaigns, and next-step actions).
-Format the final response as Markdown with readable structure.
+Format the final response with clear line breaks, bullets, and **bold** labels (no ### headers or ***).
 `;
 
     const answer = (await generateGeminiText(prompt, { timeoutMs: ASSISTANT_TIMEOUT_MS })).trim();
