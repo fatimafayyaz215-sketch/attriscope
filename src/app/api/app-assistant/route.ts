@@ -1,46 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
+import { generateGeminiText, hasGeminiApiKey } from "@/lib/gemini";
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
 
-const GEMINI_MODELS = ["gemini-2.5-flash-lite", "gemini-3.1-flash-lite"] as const;
 const ASSISTANT_TIMEOUT_MS = 12000;
-
-function isRetryableGeminiError(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err);
-  return /(503|429|500|502|504|service unavailable|high demand|temporar|overloaded|try again later)/i.test(msg);
-}
-
-async function generateGeminiTextWithFallback(genAI: GoogleGenerativeAI, prompt: string): Promise<string> {
-  let lastErr: unknown;
-
-  for (const modelName of GEMINI_MODELS) {
-    for (let attempt = 0; attempt < 1; attempt++) {
-      try {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await Promise.race([
-          model.generateContent(prompt),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Assistant generation timed out")), ASSISTANT_TIMEOUT_MS),
-          ),
-        ]);
-        return result.response.text();
-      } catch (err: unknown) {
-        lastErr = err;
-        const canRetrySameModel = isRetryableGeminiError(err) && attempt < 0;
-        if (canRetrySameModel) {
-          await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
-          continue;
-        }
-        break;
-      }
-    }
-  }
-
-  throw lastErr ?? new Error("Gemini request failed");
-}
 
 const APP_KNOWLEDGE_BASE = `
 You are the in-product assistant for ChurnGuard AI.
@@ -227,8 +192,7 @@ export async function POST(request: NextRequest) {
   const lowerQuestion = trimmedQuestion.toLowerCase();
   const needsAnalysisContext = /(churn|risk|inactive|inactivity|re-?engage|retention|offer|voucher|discount|loyalty|campaign|customer)/i.test(lowerQuestion);
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
+  if (!hasGeminiApiKey()) {
     return NextResponse.json({ answer: fallback, source: "rules" });
   }
 
@@ -283,8 +247,7 @@ When relevant, give concrete re-engagement recommendations (offers, campaigns, a
 Format the final response as Markdown with readable structure.
 `;
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const answer = (await generateGeminiTextWithFallback(genAI, prompt)).trim();
+    const answer = (await generateGeminiText(prompt, { timeoutMs: ASSISTANT_TIMEOUT_MS })).trim();
 
     return NextResponse.json({ answer: answer || fallback, source: "gemini" });
   } catch {

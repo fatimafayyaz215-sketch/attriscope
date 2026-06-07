@@ -81,6 +81,7 @@ Copy `.env.example` to `.env.local` and fill in:
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL (Project Settings → API) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase `anon` public key |
 | `GEMINI_API_KEY` | No | Enables AI explanations, email drafting, and the in-app assistant |
+| `GEMINI_API_KEYS` | No | Comma-separated Gemini keys for rate-limit rotation (uses this instead of `GEMINI_API_KEY` when set) |
 
 > Google OAuth credentials are **not** stored in `.env.local`. They are configured in the Supabase dashboard (see below).
 

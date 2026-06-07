@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
+import { generateGeminiText, hasGeminiApiKey } from "@/lib/gemini";
 
-const GEMINI_MODELS = ["gemini-2.5-flash-lite", "gemini-3.1-flash-lite"] as const;
 const GENERATION_TIMEOUT_MS = 12000;
 type Tone = "professional" | "friendly" | "urgent" | "discount" | "event";
 
@@ -62,40 +61,6 @@ Rules:
 - Use the actual customer name
 - Plain text only, no markdown
 ${toneRules.join("\n")}`;
-}
-
-function isRetryableGeminiError(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err);
-  return /(503|429|500|502|504|service unavailable|high demand|temporar|overloaded|try again later)/i.test(msg);
-}
-
-async function generateGeminiTextWithFallback(genAI: GoogleGenerativeAI, prompt: string): Promise<string> {
-  let lastErr: unknown;
-
-  for (const modelName of GEMINI_MODELS) {
-    for (let attempt = 0; attempt < 1; attempt++) {
-      try {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await Promise.race([
-          model.generateContent(prompt),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Gemini generation timed out")), GENERATION_TIMEOUT_MS),
-          ),
-        ]);
-        return result.response.text();
-      } catch (err: unknown) {
-        lastErr = err;
-        const canRetrySameModel = isRetryableGeminiError(err) && attempt < 0;
-        if (canRetrySameModel) {
-          await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
-          continue;
-        }
-        break;
-      }
-    }
-  }
-
-  throw lastErr ?? new Error("Gemini request failed");
 }
 
 function sanitizeEmailBody(rawBody: string, company?: string | null): string {
@@ -173,10 +138,9 @@ export async function POST(request: NextRequest) {
   const dynamicDaysInactive = computeDaysInactiveFromLastLogin(customer.last_login_at, customer.days_inactive);
 
   // Fetch sender's profile (auth user email as fallback sender name)
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: "Gemini API key not configured" }, { status: 500 });
-
-  const genAI = new GoogleGenerativeAI(apiKey);
+  if (!hasGeminiApiKey()) {
+    return NextResponse.json({ error: "Gemini API key not configured" }, { status: 500 });
+  }
 
   const riskReasons: string[] = [];
   if (dynamicDaysInactive > 14) riskReasons.push(`has not logged in for ${dynamicDaysInactive} days`);
@@ -193,7 +157,7 @@ export async function POST(request: NextRequest) {
   let source: "gemini" | "fallback" = "gemini";
 
   try {
-    const generatedBody = await generateGeminiTextWithFallback(genAI, prompt);
+    const generatedBody = await generateGeminiText(prompt, { timeoutMs: GENERATION_TIMEOUT_MS });
     emailBody = sanitizeEmailBody(generatedBody, customer.company);
   } catch {
     source = "fallback";
