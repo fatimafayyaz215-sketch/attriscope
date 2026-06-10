@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { detectColumn, type MappedField } from "@/lib/column-detector";
 import { parseBillingCycle } from "@/lib/billing-cycle";
-import { computeChurnScore, DEFAULT_WEIGHTS, type ScoringWeights } from "@/lib/scoring";
+import { computeChurnScore, computeUsageDrop, DEFAULT_WEIGHTS, type ScoringWeights } from "@/lib/scoring";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
+import { normalizeIndustry } from "@/lib/industry-defaults";
 
 const BATCH_SIZE = 500;
 
@@ -74,20 +75,32 @@ export async function POST(request: NextRequest) {
     // no body / invalid JSON — fall through to DB lookup
   }
 
+  let industry = normalizeIndustry(null);
+
   if (!bodyWeightsProvided) {
     const { data: settingsRow } = await supabase
       .from("user_settings")
-      .select("weight_inactivity, weight_usage, weight_support, weight_payment")
+      .select("industry, weight_inactivity, weight_usage, weight_support, weight_payment")
       .eq("user_id", user.id)
       .single();
 
     if (settingsRow) {
+      industry = normalizeIndustry(settingsRow.industry);
       weights = {
         inactivity: settingsRow.weight_inactivity,
         usage: settingsRow.weight_usage,
         support: settingsRow.weight_support,
         payment: settingsRow.weight_payment,
       };
+    }
+  } else {
+    const { data: settingsRow } = await supabase
+      .from("user_settings")
+      .select("industry")
+      .eq("user_id", user.id)
+      .single();
+    if (settingsRow?.industry) {
+      industry = normalizeIndustry(settingsRow.industry);
     }
   }
 
@@ -127,14 +140,22 @@ export async function POST(request: NextRequest) {
 
     const cur = parseFloat(getField(row, "current_sessions", mapping)) || 0;
     const prev = parseFloat(getField(row, "previous_sessions", mapping)) || 0;
-    const usageDrop = prev > 0 ? Math.max(0, Math.min((prev - cur) / prev, 1)) : 0;
+    const usageDrop = computeUsageDrop(cur, prev, daysInactive);
 
     const supportComplaints = Math.max(0, parseInt(getField(row, "support_complaints", mapping), 10) || 0);
     const paymentDelay = parsePaymentDelay(getField(row, "payment_delay", mapping));
 
     const billingCycle = parseBillingCycle(getField(row, "billing_cycle", mapping));
 
-    const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights, billingCycle);
+    const { score, level } = computeChurnScore(
+      daysInactive,
+      usageDrop,
+      supportComplaints,
+      paymentDelay,
+      weights,
+      billingCycle,
+      industry,
+    );
 
     updateRows.push({
       id: customer.id,

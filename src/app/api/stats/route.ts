@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
+import { computeCustomerEngagement } from "@/lib/scoring";
 
 export async function GET() {
   const supabase = await createClient();
@@ -43,12 +44,15 @@ export async function GET() {
       const days = c.days_inactive;
       return days >= min && (max === Infinity ? true : days <= max);
     });
-    const avgDrop =
+    const engagement =
       bucket.length > 0
-        ? bucket.reduce((s, c) => s + Number(c.usage_drop), 0) / bucket.length
+        ? Math.round(
+            bucket.reduce(
+              (s, c) => s + computeCustomerEngagement(c.days_inactive, Number(c.usage_drop)),
+              0,
+            ) / bucket.length,
+          )
         : 0;
-    // engagement = inverse of average usage drop (0–100%)
-    const engagement = bucket.length > 0 ? Math.round((1 - avgDrop) * 100) : 0;
     return { week, engagement, count: bucket.length };
   });
 

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Papa from "papaparse";
 import { createClient } from "@/lib/supabase/server";
 import { parseBillingCycle } from "@/lib/billing-cycle";
-import { computeChurnScore, DEFAULT_WEIGHTS, ScoringWeights } from "@/lib/scoring";
+import { computeChurnScore, computeUsageDrop, DEFAULT_WEIGHTS, ScoringWeights } from "@/lib/scoring";
+import { normalizeIndustry } from "@/lib/industry-defaults";
 import type { MappedField } from "@/lib/column-detector";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
@@ -52,10 +53,11 @@ export async function POST(request: NextRequest) {
   // Fetch user's scoring weights
   const { data: settingsRow } = await supabase
     .from("user_settings")
-    .select("weight_inactivity, weight_usage, weight_support, weight_payment")
+    .select("industry, weight_inactivity, weight_usage, weight_support, weight_payment")
     .eq("user_id", user.id)
     .single();
 
+  const industry = normalizeIndustry(settingsRow?.industry);
   const weights: ScoringWeights = settingsRow
     ? {
         inactivity: settingsRow.weight_inactivity,
@@ -84,18 +86,24 @@ export async function POST(request: NextRequest) {
     const rawDaysFallback = Math.max(0, parseInt(rawDays, 10) || 0);
     const daysInactive = computeDaysInactiveFromLastLogin(lastLoginAt, rawDaysFallback);
 
-    // Usage drop
-    let usageDrop = 0;
     const cur = parseFloat(getField(row, "current_sessions", mapping)) || 0;
     const prev = parseFloat(getField(row, "previous_sessions", mapping)) || 0;
-    if (prev > 0) usageDrop = Math.max(0, Math.min((prev - cur) / prev, 1));
+    const usageDrop = computeUsageDrop(cur, prev, daysInactive);
 
     const supportComplaints = Math.max(0, parseInt(getField(row, "support_complaints", mapping)) || 0);
     const paymentDelay = parsePaymentDelay(getField(row, "payment_delay", mapping));
 
     const billingCycle = parseBillingCycle(getField(row, "billing_cycle", mapping));
 
-    const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights, billingCycle);
+    const { score, level } = computeChurnScore(
+      daysInactive,
+      usageDrop,
+      supportComplaints,
+      paymentDelay,
+      weights,
+      billingCycle,
+      industry,
+    );
 
     // Last login timestamp
     if (!lastLoginAt && daysInactive > 0) {

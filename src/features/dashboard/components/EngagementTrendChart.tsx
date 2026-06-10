@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -79,7 +79,7 @@ export default function EngagementTrendChart() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-bold text-white leading-tight">Engagement Trend</h2>
-            <p className="text-xs text-blue-200 mt-0.5">Days inactive · bars = customers per window, line = engagement rate</p>
+            <p className="text-xs text-blue-200 mt-0.5">Days inactive · bars = customers per window, line = blended engagement (activity + usage)</p>
           </div>
           <div className="flex items-center gap-3">
             {hasData && (

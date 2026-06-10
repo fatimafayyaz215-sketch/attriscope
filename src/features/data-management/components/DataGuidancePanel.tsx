@@ -22,7 +22,12 @@ const INDUSTRY_SAMPLES: Record<
     label: "Entertainment",
     count: 1000,
   },
-  education: null,
+  education: {
+    href: "/education-sample-customers.csv",
+    download: "education-sample-customers.csv",
+    label: "Education",
+    count: 1000,
+  },
 };
 
 export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMockupPath: string }) {

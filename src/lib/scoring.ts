@@ -1,5 +1,11 @@
 // ── Scoring formula weights ───────────────────────────────────────────────────
 
+import {
+  normalizeIndustry,
+  RISK_THRESHOLDS,
+  type IndustryId,
+} from "@/lib/industry-defaults";
+
 export interface ScoringWeights {
   inactivity: number; // 0–100
   usage: number;
@@ -26,6 +32,48 @@ export const BILLING_CAPS: Record<BillingCycle, { inactivityDays: number; suppor
   yearly:  { inactivityDays: 90, supportTickets: 10 },
 };
 
+const DISENGAGED_INACTIVITY_DAYS = 28;
+
+/**
+ * Usage drop ratio 0–1. When both session windows are empty but the account has been
+ * inactive for a while, treat as full disengagement (common with education/OULAD data).
+ */
+export function computeUsageDrop(
+  currentSessions: number,
+  previousSessions: number,
+  daysInactive = 0,
+): number {
+  const cur = Math.max(0, currentSessions);
+  const prev = Math.max(0, previousSessions);
+
+  if (prev <= 0 && cur <= 0 && daysInactive > DISENGAGED_INACTIVITY_DAYS) {
+    return 1;
+  }
+  if (prev <= 0) return 0;
+  return Math.max(0, Math.min((prev - cur) / prev, 1));
+}
+
+export function resolveRiskLevel(
+  score: number,
+  industry?: string | null,
+): "high" | "medium" | "low" {
+  const { high, medium } = RISK_THRESHOLDS[normalizeIndustry(industry)];
+  if (score >= high) return "high";
+  if (score >= medium) return "medium";
+  return "low";
+}
+
+/** Engagement 0–100 for dashboard trend (blends inactivity + usage, not drop alone). */
+export function computeCustomerEngagement(daysInactive: number, usageDrop: number): number {
+  const inactivityEng = 1 - Math.min(Math.max(0, daysInactive) / 90, 1);
+  const usageEng = 1 - Math.min(Math.max(0, usageDrop), 1);
+  return Math.round(((inactivityEng + usageEng) / 2) * 100);
+}
+
+export function getRiskThresholds(industry?: string | null): { high: number; medium: number } {
+  return RISK_THRESHOLDS[normalizeIndustry(industry)];
+}
+
 /**
  * Compute churn risk score 0–100 using the transparent weighted formula:
  *
@@ -44,10 +92,12 @@ export function computeChurnScore(
   paymentDelay: 0 | 1,
   weights: ScoringWeights = DEFAULT_WEIGHTS,
   billingCycle: BillingCycle = "yearly",
+  industry?: string | null,
 ): { score: number; level: "high" | "medium" | "low" } {
   const w = weights;
   const totalWeight = w.inactivity + w.usage + w.support + w.payment;
   const { inactivityDays, supportTickets } = BILLING_CAPS[billingCycle];
+  const industryId = normalizeIndustry(industry);
 
   const x1 = Math.min(daysInactive / inactivityDays, 1);
   const x2 = Math.min(Math.max(usageDrop, 0), 1);
@@ -55,10 +105,16 @@ export function computeChurnScore(
   const x4 = paymentDelay as number;
 
   const raw = x1 * w.inactivity + x2 * w.usage + x3 * w.support + x4 * w.payment;
-  const score = Math.round((raw / totalWeight) * 100);
+  let score = Math.round((raw / totalWeight) * 100);
 
-  const level: "high" | "medium" | "low" =
-    score >= 70 ? "high" : score >= 40 ? "medium" : "low";
+  // Education: unregistration in OULAD maps 1:1 to withdrawal — floor score at high threshold
+  if (industryId === "education" && paymentDelay === 1) {
+    score = Math.max(score, RISK_THRESHOLDS.education.high);
+  }
+
+  const level = resolveRiskLevel(score, industryId);
 
   return { score, level };
 }
+
+export type { IndustryId };

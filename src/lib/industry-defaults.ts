@@ -11,6 +11,14 @@ export const INDUSTRY_DEFAULT_WEIGHTS: Record<IndustryId, ScoringWeights> = {
   education: { inactivity: 35, usage: 25, support: 15, payment: 25 },
 };
 
+/** Risk band cutoffs per industry (score 0–100). */
+export const RISK_THRESHOLDS: Record<IndustryId, { high: number; medium: number }> = {
+  entertainment: { high: 70, medium: 40 },
+  saas: { high: 70, medium: 40 },
+  // Education: calibrated against OULAD withdrawal labels (see datasets/education/validate_formula.py)
+  education: { high: 50, medium: 35 },
+};
+
 /** Maps stored values (including legacy "others") to a supported industry id. */
 export function normalizeIndustry(industry?: string | null): IndustryId {
   if (industry === "entertainment" || industry === "saas" || industry === "education") {

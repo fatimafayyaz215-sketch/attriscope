@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { useChurnStore } from "@/store/churn-store";
-import { BILLING_CAPS, BillingCycle } from "@/lib/scoring";
+import { BILLING_CAPS, BillingCycle, getRiskThresholds } from "@/lib/scoring";
+import { normalizeIndustry } from "@/lib/industry-defaults";
 
 export default function FormulaTransparency() {
-  const { weights } = useChurnStore();
+  const { weights, industry } = useChurnStore();
   const [segment, setSegment] = useState<BillingCycle>("yearly");
 
   const caps = BILLING_CAPS[segment];
+  const riskBands = getRiskThresholds(normalizeIndustry(industry));
 
 
   return (
@@ -104,7 +106,7 @@ export default function FormulaTransparency() {
             </div>
             <div className="flex gap-2 items-start">
               <span className="text-blue-400 font-bold shrink-0 text-xs mt-0.5">→</span>
-              <p className="text-[11px] text-gray-400 leading-relaxed">Risk levels: <span className="text-red-400 font-semibold">High ≥ 70</span> · <span className="text-amber-400 font-semibold">Medium 40–69</span> · <span className="text-teal-400 font-semibold">Low &lt; 40</span>.</p>
+              <p className="text-[11px] text-gray-400 leading-relaxed">Risk levels: <span className="text-red-400 font-semibold">High ≥ {riskBands.high}</span> · <span className="text-amber-400 font-semibold">Medium {riskBands.medium}–{riskBands.high - 1}</span> · <span className="text-teal-400 font-semibold">Low &lt; {riskBands.medium}</span>.</p>
             </div>
           </div>
 
