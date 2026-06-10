@@ -45,14 +45,8 @@ function buildWelcome(ctx: AdvisorContext): ChatMessage {
   const topics = getAdvisorWelcomeTopics(industryKey, resolvedWeights);
   const example =
     ADVISOR_WELCOME_EXAMPLE[industryKey] || ADVISOR_WELCOME_EXAMPLE.saas;
-  const topSignal = (
-    [
-      ["inactivity", resolvedWeights.inactivity],
-      ["usage", resolvedWeights.usage],
-      ["support", resolvedWeights.support],
-      ["payment", resolvedWeights.payment],
-    ] as const
-  ).sort((a, b) => b[1] - a[1])[0];
+  const signalEntries = Object.entries(resolvedWeights) as [keyof ScoringWeights, number][];
+  const topSignal = signalEntries.sort((a, b) => b[1] - a[1])[0];
 
   return {
     id: "welcome",
