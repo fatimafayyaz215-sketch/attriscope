@@ -30,17 +30,26 @@ export async function GET() {
     days_inactive: computeDaysInactiveFromLastLogin(c.last_login_at, c.days_inactive),
   }));
 
-  // Weekly engagement trend (last 4 weeks, based on avg usage_drop per week-bucket)
-  // We bucket customers by their days_inactive into 4 weekly bins
-  const trend = [1, 2, 3, 4].map((week) => {
-    const minDays = (week - 1) * 7;
-    const maxDays = week * 7;
-    const bucket = withDynamicInactivity.filter((c) => c.days_inactive >= minDays && c.days_inactive < maxDays);
-    const avgDrop = bucket.length > 0
-      ? bucket.reduce((s, c) => s + Number(c.usage_drop), 0) / bucket.length
-      : 0;
-    // engagement = 1 - avg_usage_drop, as a percentage
-    return { week: `Week ${week}`, engagement: Math.round((1 - avgDrop) * 100), count: bucket.length };
+  // Engagement trend: bucket by inactivity windows (covers monthly + yearly caps up to 90d)
+  const INACTIVITY_BUCKETS = [
+    { week: "0–7d", min: 0, max: 7 },
+    { week: "8–30d", min: 8, max: 30 },
+    { week: "31–60d", min: 31, max: 60 },
+    { week: "61–90d", min: 61, max: Infinity },
+  ] as const;
+
+  const trend = INACTIVITY_BUCKETS.map(({ week, min, max }) => {
+    const bucket = withDynamicInactivity.filter((c) => {
+      const days = c.days_inactive;
+      return days >= min && (max === Infinity ? true : days <= max);
+    });
+    const avgDrop =
+      bucket.length > 0
+        ? bucket.reduce((s, c) => s + Number(c.usage_drop), 0) / bucket.length
+        : 0;
+    // engagement = inverse of average usage drop (0–100%)
+    const engagement = bucket.length > 0 ? Math.round((1 - avgDrop) * 100) : 0;
+    return { week, engagement, count: bucket.length };
   });
 
   return NextResponse.json({ total, high, medium, low, avgScore, trend });

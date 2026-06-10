@@ -1,0 +1,1001 @@
+customer_id,name,email,company,days_inactive,current_sessions,previous_sessions,support_complaints,payment_delay,billing_cycle,region
+C00001,Lucas Martin,c00001@entertainment.demo,Subscriber C00001,16,39,24,10,0,monthly,Europe
+C00002,Leo Patel,c00002@entertainment.demo,Subscriber C00002,73,14,54,9,0,monthly,Europe
+C00003,Ethan Khan,c00003@entertainment.demo,Subscriber C00003,60,22,54,3,0,yearly,Asia
+C00004,Henry Thomas,c00004@entertainment.demo,Subscriber C00004,57,24,54,5,1,yearly,Europe
+C00005,Amelia Khan,c00005@entertainment.demo,Subscriber C00005,77,11,30,2,0,yearly,North America
+C00006,Ethan Martin,c00006@entertainment.demo,Subscriber C00006,9,40,18,7,1,monthly,Africa
+C00007,Amelia Anderson,c00007@entertainment.demo,Subscriber C00007,83,6,18,3,1,yearly,Africa
+C00008,Olivia Anderson,c00008@entertainment.demo,Subscriber C00008,49,28,12,4,0,yearly,South America
+C00009,Ethan White,c00009@entertainment.demo,Subscriber C00009,44,30,6,6,0,monthly,Africa
+C00010,Charlotte Kim,c00010@entertainment.demo,Subscriber C00010,47,29,36,0,0,yearly,North America
+C00011,Charlotte Anderson,c00011@entertainment.demo,Subscriber C00011,59,23,54,3,1,monthly,North America
+C00012,Liam Brown,c00012@entertainment.demo,Subscriber C00012,83,6,36,3,0,monthly,Europe
+C00013,Noah Thomas,c00013@entertainment.demo,Subscriber C00013,79,9,54,8,1,yearly,Asia
+C00014,Liam Wilson,c00014@entertainment.demo,Subscriber C00014,61,22,18,5,1,yearly,South America
+C00015,Lucas Moore,c00015@entertainment.demo,Subscriber C00015,70,16,36,7,1,yearly,Asia
+C00016,Isabella Patel,c00016@entertainment.demo,Subscriber C00016,83,6,60,5,0,yearly,Africa
+C00017,Benjamin Jackson,c00017@entertainment.demo,Subscriber C00017,83,6,12,10,1,monthly,Asia
+C00018,Sophia Martin,c00018@entertainment.demo,Subscriber C00018,17,39,12,3,0,yearly,Africa
+C00019,Sophia Taylor,c00019@entertainment.demo,Subscriber C00019,80,9,42,9,1,monthly,Asia
+C00020,Ethan Kim,c00020@entertainment.demo,Subscriber C00020,34,34,54,6,1,monthly,Europe
+C00021,Noah Garcia,c00021@entertainment.demo,Subscriber C00021,12,39,18,3,0,yearly,Asia
+C00022,Noah Kim,c00022@entertainment.demo,Subscriber C00022,48,28,36,6,0,monthly,Africa
+C00023,Isabella Thomas,c00023@entertainment.demo,Subscriber C00023,82,6,6,7,0,yearly,North America
+C00024,Amelia Kim,c00024@entertainment.demo,Subscriber C00024,52,27,48,0,0,yearly,Asia
+C00025,Mia Martin,c00025@entertainment.demo,Subscriber C00025,55,25,30,4,1,yearly,Africa
+C00026,Ethan Garcia,c00026@entertainment.demo,Subscriber C00026,83,6,60,5,1,monthly,North America
+C00027,Ethan Johnson,c00027@entertainment.demo,Subscriber C00027,31,35,18,9,1,yearly,Europe
+C00028,Noah Taylor,c00028@entertainment.demo,Subscriber C00028,68,17,60,0,1,yearly,North America
+C00029,Liam Johnson,c00029@entertainment.demo,Subscriber C00029,81,7,54,6,1,monthly,Africa
+C00030,Charlotte Wilson,c00030@entertainment.demo,Subscriber C00030,69,17,54,10,1,monthly,Asia
+C00031,Amelia Kim,c00031@entertainment.demo,Subscriber C00031,76,11,6,7,0,yearly,Africa
+C00032,Henry White,c00032@entertainment.demo,Subscriber C00032,45,30,12,8,1,yearly,Africa
+C00033,Charlotte Martin,c00033@entertainment.demo,Subscriber C00033,50,28,36,8,0,yearly,Europe
+C00034,Henry White,c00034@entertainment.demo,Subscriber C00034,7,40,36,6,1,yearly,Asia
+C00035,James Lee,c00035@entertainment.demo,Subscriber C00035,73,13,6,3,1,yearly,Europe
+C00036,Mia Wilson,c00036@entertainment.demo,Subscriber C00036,56,24,30,6,0,monthly,South America
+C00037,James Jackson,c00037@entertainment.demo,Subscriber C00037,71,15,36,9,0,monthly,North America
+C00038,Isabella Khan,c00038@entertainment.demo,Subscriber C00038,74,13,18,6,1,monthly,Africa
+C00039,Sophia Khan,c00039@entertainment.demo,Subscriber C00039,11,39,54,4,0,yearly,Africa
+C00040,Ava Kim,c00040@entertainment.demo,Subscriber C00040,0,40,30,1,0,monthly,South America
+C00041,Olivia Patel,c00041@entertainment.demo,Subscriber C00041,80,8,24,1,1,yearly,North America
+C00042,Leo Anderson,c00042@entertainment.demo,Subscriber C00042,22,38,48,3,1,yearly,Asia
+C00043,James Johnson,c00043@entertainment.demo,Subscriber C00043,61,21,60,5,1,yearly,South America
+C00044,Charlotte Taylor,c00044@entertainment.demo,Subscriber C00044,62,21,54,3,1,yearly,Asia
+C00045,Harper White,c00045@entertainment.demo,Subscriber C00045,57,24,36,9,1,yearly,South America
+C00046,Sophia Martin,c00046@entertainment.demo,Subscriber C00046,83,6,54,10,0,yearly,South America
+C00047,Sophia Brown,c00047@entertainment.demo,Subscriber C00047,49,28,18,10,0,yearly,Africa
+C00048,Isabella Jackson,c00048@entertainment.demo,Subscriber C00048,85,5,12,0,0,yearly,Asia
+C00049,Liam Garcia,c00049@entertainment.demo,Subscriber C00049,76,12,54,6,1,monthly,Africa
+C00050,Isabella Johnson,c00050@entertainment.demo,Subscriber C00050,17,39,12,5,0,monthly,Africa
+C00051,Lucas Khan,c00051@entertainment.demo,Subscriber C00051,43,31,24,3,0,yearly,Europe
+C00052,Sophia Moore,c00052@entertainment.demo,Subscriber C00052,58,24,12,2,0,yearly,South America
+C00053,Harper Moore,c00053@entertainment.demo,Subscriber C00053,78,10,18,0,1,monthly,North America
+C00054,Lucas Taylor,c00054@entertainment.demo,Subscriber C00054,55,25,54,0,1,monthly,Europe
+C00055,Liam White,c00055@entertainment.demo,Subscriber C00055,77,11,24,5,0,yearly,South America
+C00056,Liam Brown,c00056@entertainment.demo,Subscriber C00056,66,19,30,10,0,yearly,Africa
+C00057,Mia Jackson,c00057@entertainment.demo,Subscriber C00057,54,25,54,6,1,yearly,North America
+C00058,Ethan Jackson,c00058@entertainment.demo,Subscriber C00058,64,20,30,3,0,monthly,Asia
+C00059,Mia Moore,c00059@entertainment.demo,Subscriber C00059,41,32,12,10,0,yearly,South America
+C00060,Amelia Jackson,c00060@entertainment.demo,Subscriber C00060,59,23,6,5,0,yearly,North America
+C00061,James Wilson,c00061@entertainment.demo,Subscriber C00061,52,27,42,2,1,yearly,Europe
+C00062,Noah Moore,c00062@entertainment.demo,Subscriber C00062,67,18,36,0,0,yearly,Asia
+C00063,Ava Martin,c00063@entertainment.demo,Subscriber C00063,17,39,48,4,0,yearly,Asia
+C00064,Olivia White,c00064@entertainment.demo,Subscriber C00064,55,25,6,5,1,yearly,South America
+C00065,Henry Thomas,c00065@entertainment.demo,Subscriber C00065,71,15,60,5,0,yearly,Europe
+C00066,Leo Taylor,c00066@entertainment.demo,Subscriber C00066,66,18,48,3,1,yearly,Africa
+C00067,Charlotte Wilson,c00067@entertainment.demo,Subscriber C00067,54,25,48,0,0,monthly,Asia
+C00068,Noah Jackson,c00068@entertainment.demo,Subscriber C00068,33,35,36,3,1,yearly,North America
+C00069,Olivia Wilson,c00069@entertainment.demo,Subscriber C00069,73,13,18,1,1,yearly,Asia
+C00070,Olivia Patel,c00070@entertainment.demo,Subscriber C00070,73,14,60,9,0,yearly,South America
+C00071,Noah Martin,c00071@entertainment.demo,Subscriber C00071,61,22,54,3,0,monthly,Africa
+C00072,Lucas Kim,c00072@entertainment.demo,Subscriber C00072,55,25,18,3,0,yearly,Africa
+C00073,Noah Lee,c00073@entertainment.demo,Subscriber C00073,61,21,42,2,1,yearly,North America
+C00074,Harper Garcia,c00074@entertainment.demo,Subscriber C00074,26,37,42,10,1,yearly,South America
+C00075,Sophia Martin,c00075@entertainment.demo,Subscriber C00075,70,16,42,8,1,monthly,South America
+C00076,Olivia Kim,c00076@entertainment.demo,Subscriber C00076,40,32,60,1,0,yearly,North America
+C00077,Amelia Jackson,c00077@entertainment.demo,Subscriber C00077,16,39,48,6,1,yearly,South America
+C00078,Amelia Lee,c00078@entertainment.demo,Subscriber C00078,57,24,30,9,1,monthly,North America
+C00079,Ava Patel,c00079@entertainment.demo,Subscriber C00079,82,7,18,1,1,yearly,Europe
+C00080,Sophia Patel,c00080@entertainment.demo,Subscriber C00080,31,35,48,6,1,monthly,North America
+C00081,Ava Smith,c00081@entertainment.demo,Subscriber C00081,80,8,42,9,0,yearly,North America
+C00082,Benjamin Patel,c00082@entertainment.demo,Subscriber C00082,59,23,36,7,0,yearly,South America
+C00083,Amelia Taylor,c00083@entertainment.demo,Subscriber C00083,82,7,48,6,0,yearly,Europe
+C00084,Isabella Lee,c00084@entertainment.demo,Subscriber C00084,73,13,48,5,1,monthly,Africa
+C00085,Henry Johnson,c00085@entertainment.demo,Subscriber C00085,6,40,30,1,0,monthly,South America
+C00086,Henry Garcia,c00086@entertainment.demo,Subscriber C00086,71,15,48,5,0,monthly,Africa
+C00087,Ava Johnson,c00087@entertainment.demo,Subscriber C00087,78,10,18,1,1,monthly,Asia
+C00088,Leo White,c00088@entertainment.demo,Subscriber C00088,80,8,54,0,1,monthly,Africa
+C00089,Liam Jackson,c00089@entertainment.demo,Subscriber C00089,81,8,42,8,1,yearly,South America
+C00090,Benjamin Anderson,c00090@entertainment.demo,Subscriber C00090,58,23,24,6,1,yearly,South America
+C00091,Noah Anderson,c00091@entertainment.demo,Subscriber C00091,72,15,6,7,0,yearly,Africa
+C00092,Leo Martin,c00092@entertainment.demo,Subscriber C00092,26,37,54,5,1,monthly,South America
+C00093,Sophia Garcia,c00093@entertainment.demo,Subscriber C00093,75,12,48,6,1,yearly,North America
+C00094,Isabella Thomas,c00094@entertainment.demo,Subscriber C00094,53,26,42,1,0,yearly,Africa
+C00095,Lucas Wilson,c00095@entertainment.demo,Subscriber C00095,45,30,24,4,0,yearly,Asia
+C00096,Lucas Kim,c00096@entertainment.demo,Subscriber C00096,79,9,12,2,1,monthly,North America
+C00097,Ava White,c00097@entertainment.demo,Subscriber C00097,46,29,42,7,0,monthly,Asia
+C00098,Amelia Martin,c00098@entertainment.demo,Subscriber C00098,56,24,18,7,0,yearly,Asia
+C00099,Lucas Brown,c00099@entertainment.demo,Subscriber C00099,46,30,48,1,0,yearly,South America
+C00100,Noah Lee,c00100@entertainment.demo,Subscriber C00100,55,25,6,9,0,yearly,Africa
+C00101,Mia Thomas,c00101@entertainment.demo,Subscriber C00101,69,16,42,4,0,monthly,Europe
+C00102,Henry Smith,c00102@entertainment.demo,Subscriber C00102,74,13,6,2,0,yearly,Europe
+C00103,Olivia Johnson,c00103@entertainment.demo,Subscriber C00103,48,28,60,2,1,yearly,Europe
+C00104,Isabella Thomas,c00104@entertainment.demo,Subscriber C00104,68,17,24,8,1,yearly,South America
+C00105,Henry White,c00105@entertainment.demo,Subscriber C00105,34,34,42,9,0,yearly,Asia
+C00106,Noah Taylor,c00106@entertainment.demo,Subscriber C00106,76,12,12,6,1,yearly,Asia
+C00107,Olivia Brown,c00107@entertainment.demo,Subscriber C00107,55,25,30,7,1,yearly,South America
+C00108,Isabella Anderson,c00108@entertainment.demo,Subscriber C00108,32,35,54,6,0,yearly,North America
+C00109,Ava Moore,c00109@entertainment.demo,Subscriber C00109,78,10,36,3,0,yearly,South America
+C00110,Ethan Thomas,c00110@entertainment.demo,Subscriber C00110,61,22,12,5,0,yearly,Africa
+C00111,Leo Khan,c00111@entertainment.demo,Subscriber C00111,83,6,54,10,0,yearly,North America
+C00112,Olivia Garcia,c00112@entertainment.demo,Subscriber C00112,45,30,48,5,0,yearly,Asia
+C00113,Isabella Khan,c00113@entertainment.demo,Subscriber C00113,47,29,6,10,1,yearly,South America
+C00114,James Wilson,c00114@entertainment.demo,Subscriber C00114,53,26,18,7,1,yearly,Africa
+C00115,Sophia Wilson,c00115@entertainment.demo,Subscriber C00115,39,32,24,6,1,yearly,South America
+C00116,Mia Wilson,c00116@entertainment.demo,Subscriber C00116,76,12,24,10,0,yearly,Africa
+C00117,Olivia Brown,c00117@entertainment.demo,Subscriber C00117,59,23,54,8,0,yearly,South America
+C00118,Ethan Thomas,c00118@entertainment.demo,Subscriber C00118,42,31,54,9,0,yearly,North America
+C00119,Mia Wilson,c00119@entertainment.demo,Subscriber C00119,62,21,42,2,0,yearly,North America
+C00120,Ava Johnson,c00120@entertainment.demo,Subscriber C00120,63,21,36,2,0,monthly,South America
+C00121,Benjamin Martin,c00121@entertainment.demo,Subscriber C00121,43,31,48,3,1,yearly,North America
+C00122,Leo Smith,c00122@entertainment.demo,Subscriber C00122,52,27,36,4,0,yearly,Europe
+C00123,Lucas Garcia,c00123@entertainment.demo,Subscriber C00123,50,28,48,9,1,yearly,North America
+C00124,Olivia Jackson,c00124@entertainment.demo,Subscriber C00124,75,12,36,2,0,yearly,Africa
+C00125,Liam Smith,c00125@entertainment.demo,Subscriber C00125,81,7,30,9,1,monthly,South America
+C00126,Henry Patel,c00126@entertainment.demo,Subscriber C00126,56,24,12,5,1,monthly,Africa
+C00127,Amelia Brown,c00127@entertainment.demo,Subscriber C00127,44,30,54,7,0,yearly,Africa
+C00128,Olivia Kim,c00128@entertainment.demo,Subscriber C00128,73,14,36,7,1,yearly,Africa
+C00129,Henry White,c00129@entertainment.demo,Subscriber C00129,48,29,24,5,1,monthly,Asia
+C00130,Ava Kim,c00130@entertainment.demo,Subscriber C00130,61,22,42,4,0,yearly,South America
+C00131,Mia Anderson,c00131@entertainment.demo,Subscriber C00131,64,20,30,3,1,yearly,Africa
+C00132,Liam Jackson,c00132@entertainment.demo,Subscriber C00132,45,30,54,0,1,yearly,Asia
+C00133,Ava Wilson,c00133@entertainment.demo,Subscriber C00133,79,9,54,3,0,yearly,North America
+C00134,Ava Khan,c00134@entertainment.demo,Subscriber C00134,47,29,18,4,0,yearly,Africa
+C00135,Ethan Jackson,c00135@entertainment.demo,Subscriber C00135,31,35,42,4,1,yearly,Asia
+C00136,Harper White,c00136@entertainment.demo,Subscriber C00136,74,13,24,9,0,monthly,South America
+C00137,Leo Garcia,c00137@entertainment.demo,Subscriber C00137,83,6,48,6,1,yearly,Africa
+C00138,Leo Martin,c00138@entertainment.demo,Subscriber C00138,78,10,36,9,1,monthly,Asia
+C00139,Noah Lee,c00139@entertainment.demo,Subscriber C00139,81,8,48,2,0,monthly,South America
+C00140,Amelia Martin,c00140@entertainment.demo,Subscriber C00140,58,23,60,6,1,yearly,Asia
+C00141,Charlotte Smith,c00141@entertainment.demo,Subscriber C00141,47,29,6,2,0,monthly,Africa
+C00142,Ava Smith,c00142@entertainment.demo,Subscriber C00142,76,12,6,4,0,yearly,Africa
+C00143,Charlotte White,c00143@entertainment.demo,Subscriber C00143,71,15,24,3,1,monthly,Asia
+C00144,Harper Brown,c00144@entertainment.demo,Subscriber C00144,60,22,60,5,1,monthly,Asia
+C00145,Lucas Jackson,c00145@entertainment.demo,Subscriber C00145,53,26,12,3,0,yearly,South America
+C00146,Olivia Khan,c00146@entertainment.demo,Subscriber C00146,52,27,12,10,1,monthly,Europe
+C00147,Benjamin Taylor,c00147@entertainment.demo,Subscriber C00147,84,5,30,7,1,yearly,North America
+C00148,Leo Patel,c00148@entertainment.demo,Subscriber C00148,71,15,6,6,1,yearly,North America
+C00149,Amelia Anderson,c00149@entertainment.demo,Subscriber C00149,41,32,42,9,0,yearly,North America
+C00150,Amelia Taylor,c00150@entertainment.demo,Subscriber C00150,26,37,36,4,0,yearly,South America
+C00151,Olivia Brown,c00151@entertainment.demo,Subscriber C00151,78,10,36,6,1,yearly,Africa
+C00152,Benjamin Moore,c00152@entertainment.demo,Subscriber C00152,11,39,36,1,1,monthly,Europe
+C00153,Amelia Lee,c00153@entertainment.demo,Subscriber C00153,23,37,54,9,0,yearly,Africa
+C00154,Lucas Wilson,c00154@entertainment.demo,Subscriber C00154,75,12,48,1,0,yearly,Asia
+C00155,Charlotte Jackson,c00155@entertainment.demo,Subscriber C00155,24,37,12,4,1,yearly,Asia
+C00156,Henry Kim,c00156@entertainment.demo,Subscriber C00156,40,32,36,3,1,monthly,South America
+C00157,Liam Kim,c00157@entertainment.demo,Subscriber C00157,36,34,36,1,1,yearly,South America
+C00158,Olivia Khan,c00158@entertainment.demo,Subscriber C00158,72,14,6,5,0,yearly,North America
+C00159,Ethan Patel,c00159@entertainment.demo,Subscriber C00159,70,16,12,5,0,yearly,Africa
+C00160,Charlotte Taylor,c00160@entertainment.demo,Subscriber C00160,66,19,36,6,0,yearly,North America
+C00161,Henry Garcia,c00161@entertainment.demo,Subscriber C00161,38,33,18,9,0,yearly,Asia
+C00162,Charlotte Smith,c00162@entertainment.demo,Subscriber C00162,26,37,24,3,0,yearly,Europe
+C00163,Liam Martin,c00163@entertainment.demo,Subscriber C00163,66,18,6,1,1,yearly,South America
+C00164,Isabella Kim,c00164@entertainment.demo,Subscriber C00164,63,20,48,0,0,monthly,North America
+C00165,Leo Thomas,c00165@entertainment.demo,Subscriber C00165,40,32,12,9,1,monthly,Africa
+C00166,Harper Anderson,c00166@entertainment.demo,Subscriber C00166,43,31,6,0,0,yearly,South America
+C00167,Olivia Taylor,c00167@entertainment.demo,Subscriber C00167,80,8,60,9,0,yearly,South America
+C00168,Mia Brown,c00168@entertainment.demo,Subscriber C00168,55,25,6,0,1,yearly,South America
+C00169,Ethan Garcia,c00169@entertainment.demo,Subscriber C00169,58,23,54,8,0,yearly,Europe
+C00170,Sophia Khan,c00170@entertainment.demo,Subscriber C00170,39,32,12,5,1,monthly,Europe
+C00171,Isabella Smith,c00171@entertainment.demo,Subscriber C00171,81,8,30,4,1,yearly,Africa
+C00172,Ethan Anderson,c00172@entertainment.demo,Subscriber C00172,35,34,36,3,1,yearly,Asia
+C00173,Ava Khan,c00173@entertainment.demo,Subscriber C00173,55,25,30,6,0,monthly,Asia
+C00174,Lucas Patel,c00174@entertainment.demo,Subscriber C00174,39,32,30,6,1,monthly,North America
+C00175,Mia Anderson,c00175@entertainment.demo,Subscriber C00175,49,28,18,7,0,monthly,Africa
+C00176,Noah Smith,c00176@entertainment.demo,Subscriber C00176,62,21,36,2,0,monthly,Europe
+C00177,Noah Thomas,c00177@entertainment.demo,Subscriber C00177,78,10,48,5,1,monthly,South America
+C00178,Lucas Brown,c00178@entertainment.demo,Subscriber C00178,77,11,48,5,0,yearly,South America
+C00179,Sophia Johnson,c00179@entertainment.demo,Subscriber C00179,31,35,48,6,0,yearly,South America
+C00180,Ava Wilson,c00180@entertainment.demo,Subscriber C00180,68,17,30,2,1,monthly,Europe
+C00181,Charlotte Patel,c00181@entertainment.demo,Subscriber C00181,45,30,18,3,1,yearly,South America
+C00182,Henry Jackson,c00182@entertainment.demo,Subscriber C00182,33,35,12,4,0,yearly,Europe
+C00183,Liam Lee,c00183@entertainment.demo,Subscriber C00183,44,31,12,2,1,yearly,South America
+C00184,Noah White,c00184@entertainment.demo,Subscriber C00184,67,18,60,10,0,monthly,South America
+C00185,Leo Moore,c00185@entertainment.demo,Subscriber C00185,73,14,24,1,0,yearly,South America
+C00186,Ava White,c00186@entertainment.demo,Subscriber C00186,26,37,48,4,1,monthly,South America
+C00187,Harper Jackson,c00187@entertainment.demo,Subscriber C00187,62,21,6,10,1,yearly,Asia
+C00188,Benjamin Martin,c00188@entertainment.demo,Subscriber C00188,83,6,18,2,1,monthly,Europe
+C00189,Lucas Kim,c00189@entertainment.demo,Subscriber C00189,68,17,6,7,1,yearly,Asia
+C00190,Henry Taylor,c00190@entertainment.demo,Subscriber C00190,66,19,36,0,1,yearly,South America
+C00191,Harper Wilson,c00191@entertainment.demo,Subscriber C00191,58,24,18,8,0,yearly,Africa
+C00192,Henry Johnson,c00192@entertainment.demo,Subscriber C00192,25,37,54,7,0,yearly,South America
+C00193,Benjamin Brown,c00193@entertainment.demo,Subscriber C00193,57,24,12,9,0,monthly,Asia
+C00194,Olivia Wilson,c00194@entertainment.demo,Subscriber C00194,53,26,6,0,0,yearly,Europe
+C00195,Harper Garcia,c00195@entertainment.demo,Subscriber C00195,84,5,42,3,0,monthly,Africa
+C00196,Noah White,c00196@entertainment.demo,Subscriber C00196,29,36,18,3,0,yearly,Europe
+C00197,Ethan Garcia,c00197@entertainment.demo,Subscriber C00197,40,32,6,9,1,yearly,Asia
+C00198,Liam Khan,c00198@entertainment.demo,Subscriber C00198,67,18,18,1,0,yearly,South America
+C00199,Liam Thomas,c00199@entertainment.demo,Subscriber C00199,63,20,60,4,1,monthly,Africa
+C00200,Ava Lee,c00200@entertainment.demo,Subscriber C00200,74,13,54,6,0,yearly,South America
+C00201,Sophia Thomas,c00201@entertainment.demo,Subscriber C00201,52,26,42,6,1,yearly,North America
+C00202,Isabella Moore,c00202@entertainment.demo,Subscriber C00202,43,31,54,0,1,yearly,Europe
+C00203,Charlotte Anderson,c00203@entertainment.demo,Subscriber C00203,18,38,36,6,0,yearly,Africa
+C00204,Charlotte Khan,c00204@entertainment.demo,Subscriber C00204,55,25,48,2,1,yearly,Asia
+C00205,Sophia Moore,c00205@entertainment.demo,Subscriber C00205,36,34,12,2,0,yearly,Europe
+C00206,Leo Brown,c00206@entertainment.demo,Subscriber C00206,52,26,30,4,1,monthly,Africa
+C00207,Noah Martin,c00207@entertainment.demo,Subscriber C00207,40,32,6,5,1,yearly,South America
+C00208,Leo Garcia,c00208@entertainment.demo,Subscriber C00208,45,30,30,0,1,yearly,Asia
+C00209,Liam Moore,c00209@entertainment.demo,Subscriber C00209,10,40,6,3,1,monthly,Europe
+C00210,Mia Thomas,c00210@entertainment.demo,Subscriber C00210,40,32,18,4,1,yearly,Asia
+C00211,James Garcia,c00211@entertainment.demo,Subscriber C00211,81,7,60,2,1,yearly,Asia
+C00212,Noah Smith,c00212@entertainment.demo,Subscriber C00212,54,25,12,1,0,yearly,South America
+C00213,Lucas Jackson,c00213@entertainment.demo,Subscriber C00213,24,37,42,0,1,yearly,Africa
+C00214,Benjamin Moore,c00214@entertainment.demo,Subscriber C00214,72,14,54,9,1,monthly,Asia
+C00215,Mia Smith,c00215@entertainment.demo,Subscriber C00215,37,33,12,8,0,yearly,Asia
+C00216,Lucas Moore,c00216@entertainment.demo,Subscriber C00216,34,34,48,5,1,yearly,North America
+C00217,Henry Garcia,c00217@entertainment.demo,Subscriber C00217,24,37,36,7,1,yearly,North America
+C00218,Olivia Johnson,c00218@entertainment.demo,Subscriber C00218,68,17,24,8,0,monthly,Asia
+C00219,James Thomas,c00219@entertainment.demo,Subscriber C00219,53,26,48,1,0,yearly,Europe
+C00220,Liam Khan,c00220@entertainment.demo,Subscriber C00220,80,8,48,1,0,yearly,North America
+C00221,Mia Martin,c00221@entertainment.demo,Subscriber C00221,38,33,60,8,0,monthly,Europe
+C00222,Amelia Kim,c00222@entertainment.demo,Subscriber C00222,63,20,12,6,0,yearly,Africa
+C00223,Amelia Khan,c00223@entertainment.demo,Subscriber C00223,73,14,48,6,1,monthly,Africa
+C00224,Noah Wilson,c00224@entertainment.demo,Subscriber C00224,15,39,18,1,0,yearly,South America
+C00225,Noah White,c00225@entertainment.demo,Subscriber C00225,50,28,54,2,0,yearly,Africa
+C00226,James Johnson,c00226@entertainment.demo,Subscriber C00226,76,12,48,4,1,yearly,North America
+C00227,Leo White,c00227@entertainment.demo,Subscriber C00227,49,28,48,3,0,yearly,Europe
+C00228,Leo Taylor,c00228@entertainment.demo,Subscriber C00228,18,38,36,10,0,monthly,South America
+C00229,Ethan Thomas,c00229@entertainment.demo,Subscriber C00229,54,26,36,10,1,yearly,Asia
+C00230,Isabella Anderson,c00230@entertainment.demo,Subscriber C00230,73,13,48,6,1,yearly,North America
+C00231,Mia Smith,c00231@entertainment.demo,Subscriber C00231,36,33,12,3,0,yearly,Asia
+C00232,Charlotte White,c00232@entertainment.demo,Subscriber C00232,39,32,24,6,0,monthly,South America
+C00233,Mia Patel,c00233@entertainment.demo,Subscriber C00233,30,35,36,7,1,monthly,Europe
+C00234,Mia Anderson,c00234@entertainment.demo,Subscriber C00234,83,6,24,2,0,yearly,Asia
+C00235,Ethan Patel,c00235@entertainment.demo,Subscriber C00235,84,5,6,6,1,yearly,South America
+C00236,Mia Smith,c00236@entertainment.demo,Subscriber C00236,62,21,12,7,1,yearly,North America
+C00237,Ava Lee,c00237@entertainment.demo,Subscriber C00237,74,13,24,5,1,monthly,Asia
+C00238,Sophia White,c00238@entertainment.demo,Subscriber C00238,38,33,42,0,0,monthly,Africa
+C00239,Charlotte Moore,c00239@entertainment.demo,Subscriber C00239,26,37,30,4,0,monthly,South America
+C00240,James Wilson,c00240@entertainment.demo,Subscriber C00240,74,13,30,7,1,yearly,Europe
+C00241,Sophia Thomas,c00241@entertainment.demo,Subscriber C00241,81,8,48,8,1,yearly,Asia
+C00242,Sophia Jackson,c00242@entertainment.demo,Subscriber C00242,59,23,36,1,1,yearly,North America
+C00243,Olivia Lee,c00243@entertainment.demo,Subscriber C00243,71,15,54,10,0,yearly,Europe
+C00244,Leo Thomas,c00244@entertainment.demo,Subscriber C00244,79,9,30,0,0,monthly,Africa
+C00245,James White,c00245@entertainment.demo,Subscriber C00245,25,37,30,10,0,monthly,Asia
+C00246,Liam Thomas,c00246@entertainment.demo,Subscriber C00246,38,33,12,6,0,monthly,South America
+C00247,Henry Thomas,c00247@entertainment.demo,Subscriber C00247,78,10,60,5,0,yearly,Africa
+C00248,Sophia Thomas,c00248@entertainment.demo,Subscriber C00248,11,39,36,0,1,yearly,Europe
+C00249,Lucas Taylor,c00249@entertainment.demo,Subscriber C00249,51,27,24,4,1,yearly,Africa
+C00250,Noah Patel,c00250@entertainment.demo,Subscriber C00250,77,11,24,6,1,yearly,Africa
+C00251,James Lee,c00251@entertainment.demo,Subscriber C00251,78,10,6,10,1,yearly,Asia
+C00252,Leo Anderson,c00252@entertainment.demo,Subscriber C00252,85,4,30,8,1,yearly,Europe
+C00253,Olivia Martin,c00253@entertainment.demo,Subscriber C00253,57,24,42,9,1,yearly,North America
+C00254,Charlotte Moore,c00254@entertainment.demo,Subscriber C00254,61,21,54,6,0,yearly,South America
+C00255,Leo Garcia,c00255@entertainment.demo,Subscriber C00255,60,22,18,1,0,monthly,South America
+C00256,Isabella Lee,c00256@entertainment.demo,Subscriber C00256,26,37,24,1,1,yearly,Europe
+C00257,James Lee,c00257@entertainment.demo,Subscriber C00257,31,35,48,7,1,yearly,South America
+C00258,Isabella Lee,c00258@entertainment.demo,Subscriber C00258,74,13,36,6,1,yearly,South America
+C00259,Isabella Anderson,c00259@entertainment.demo,Subscriber C00259,78,10,24,3,0,yearly,Africa
+C00260,James Taylor,c00260@entertainment.demo,Subscriber C00260,21,38,30,10,0,monthly,Asia
+C00261,Leo Patel,c00261@entertainment.demo,Subscriber C00261,78,10,24,3,1,monthly,Europe
+C00262,Charlotte Patel,c00262@entertainment.demo,Subscriber C00262,49,28,6,9,0,yearly,North America
+C00263,Mia Lee,c00263@entertainment.demo,Subscriber C00263,80,8,18,2,1,monthly,Europe
+C00264,Mia Johnson,c00264@entertainment.demo,Subscriber C00264,30,36,6,7,0,monthly,North America
+C00265,Ethan Brown,c00265@entertainment.demo,Subscriber C00265,16,39,12,8,1,yearly,North America
+C00266,Benjamin Garcia,c00266@entertainment.demo,Subscriber C00266,65,19,24,3,1,yearly,Africa
+C00267,Charlotte Taylor,c00267@entertainment.demo,Subscriber C00267,72,14,48,5,1,yearly,Asia
+C00268,Harper Kim,c00268@entertainment.demo,Subscriber C00268,17,39,12,3,1,monthly,Africa
+C00269,Lucas Khan,c00269@entertainment.demo,Subscriber C00269,50,28,54,4,0,yearly,North America
+C00270,Olivia Martin,c00270@entertainment.demo,Subscriber C00270,27,36,24,5,0,monthly,Europe
+C00271,Leo Wilson,c00271@entertainment.demo,Subscriber C00271,53,26,12,7,1,yearly,Africa
+C00272,Ava Smith,c00272@entertainment.demo,Subscriber C00272,67,18,12,3,1,monthly,Europe
+C00273,Lucas Khan,c00273@entertainment.demo,Subscriber C00273,76,11,54,3,0,yearly,Africa
+C00274,Liam White,c00274@entertainment.demo,Subscriber C00274,26,37,18,5,1,monthly,Africa
+C00275,Liam Lee,c00275@entertainment.demo,Subscriber C00275,44,30,36,5,1,yearly,Africa
+C00276,Liam Martin,c00276@entertainment.demo,Subscriber C00276,42,31,54,7,1,yearly,South America
+C00277,Mia Patel,c00277@entertainment.demo,Subscriber C00277,53,26,12,3,0,monthly,Europe
+C00278,Henry White,c00278@entertainment.demo,Subscriber C00278,37,33,24,6,1,yearly,Africa
+C00279,Mia Kim,c00279@entertainment.demo,Subscriber C00279,51,27,24,10,1,yearly,Asia
+C00280,Amelia Lee,c00280@entertainment.demo,Subscriber C00280,36,33,12,4,1,monthly,Europe
+C00281,Amelia Brown,c00281@entertainment.demo,Subscriber C00281,59,23,6,4,0,yearly,Europe
+C00282,Olivia Brown,c00282@entertainment.demo,Subscriber C00282,82,7,54,9,1,monthly,South America
+C00283,Lucas White,c00283@entertainment.demo,Subscriber C00283,44,31,36,2,1,yearly,North America
+C00284,Sophia Patel,c00284@entertainment.demo,Subscriber C00284,66,18,18,6,1,yearly,North America
+C00285,Ethan Jackson,c00285@entertainment.demo,Subscriber C00285,71,15,48,2,0,monthly,South America
+C00286,Sophia Khan,c00286@entertainment.demo,Subscriber C00286,42,31,6,2,1,monthly,Africa
+C00287,Liam Kim,c00287@entertainment.demo,Subscriber C00287,42,31,54,10,0,yearly,North America
+C00288,Amelia Smith,c00288@entertainment.demo,Subscriber C00288,63,21,12,8,0,monthly,North America
+C00289,Isabella Anderson,c00289@entertainment.demo,Subscriber C00289,19,38,54,9,0,monthly,North America
+C00290,Liam Smith,c00290@entertainment.demo,Subscriber C00290,85,4,60,6,1,yearly,Africa
+C00291,Mia Garcia,c00291@entertainment.demo,Subscriber C00291,84,5,42,3,1,yearly,Africa
+C00292,Amelia Patel,c00292@entertainment.demo,Subscriber C00292,37,33,12,0,1,yearly,North America
+C00293,Charlotte Jackson,c00293@entertainment.demo,Subscriber C00293,49,28,12,2,1,monthly,Africa
+C00294,Liam Garcia,c00294@entertainment.demo,Subscriber C00294,85,4,60,3,1,yearly,North America
+C00295,Harper Khan,c00295@entertainment.demo,Subscriber C00295,43,31,30,1,1,monthly,Africa
+C00296,Harper Johnson,c00296@entertainment.demo,Subscriber C00296,30,36,54,4,1,yearly,Asia
+C00297,Mia Smith,c00297@entertainment.demo,Subscriber C00297,80,8,6,10,1,yearly,Europe
+C00298,Leo Smith,c00298@entertainment.demo,Subscriber C00298,83,6,6,5,1,monthly,Europe
+C00299,Liam Jackson,c00299@entertainment.demo,Subscriber C00299,49,28,30,9,0,yearly,North America
+C00300,Olivia Khan,c00300@entertainment.demo,Subscriber C00300,46,29,54,4,1,yearly,South America
+C00301,Liam Lee,c00301@entertainment.demo,Subscriber C00301,58,24,12,5,0,yearly,Africa
+C00302,Olivia Kim,c00302@entertainment.demo,Subscriber C00302,67,18,42,4,0,yearly,North America
+C00303,Leo Taylor,c00303@entertainment.demo,Subscriber C00303,30,36,54,8,1,yearly,Africa
+C00304,James Lee,c00304@entertainment.demo,Subscriber C00304,74,13,24,9,1,yearly,Europe
+C00305,Leo Anderson,c00305@entertainment.demo,Subscriber C00305,69,16,6,4,0,yearly,Africa
+C00306,Mia Thomas,c00306@entertainment.demo,Subscriber C00306,73,14,24,2,0,yearly,Europe
+C00307,Harper White,c00307@entertainment.demo,Subscriber C00307,47,29,6,4,1,yearly,South America
+C00308,Benjamin Patel,c00308@entertainment.demo,Subscriber C00308,78,10,42,9,0,yearly,Asia
+C00309,Liam White,c00309@entertainment.demo,Subscriber C00309,74,13,24,6,0,yearly,Africa
+C00310,Olivia Lee,c00310@entertainment.demo,Subscriber C00310,76,12,54,2,0,yearly,Asia
+C00311,Amelia Smith,c00311@entertainment.demo,Subscriber C00311,25,37,36,0,1,monthly,Europe
+C00312,Benjamin Khan,c00312@entertainment.demo,Subscriber C00312,76,12,36,8,0,yearly,Europe
+C00313,Amelia Kim,c00313@entertainment.demo,Subscriber C00313,59,23,54,1,1,monthly,South America
+C00314,Ethan White,c00314@entertainment.demo,Subscriber C00314,78,10,18,7,0,yearly,Europe
+C00315,Charlotte Khan,c00315@entertainment.demo,Subscriber C00315,46,30,24,5,0,yearly,Asia
+C00316,Noah Patel,c00316@entertainment.demo,Subscriber C00316,55,25,12,2,1,monthly,Asia
+C00317,Lucas Moore,c00317@entertainment.demo,Subscriber C00317,42,31,60,6,0,yearly,North America
+C00318,Ethan Brown,c00318@entertainment.demo,Subscriber C00318,80,9,42,0,1,monthly,Europe
+C00319,Leo Taylor,c00319@entertainment.demo,Subscriber C00319,78,10,6,5,0,monthly,Europe
+C00320,Amelia Smith,c00320@entertainment.demo,Subscriber C00320,52,26,12,0,0,yearly,Europe
+C00321,Ava Martin,c00321@entertainment.demo,Subscriber C00321,77,11,36,9,0,yearly,North America
+C00322,Noah Kim,c00322@entertainment.demo,Subscriber C00322,82,6,18,4,0,yearly,Asia
+C00323,Charlotte Lee,c00323@entertainment.demo,Subscriber C00323,71,15,12,6,0,yearly,North America
+C00324,Amelia Moore,c00324@entertainment.demo,Subscriber C00324,67,18,18,10,0,monthly,North America
+C00325,Liam Johnson,c00325@entertainment.demo,Subscriber C00325,48,29,60,1,0,monthly,Asia
+C00326,Harper Moore,c00326@entertainment.demo,Subscriber C00326,24,37,54,3,1,yearly,North America
+C00327,Ava Jackson,c00327@entertainment.demo,Subscriber C00327,48,29,18,3,0,yearly,South America
+C00328,Sophia Johnson,c00328@entertainment.demo,Subscriber C00328,8,40,12,0,1,yearly,South America
+C00329,James White,c00329@entertainment.demo,Subscriber C00329,44,30,42,6,0,yearly,North America
+C00330,Charlotte Wilson,c00330@entertainment.demo,Subscriber C00330,55,25,30,5,1,yearly,North America
+C00331,Charlotte Martin,c00331@entertainment.demo,Subscriber C00331,80,8,48,7,0,yearly,South America
+C00332,Liam Brown,c00332@entertainment.demo,Subscriber C00332,32,35,54,5,0,yearly,Europe
+C00333,Isabella Anderson,c00333@entertainment.demo,Subscriber C00333,58,23,42,10,1,monthly,South America
+C00334,Harper Lee,c00334@entertainment.demo,Subscriber C00334,7,40,18,8,1,monthly,Europe
+C00335,Liam Garcia,c00335@entertainment.demo,Subscriber C00335,45,30,24,9,0,yearly,North America
+C00336,Isabella Jackson,c00336@entertainment.demo,Subscriber C00336,52,27,30,1,1,yearly,South America
+C00337,Harper Moore,c00337@entertainment.demo,Subscriber C00337,82,7,36,0,0,yearly,South America
+C00338,Harper White,c00338@entertainment.demo,Subscriber C00338,84,5,36,1,0,yearly,Europe
+C00339,Isabella Anderson,c00339@entertainment.demo,Subscriber C00339,61,22,24,4,1,monthly,North America
+C00340,Amelia Kim,c00340@entertainment.demo,Subscriber C00340,23,37,48,7,0,yearly,Africa
+C00341,Charlotte Taylor,c00341@entertainment.demo,Subscriber C00341,60,22,24,6,1,yearly,Asia
+C00342,Harper Taylor,c00342@entertainment.demo,Subscriber C00342,55,25,36,8,0,yearly,North America
+C00343,Mia Lee,c00343@entertainment.demo,Subscriber C00343,53,26,18,3,1,monthly,Europe
+C00344,Lucas Garcia,c00344@entertainment.demo,Subscriber C00344,53,26,24,5,0,yearly,Asia
+C00345,Leo Patel,c00345@entertainment.demo,Subscriber C00345,75,13,54,10,1,monthly,Europe
+C00346,Ethan Wilson,c00346@entertainment.demo,Subscriber C00346,72,14,12,5,0,yearly,Europe
+C00347,Ava Smith,c00347@entertainment.demo,Subscriber C00347,28,36,48,10,0,yearly,Asia
+C00348,Lucas Wilson,c00348@entertainment.demo,Subscriber C00348,30,36,18,3,0,monthly,North America
+C00349,Liam Johnson,c00349@entertainment.demo,Subscriber C00349,82,6,12,8,0,monthly,North America
+C00350,Sophia Thomas,c00350@entertainment.demo,Subscriber C00350,68,17,18,4,0,monthly,North America
+C00351,Leo Anderson,c00351@entertainment.demo,Subscriber C00351,85,5,54,0,1,monthly,North America
+C00352,Henry Patel,c00352@entertainment.demo,Subscriber C00352,73,14,12,4,0,yearly,Asia
+C00353,Benjamin Khan,c00353@entertainment.demo,Subscriber C00353,70,16,24,8,1,monthly,Europe
+C00354,Leo Thomas,c00354@entertainment.demo,Subscriber C00354,82,7,60,7,0,monthly,South America
+C00355,Olivia White,c00355@entertainment.demo,Subscriber C00355,48,29,12,7,1,yearly,Africa
+C00356,Olivia Thomas,c00356@entertainment.demo,Subscriber C00356,38,33,36,9,1,yearly,Asia
+C00357,Benjamin Khan,c00357@entertainment.demo,Subscriber C00357,36,34,42,0,0,yearly,South America
+C00358,Henry Kim,c00358@entertainment.demo,Subscriber C00358,45,30,30,1,0,yearly,Africa
+C00359,Noah Patel,c00359@entertainment.demo,Subscriber C00359,64,20,48,2,0,yearly,South America
+C00360,James Brown,c00360@entertainment.demo,Subscriber C00360,79,9,48,6,1,yearly,Africa
+C00361,Noah White,c00361@entertainment.demo,Subscriber C00361,64,20,12,10,0,monthly,Africa
+C00362,Olivia Martin,c00362@entertainment.demo,Subscriber C00362,70,16,60,3,1,yearly,Europe
+C00363,Amelia Khan,c00363@entertainment.demo,Subscriber C00363,30,36,36,6,1,yearly,South America
+C00364,Ethan Brown,c00364@entertainment.demo,Subscriber C00364,77,11,24,8,0,yearly,South America
+C00365,Mia Garcia,c00365@entertainment.demo,Subscriber C00365,14,39,54,3,1,yearly,North America
+C00366,Ava Lee,c00366@entertainment.demo,Subscriber C00366,35,34,24,0,0,yearly,Africa
+C00367,Mia Garcia,c00367@entertainment.demo,Subscriber C00367,27,36,54,4,0,monthly,South America
+C00368,Mia Lee,c00368@entertainment.demo,Subscriber C00368,16,39,42,2,1,yearly,North America
+C00369,Henry Smith,c00369@entertainment.demo,Subscriber C00369,38,33,6,2,0,monthly,North America
+C00370,James Patel,c00370@entertainment.demo,Subscriber C00370,34,34,54,8,0,yearly,South America
+C00371,Isabella Khan,c00371@entertainment.demo,Subscriber C00371,44,30,54,2,0,monthly,North America
+C00372,Liam Garcia,c00372@entertainment.demo,Subscriber C00372,66,18,42,4,0,monthly,Europe
+C00373,James Thomas,c00373@entertainment.demo,Subscriber C00373,49,28,6,4,1,monthly,Europe
+C00374,Harper Moore,c00374@entertainment.demo,Subscriber C00374,23,37,6,1,1,yearly,Europe
+C00375,Harper Martin,c00375@entertainment.demo,Subscriber C00375,70,16,30,6,0,yearly,Africa
+C00376,Liam Anderson,c00376@entertainment.demo,Subscriber C00376,74,13,36,4,1,yearly,Europe
+C00377,Liam Garcia,c00377@entertainment.demo,Subscriber C00377,79,9,48,8,1,yearly,Africa
+C00378,James Lee,c00378@entertainment.demo,Subscriber C00378,44,31,36,7,1,yearly,Africa
+C00379,Sophia Wilson,c00379@entertainment.demo,Subscriber C00379,55,25,36,5,0,yearly,North America
+C00380,Charlotte Anderson,c00380@entertainment.demo,Subscriber C00380,30,36,12,2,0,yearly,Asia
+C00381,Olivia Thomas,c00381@entertainment.demo,Subscriber C00381,77,10,6,10,0,monthly,Europe
+C00382,Benjamin Anderson,c00382@entertainment.demo,Subscriber C00382,48,28,48,9,1,yearly,South America
+C00383,Ethan Wilson,c00383@entertainment.demo,Subscriber C00383,18,38,18,2,1,yearly,South America
+C00384,Henry Jackson,c00384@entertainment.demo,Subscriber C00384,59,23,24,4,1,yearly,North America
+C00385,Henry Johnson,c00385@entertainment.demo,Subscriber C00385,82,6,54,10,1,yearly,Europe
+C00386,Noah Thomas,c00386@entertainment.demo,Subscriber C00386,58,24,12,1,0,yearly,Africa
+C00387,Ethan Martin,c00387@entertainment.demo,Subscriber C00387,68,17,36,8,0,yearly,Europe
+C00388,James Thomas,c00388@entertainment.demo,Subscriber C00388,54,26,18,2,0,monthly,Europe
+C00389,Mia White,c00389@entertainment.demo,Subscriber C00389,65,19,6,8,0,yearly,Asia
+C00390,Ava Garcia,c00390@entertainment.demo,Subscriber C00390,64,20,36,5,0,monthly,Europe
+C00391,Isabella Patel,c00391@entertainment.demo,Subscriber C00391,36,34,36,1,1,yearly,North America
+C00392,Isabella Johnson,c00392@entertainment.demo,Subscriber C00392,74,13,12,10,1,yearly,Asia
+C00393,James Garcia,c00393@entertainment.demo,Subscriber C00393,27,36,24,7,0,yearly,Asia
+C00394,Isabella Anderson,c00394@entertainment.demo,Subscriber C00394,72,14,36,5,0,monthly,North America
+C00395,Harper Johnson,c00395@entertainment.demo,Subscriber C00395,81,8,42,7,1,yearly,Africa
+C00396,Sophia Brown,c00396@entertainment.demo,Subscriber C00396,66,18,12,2,0,yearly,Europe
+C00397,Ethan Anderson,c00397@entertainment.demo,Subscriber C00397,77,10,36,1,1,yearly,Europe
+C00398,Mia White,c00398@entertainment.demo,Subscriber C00398,50,28,18,2,0,yearly,North America
+C00399,Amelia Jackson,c00399@entertainment.demo,Subscriber C00399,64,20,48,8,1,yearly,South America
+C00400,Ava Khan,c00400@entertainment.demo,Subscriber C00400,21,38,24,8,0,yearly,North America
+C00401,Benjamin Taylor,c00401@entertainment.demo,Subscriber C00401,11,39,18,0,0,yearly,North America
+C00402,Henry Taylor,c00402@entertainment.demo,Subscriber C00402,25,37,48,10,0,yearly,Europe
+C00403,Harper Lee,c00403@entertainment.demo,Subscriber C00403,80,8,36,5,1,monthly,Asia
+C00404,Harper Johnson,c00404@entertainment.demo,Subscriber C00404,27,36,42,0,0,yearly,Europe
+C00405,Olivia Lee,c00405@entertainment.demo,Subscriber C00405,56,24,42,0,0,yearly,Asia
+C00406,Sophia Khan,c00406@entertainment.demo,Subscriber C00406,51,27,24,7,1,yearly,South America
+C00407,Benjamin Brown,c00407@entertainment.demo,Subscriber C00407,38,33,18,5,0,monthly,Europe
+C00408,Benjamin Patel,c00408@entertainment.demo,Subscriber C00408,84,5,12,1,1,monthly,Africa
+C00409,Leo Brown,c00409@entertainment.demo,Subscriber C00409,78,10,18,1,1,yearly,Africa
+C00410,Liam Taylor,c00410@entertainment.demo,Subscriber C00410,64,20,24,0,1,yearly,Asia
+C00411,James Moore,c00411@entertainment.demo,Subscriber C00411,32,35,42,1,1,yearly,South America
+C00412,Liam Kim,c00412@entertainment.demo,Subscriber C00412,38,33,30,0,0,yearly,Europe
+C00413,Sophia Wilson,c00413@entertainment.demo,Subscriber C00413,48,28,48,10,1,yearly,Africa
+C00414,Ethan Lee,c00414@entertainment.demo,Subscriber C00414,69,16,42,0,1,yearly,Europe
+C00415,Sophia Taylor,c00415@entertainment.demo,Subscriber C00415,28,36,60,3,0,yearly,Africa
+C00416,Charlotte White,c00416@entertainment.demo,Subscriber C00416,41,32,54,2,1,yearly,Europe
+C00417,Lucas Martin,c00417@entertainment.demo,Subscriber C00417,52,27,6,7,1,yearly,South America
+C00418,Sophia Garcia,c00418@entertainment.demo,Subscriber C00418,52,26,48,3,1,yearly,North America
+C00419,Henry Martin,c00419@entertainment.demo,Subscriber C00419,83,6,60,2,0,yearly,Asia
+C00420,Charlotte Smith,c00420@entertainment.demo,Subscriber C00420,76,12,6,3,0,monthly,Europe
+C00421,Noah Anderson,c00421@entertainment.demo,Subscriber C00421,77,10,18,10,0,yearly,Europe
+C00422,Ethan Taylor,c00422@entertainment.demo,Subscriber C00422,85,4,6,9,0,yearly,Asia
+C00423,Charlotte Moore,c00423@entertainment.demo,Subscriber C00423,69,16,6,1,1,yearly,Europe
+C00424,Amelia Johnson,c00424@entertainment.demo,Subscriber C00424,43,31,54,1,1,monthly,Asia
+C00425,Harper Thomas,c00425@entertainment.demo,Subscriber C00425,66,19,24,10,0,yearly,Africa
+C00426,Harper Lee,c00426@entertainment.demo,Subscriber C00426,24,37,24,10,0,monthly,Asia
+C00427,Harper Thomas,c00427@entertainment.demo,Subscriber C00427,77,11,18,6,0,yearly,North America
+C00428,Isabella Brown,c00428@entertainment.demo,Subscriber C00428,63,20,60,4,1,yearly,Europe
+C00429,Mia Jackson,c00429@entertainment.demo,Subscriber C00429,24,37,54,4,0,monthly,South America
+C00430,Charlotte Lee,c00430@entertainment.demo,Subscriber C00430,62,21,18,8,1,yearly,Europe
+C00431,Henry Patel,c00431@entertainment.demo,Subscriber C00431,60,22,36,10,1,monthly,South America
+C00432,Noah Moore,c00432@entertainment.demo,Subscriber C00432,48,29,36,1,1,yearly,Africa
+C00433,Amelia Moore,c00433@entertainment.demo,Subscriber C00433,65,19,54,7,0,yearly,Europe
+C00434,Benjamin Lee,c00434@entertainment.demo,Subscriber C00434,26,37,42,2,1,monthly,Europe
+C00435,Ethan Lee,c00435@entertainment.demo,Subscriber C00435,80,9,54,6,0,monthly,Europe
+C00436,Ava Kim,c00436@entertainment.demo,Subscriber C00436,73,13,36,0,0,yearly,Asia
+C00437,Henry White,c00437@entertainment.demo,Subscriber C00437,34,34,48,2,0,monthly,Africa
+C00438,Mia Thomas,c00438@entertainment.demo,Subscriber C00438,52,27,54,7,1,yearly,Africa
+C00439,Ethan Martin,c00439@entertainment.demo,Subscriber C00439,42,31,12,1,0,yearly,Africa
+C00440,Leo Khan,c00440@entertainment.demo,Subscriber C00440,28,36,18,1,1,yearly,Asia
+C00441,Lucas Khan,c00441@entertainment.demo,Subscriber C00441,49,28,24,5,1,yearly,North America
+C00442,Liam Garcia,c00442@entertainment.demo,Subscriber C00442,43,31,12,0,1,yearly,Africa
+C00443,Olivia Wilson,c00443@entertainment.demo,Subscriber C00443,60,22,6,2,0,yearly,Asia
+C00444,Charlotte Martin,c00444@entertainment.demo,Subscriber C00444,59,23,24,0,0,yearly,Asia
+C00445,Leo Kim,c00445@entertainment.demo,Subscriber C00445,79,9,6,1,0,yearly,Asia
+C00446,Mia Martin,c00446@entertainment.demo,Subscriber C00446,28,36,36,4,1,yearly,Africa
+C00447,Liam Thomas,c00447@entertainment.demo,Subscriber C00447,38,33,6,1,1,yearly,Europe
+C00448,Olivia Taylor,c00448@entertainment.demo,Subscriber C00448,24,37,30,8,1,yearly,Asia
+C00449,Lucas Wilson,c00449@entertainment.demo,Subscriber C00449,81,7,18,3,0,yearly,Asia
+C00450,Noah Brown,c00450@entertainment.demo,Subscriber C00450,21,38,6,4,1,yearly,Africa
+C00451,Olivia Jackson,c00451@entertainment.demo,Subscriber C00451,28,36,60,4,1,yearly,Europe
+C00452,Charlotte Jackson,c00452@entertainment.demo,Subscriber C00452,74,13,24,9,0,yearly,North America
+C00453,Amelia Brown,c00453@entertainment.demo,Subscriber C00453,34,34,30,7,0,yearly,Europe
+C00454,James Taylor,c00454@entertainment.demo,Subscriber C00454,84,5,30,2,1,yearly,South America
+C00455,Lucas Jackson,c00455@entertainment.demo,Subscriber C00455,42,31,48,6,0,yearly,Africa
+C00456,Benjamin Martin,c00456@entertainment.demo,Subscriber C00456,62,21,36,1,1,monthly,North America
+C00457,Isabella White,c00457@entertainment.demo,Subscriber C00457,30,36,42,6,0,monthly,North America
+C00458,Ava Kim,c00458@entertainment.demo,Subscriber C00458,79,9,48,9,1,yearly,North America
+C00459,Amelia Kim,c00459@entertainment.demo,Subscriber C00459,85,4,30,4,1,yearly,Europe
+C00460,Benjamin Garcia,c00460@entertainment.demo,Subscriber C00460,58,23,6,7,1,yearly,North America
+C00461,Benjamin Wilson,c00461@entertainment.demo,Subscriber C00461,81,8,42,2,0,yearly,South America
+C00462,Henry White,c00462@entertainment.demo,Subscriber C00462,82,6,36,4,1,yearly,Asia
+C00463,Leo White,c00463@entertainment.demo,Subscriber C00463,45,30,24,2,0,yearly,South America
+C00464,Charlotte Wilson,c00464@entertainment.demo,Subscriber C00464,64,20,42,3,0,monthly,Asia
+C00465,Henry Taylor,c00465@entertainment.demo,Subscriber C00465,44,30,36,0,1,yearly,Asia
+C00466,Liam Khan,c00466@entertainment.demo,Subscriber C00466,73,14,36,6,0,yearly,Europe
+C00467,Liam Kim,c00467@entertainment.demo,Subscriber C00467,43,31,12,7,0,monthly,Asia
+C00468,James Garcia,c00468@entertainment.demo,Subscriber C00468,76,11,12,7,1,monthly,Europe
+C00469,Charlotte Johnson,c00469@entertainment.demo,Subscriber C00469,27,36,48,3,1,yearly,South America
+C00470,Lucas Taylor,c00470@entertainment.demo,Subscriber C00470,51,27,30,0,0,monthly,North America
+C00471,Benjamin Garcia,c00471@entertainment.demo,Subscriber C00471,42,31,30,10,1,yearly,South America
+C00472,Liam Anderson,c00472@entertainment.demo,Subscriber C00472,29,36,30,6,0,monthly,North America
+C00473,James Jackson,c00473@entertainment.demo,Subscriber C00473,55,25,54,2,0,yearly,Europe
+C00474,Henry Taylor,c00474@entertainment.demo,Subscriber C00474,75,12,36,10,1,yearly,Africa
+C00475,Ethan Taylor,c00475@entertainment.demo,Subscriber C00475,61,22,54,2,0,yearly,Asia
+C00476,James Kim,c00476@entertainment.demo,Subscriber C00476,72,14,60,0,1,yearly,South America
+C00477,Charlotte Kim,c00477@entertainment.demo,Subscriber C00477,48,28,54,4,1,yearly,Africa
+C00478,Isabella Johnson,c00478@entertainment.demo,Subscriber C00478,44,30,42,0,1,yearly,Europe
+C00479,Ava Smith,c00479@entertainment.demo,Subscriber C00479,70,16,18,0,0,monthly,South America
+C00480,Lucas Jackson,c00480@entertainment.demo,Subscriber C00480,56,25,30,1,1,monthly,Europe
+C00481,Benjamin Jackson,c00481@entertainment.demo,Subscriber C00481,60,22,36,7,1,yearly,Asia
+C00482,Noah Johnson,c00482@entertainment.demo,Subscriber C00482,31,35,24,8,0,monthly,North America
+C00483,Olivia Patel,c00483@entertainment.demo,Subscriber C00483,42,31,18,8,0,monthly,South America
+C00484,Ava Brown,c00484@entertainment.demo,Subscriber C00484,45,30,42,4,1,monthly,Africa
+C00485,James Lee,c00485@entertainment.demo,Subscriber C00485,58,24,6,5,1,yearly,Africa
+C00486,Sophia Thomas,c00486@entertainment.demo,Subscriber C00486,44,30,60,6,0,monthly,Asia
+C00487,Ava Smith,c00487@entertainment.demo,Subscriber C00487,63,20,18,2,1,yearly,Europe
+C00488,Ava Johnson,c00488@entertainment.demo,Subscriber C00488,76,12,12,10,1,yearly,Africa
+C00489,Liam Khan,c00489@entertainment.demo,Subscriber C00489,47,29,24,3,1,yearly,Asia
+C00490,Ava Khan,c00490@entertainment.demo,Subscriber C00490,73,14,54,2,0,yearly,Asia
+C00491,Olivia White,c00491@entertainment.demo,Subscriber C00491,76,11,30,9,1,yearly,Asia
+C00492,Mia Patel,c00492@entertainment.demo,Subscriber C00492,25,37,60,2,1,yearly,Asia
+C00493,Charlotte White,c00493@entertainment.demo,Subscriber C00493,74,13,48,2,1,yearly,Africa
+C00494,Noah Garcia,c00494@entertainment.demo,Subscriber C00494,30,36,48,0,1,monthly,Asia
+C00495,James Thomas,c00495@entertainment.demo,Subscriber C00495,76,12,48,3,0,yearly,South America
+C00496,Amelia Brown,c00496@entertainment.demo,Subscriber C00496,57,24,24,10,0,yearly,Asia
+C00497,Liam White,c00497@entertainment.demo,Subscriber C00497,64,20,60,6,0,yearly,North America
+C00498,Ava Patel,c00498@entertainment.demo,Subscriber C00498,43,31,54,2,1,yearly,Africa
+C00499,Olivia Kim,c00499@entertainment.demo,Subscriber C00499,70,16,36,2,1,yearly,Africa
+C00500,Liam Moore,c00500@entertainment.demo,Subscriber C00500,54,25,36,9,0,yearly,Africa
+C00501,Isabella Garcia,c00501@entertainment.demo,Subscriber C00501,51,27,18,7,1,yearly,North America
+C00502,Harper Lee,c00502@entertainment.demo,Subscriber C00502,81,8,30,2,0,yearly,South America
+C00503,Sophia Moore,c00503@entertainment.demo,Subscriber C00503,60,22,30,0,1,monthly,Europe
+C00504,Harper Garcia,c00504@entertainment.demo,Subscriber C00504,16,39,48,3,0,yearly,Asia
+C00505,Lucas Johnson,c00505@entertainment.demo,Subscriber C00505,81,8,60,0,1,yearly,North America
+C00506,Benjamin Wilson,c00506@entertainment.demo,Subscriber C00506,11,39,48,2,1,yearly,South America
+C00507,Lucas Thomas,c00507@entertainment.demo,Subscriber C00507,45,30,48,6,0,yearly,Asia
+C00508,Ethan Brown,c00508@entertainment.demo,Subscriber C00508,81,8,36,3,1,monthly,Europe
+C00509,Leo Moore,c00509@entertainment.demo,Subscriber C00509,46,30,36,8,1,yearly,Asia
+C00510,Leo Martin,c00510@entertainment.demo,Subscriber C00510,16,39,54,0,1,yearly,Africa
+C00511,Harper Khan,c00511@entertainment.demo,Subscriber C00511,66,18,54,8,1,yearly,South America
+C00512,Isabella Johnson,c00512@entertainment.demo,Subscriber C00512,80,9,54,9,1,yearly,Africa
+C00513,Mia Smith,c00513@entertainment.demo,Subscriber C00513,65,19,60,4,1,yearly,Europe
+C00514,Olivia Wilson,c00514@entertainment.demo,Subscriber C00514,46,30,60,6,1,yearly,Africa
+C00515,Olivia Jackson,c00515@entertainment.demo,Subscriber C00515,18,38,54,8,0,yearly,Asia
+C00516,Charlotte Patel,c00516@entertainment.demo,Subscriber C00516,23,37,6,0,1,monthly,Asia
+C00517,James Lee,c00517@entertainment.demo,Subscriber C00517,41,32,24,6,1,yearly,Asia
+C00518,Henry Jackson,c00518@entertainment.demo,Subscriber C00518,78,10,48,6,1,yearly,Africa
+C00519,Henry Thomas,c00519@entertainment.demo,Subscriber C00519,84,5,60,10,1,yearly,Africa
+C00520,Ethan Kim,c00520@entertainment.demo,Subscriber C00520,45,30,42,7,0,yearly,Asia
+C00521,James Martin,c00521@entertainment.demo,Subscriber C00521,26,37,24,9,1,yearly,North America
+C00522,Charlotte Khan,c00522@entertainment.demo,Subscriber C00522,85,5,18,9,1,monthly,South America
+C00523,Ava Lee,c00523@entertainment.demo,Subscriber C00523,70,16,6,10,0,monthly,Europe
+C00524,Isabella Lee,c00524@entertainment.demo,Subscriber C00524,61,22,54,9,1,yearly,Africa
+C00525,Charlotte Lee,c00525@entertainment.demo,Subscriber C00525,44,30,36,9,1,yearly,South America
+C00526,Amelia Anderson,c00526@entertainment.demo,Subscriber C00526,61,22,42,1,0,yearly,North America
+C00527,Ava Patel,c00527@entertainment.demo,Subscriber C00527,69,17,60,7,1,monthly,North America
+C00528,Isabella Johnson,c00528@entertainment.demo,Subscriber C00528,64,20,54,2,0,yearly,Asia
+C00529,Leo Brown,c00529@entertainment.demo,Subscriber C00529,33,35,36,10,0,monthly,Africa
+C00530,Benjamin Moore,c00530@entertainment.demo,Subscriber C00530,22,38,36,4,1,yearly,North America
+C00531,Liam Anderson,c00531@entertainment.demo,Subscriber C00531,77,11,42,1,1,monthly,Europe
+C00532,James Moore,c00532@entertainment.demo,Subscriber C00532,40,32,12,8,1,yearly,Africa
+C00533,Leo Jackson,c00533@entertainment.demo,Subscriber C00533,85,4,48,2,1,yearly,Asia
+C00534,James Moore,c00534@entertainment.demo,Subscriber C00534,67,18,24,0,1,yearly,North America
+C00535,Isabella Anderson,c00535@entertainment.demo,Subscriber C00535,66,18,30,2,0,yearly,Asia
+C00536,James White,c00536@entertainment.demo,Subscriber C00536,21,38,12,2,0,yearly,Africa
+C00537,Benjamin White,c00537@entertainment.demo,Subscriber C00537,79,9,30,7,0,yearly,Europe
+C00538,Charlotte Martin,c00538@entertainment.demo,Subscriber C00538,85,4,18,7,1,yearly,South America
+C00539,Olivia Wilson,c00539@entertainment.demo,Subscriber C00539,82,7,42,6,1,yearly,South America
+C00540,Sophia Smith,c00540@entertainment.demo,Subscriber C00540,40,32,48,7,1,yearly,Europe
+C00541,Amelia Kim,c00541@entertainment.demo,Subscriber C00541,65,19,6,6,0,yearly,Africa
+C00542,Benjamin Johnson,c00542@entertainment.demo,Subscriber C00542,83,6,54,5,1,monthly,Africa
+C00543,Ethan Jackson,c00543@entertainment.demo,Subscriber C00543,66,19,24,4,1,yearly,North America
+C00544,Benjamin Lee,c00544@entertainment.demo,Subscriber C00544,76,11,48,0,1,monthly,Europe
+C00545,Harper White,c00545@entertainment.demo,Subscriber C00545,60,22,42,7,1,monthly,Asia
+C00546,Lucas Brown,c00546@entertainment.demo,Subscriber C00546,46,29,30,7,0,yearly,Africa
+C00547,Henry Thomas,c00547@entertainment.demo,Subscriber C00547,64,20,54,1,0,yearly,Asia
+C00548,Henry Martin,c00548@entertainment.demo,Subscriber C00548,25,37,18,3,1,yearly,South America
+C00549,Noah Anderson,c00549@entertainment.demo,Subscriber C00549,82,7,12,6,0,yearly,Europe
+C00550,Charlotte White,c00550@entertainment.demo,Subscriber C00550,82,7,48,0,1,monthly,South America
+C00551,Isabella Thomas,c00551@entertainment.demo,Subscriber C00551,75,13,54,1,0,yearly,South America
+C00552,Sophia Smith,c00552@entertainment.demo,Subscriber C00552,81,7,42,4,1,yearly,Asia
+C00553,Benjamin Khan,c00553@entertainment.demo,Subscriber C00553,81,8,36,5,1,monthly,South America
+C00554,Harper Martin,c00554@entertainment.demo,Subscriber C00554,71,15,60,4,1,yearly,Europe
+C00555,Sophia Patel,c00555@entertainment.demo,Subscriber C00555,54,26,6,3,1,monthly,North America
+C00556,Liam Anderson,c00556@entertainment.demo,Subscriber C00556,60,22,30,7,1,monthly,Africa
+C00557,Harper Lee,c00557@entertainment.demo,Subscriber C00557,80,8,30,9,0,monthly,Africa
+C00558,Lucas Khan,c00558@entertainment.demo,Subscriber C00558,42,31,36,5,1,monthly,North America
+C00559,Benjamin Jackson,c00559@entertainment.demo,Subscriber C00559,52,27,42,9,1,yearly,Africa
+C00560,Lucas Patel,c00560@entertainment.demo,Subscriber C00560,56,25,54,3,0,monthly,South America
+C00561,Leo Smith,c00561@entertainment.demo,Subscriber C00561,75,12,54,4,0,yearly,North America
+C00562,Olivia Brown,c00562@entertainment.demo,Subscriber C00562,22,38,42,1,1,yearly,Europe
+C00563,James Patel,c00563@entertainment.demo,Subscriber C00563,55,25,60,6,1,yearly,South America
+C00564,Benjamin Martin,c00564@entertainment.demo,Subscriber C00564,76,12,60,10,0,yearly,South America
+C00565,Charlotte Martin,c00565@entertainment.demo,Subscriber C00565,82,6,6,5,0,monthly,Asia
+C00566,Ava White,c00566@entertainment.demo,Subscriber C00566,33,35,18,1,1,yearly,North America
+C00567,Sophia Brown,c00567@entertainment.demo,Subscriber C00567,66,18,18,7,1,monthly,Asia
+C00568,James Patel,c00568@entertainment.demo,Subscriber C00568,41,32,36,8,0,yearly,South America
+C00569,Ava Khan,c00569@entertainment.demo,Subscriber C00569,54,26,12,4,0,yearly,South America
+C00570,Isabella Brown,c00570@entertainment.demo,Subscriber C00570,72,14,30,10,0,yearly,Africa
+C00571,Mia Jackson,c00571@entertainment.demo,Subscriber C00571,41,32,54,8,1,yearly,Asia
+C00572,Liam Brown,c00572@entertainment.demo,Subscriber C00572,48,29,6,0,0,yearly,South America
+C00573,Lucas Brown,c00573@entertainment.demo,Subscriber C00573,55,25,18,6,1,monthly,South America
+C00574,Mia Wilson,c00574@entertainment.demo,Subscriber C00574,38,33,18,5,1,monthly,South America
+C00575,Ava Anderson,c00575@entertainment.demo,Subscriber C00575,80,8,12,2,1,yearly,Europe
+C00576,Mia Kim,c00576@entertainment.demo,Subscriber C00576,23,37,18,9,0,monthly,Asia
+C00577,Leo Kim,c00577@entertainment.demo,Subscriber C00577,21,38,36,10,0,yearly,Africa
+C00578,Henry Taylor,c00578@entertainment.demo,Subscriber C00578,66,19,54,0,0,monthly,Europe
+C00579,James Kim,c00579@entertainment.demo,Subscriber C00579,38,33,12,1,1,yearly,Africa
+C00580,Noah Jackson,c00580@entertainment.demo,Subscriber C00580,51,27,48,3,0,monthly,Europe
+C00581,James Smith,c00581@entertainment.demo,Subscriber C00581,71,15,36,7,0,yearly,South America
+C00582,Lucas Brown,c00582@entertainment.demo,Subscriber C00582,44,30,12,3,0,yearly,Africa
+C00583,Henry White,c00583@entertainment.demo,Subscriber C00583,63,20,48,7,1,yearly,Asia
+C00584,Lucas Johnson,c00584@entertainment.demo,Subscriber C00584,72,14,12,0,1,yearly,Asia
+C00585,Harper Patel,c00585@entertainment.demo,Subscriber C00585,40,32,12,4,0,yearly,Asia
+C00586,Leo Lee,c00586@entertainment.demo,Subscriber C00586,21,38,60,0,1,yearly,Africa
+C00587,Olivia Khan,c00587@entertainment.demo,Subscriber C00587,42,31,24,4,0,monthly,Africa
+C00588,Charlotte Brown,c00588@entertainment.demo,Subscriber C00588,43,31,60,1,1,monthly,South America
+C00589,Leo Anderson,c00589@entertainment.demo,Subscriber C00589,59,23,12,8,0,yearly,Asia
+C00590,Sophia White,c00590@entertainment.demo,Subscriber C00590,58,24,36,0,1,monthly,Asia
+C00591,Benjamin Anderson,c00591@entertainment.demo,Subscriber C00591,74,13,24,9,1,yearly,North America
+C00592,Olivia Thomas,c00592@entertainment.demo,Subscriber C00592,42,31,60,3,0,monthly,Africa
+C00593,Amelia Thomas,c00593@entertainment.demo,Subscriber C00593,58,23,6,3,0,yearly,Europe
+C00594,Benjamin Moore,c00594@entertainment.demo,Subscriber C00594,22,38,54,8,1,yearly,North America
+C00595,Lucas Anderson,c00595@entertainment.demo,Subscriber C00595,68,17,60,9,0,monthly,Africa
+C00596,Benjamin Brown,c00596@entertainment.demo,Subscriber C00596,52,27,12,7,0,monthly,North America
+C00597,Harper Wilson,c00597@entertainment.demo,Subscriber C00597,31,35,54,6,0,monthly,Asia
+C00598,Leo Smith,c00598@entertainment.demo,Subscriber C00598,39,33,12,5,1,yearly,Africa
+C00599,Mia Brown,c00599@entertainment.demo,Subscriber C00599,81,8,54,8,0,yearly,Asia
+C00600,Ethan White,c00600@entertainment.demo,Subscriber C00600,26,37,12,1,1,yearly,Europe
+C00601,Ethan Taylor,c00601@entertainment.demo,Subscriber C00601,61,22,18,3,0,yearly,North America
+C00602,Sophia Taylor,c00602@entertainment.demo,Subscriber C00602,77,11,6,7,1,yearly,Africa
+C00603,Noah Thomas,c00603@entertainment.demo,Subscriber C00603,61,21,6,3,0,yearly,South America
+C00604,Isabella Thomas,c00604@entertainment.demo,Subscriber C00604,74,13,42,8,0,monthly,South America
+C00605,Liam Garcia,c00605@entertainment.demo,Subscriber C00605,32,35,60,6,1,yearly,Asia
+C00606,Liam Kim,c00606@entertainment.demo,Subscriber C00606,21,38,54,8,1,yearly,South America
+C00607,Lucas Wilson,c00607@entertainment.demo,Subscriber C00607,61,22,30,7,1,yearly,Asia
+C00608,Harper White,c00608@entertainment.demo,Subscriber C00608,61,22,6,3,1,yearly,South America
+C00609,Ethan Patel,c00609@entertainment.demo,Subscriber C00609,77,11,60,8,0,yearly,South America
+C00610,Noah Anderson,c00610@entertainment.demo,Subscriber C00610,41,32,60,4,1,yearly,Asia
+C00611,Olivia Khan,c00611@entertainment.demo,Subscriber C00611,55,25,54,2,1,monthly,Africa
+C00612,Leo Anderson,c00612@entertainment.demo,Subscriber C00612,28,36,30,8,0,yearly,Africa
+C00613,Noah White,c00613@entertainment.demo,Subscriber C00613,41,32,6,9,0,yearly,Asia
+C00614,Sophia Lee,c00614@entertainment.demo,Subscriber C00614,84,5,18,5,0,yearly,Europe
+C00615,Leo Lee,c00615@entertainment.demo,Subscriber C00615,74,13,54,1,1,yearly,North America
+C00616,Lucas Moore,c00616@entertainment.demo,Subscriber C00616,65,19,36,8,0,yearly,North America
+C00617,Mia Khan,c00617@entertainment.demo,Subscriber C00617,28,36,42,4,0,yearly,Europe
+C00618,James Kim,c00618@entertainment.demo,Subscriber C00618,84,5,60,0,0,yearly,North America
+C00619,Leo Jackson,c00619@entertainment.demo,Subscriber C00619,21,38,42,1,1,yearly,Asia
+C00620,Ethan Taylor,c00620@entertainment.demo,Subscriber C00620,20,38,36,0,0,monthly,Africa
+C00621,Leo Wilson,c00621@entertainment.demo,Subscriber C00621,15,39,30,2,1,monthly,Europe
+C00622,Olivia Taylor,c00622@entertainment.demo,Subscriber C00622,26,37,24,1,1,yearly,Asia
+C00623,Henry Patel,c00623@entertainment.demo,Subscriber C00623,80,8,30,6,0,yearly,Asia
+C00624,Ava Brown,c00624@entertainment.demo,Subscriber C00624,54,26,54,4,1,yearly,Europe
+C00625,James Wilson,c00625@entertainment.demo,Subscriber C00625,61,22,54,4,1,yearly,Africa
+C00626,Charlotte Garcia,c00626@entertainment.demo,Subscriber C00626,43,31,48,2,1,monthly,Asia
+C00627,Mia Patel,c00627@entertainment.demo,Subscriber C00627,63,21,42,1,1,yearly,Asia
+C00628,Liam Smith,c00628@entertainment.demo,Subscriber C00628,82,7,24,8,0,monthly,South America
+C00629,Benjamin Brown,c00629@entertainment.demo,Subscriber C00629,61,22,36,9,0,yearly,Europe
+C00630,Ethan Garcia,c00630@entertainment.demo,Subscriber C00630,81,7,18,10,0,yearly,North America
+C00631,Noah Brown,c00631@entertainment.demo,Subscriber C00631,65,19,18,5,1,yearly,North America
+C00632,Charlotte Garcia,c00632@entertainment.demo,Subscriber C00632,74,13,42,7,1,yearly,North America
+C00633,Noah Lee,c00633@entertainment.demo,Subscriber C00633,59,23,54,3,0,yearly,Asia
+C00634,Liam Anderson,c00634@entertainment.demo,Subscriber C00634,43,31,60,3,1,yearly,Europe
+C00635,Leo Martin,c00635@entertainment.demo,Subscriber C00635,55,25,60,4,1,monthly,Africa
+C00636,Amelia Martin,c00636@entertainment.demo,Subscriber C00636,68,17,6,9,0,monthly,South America
+C00637,Ava White,c00637@entertainment.demo,Subscriber C00637,64,20,12,7,1,monthly,North America
+C00638,Sophia Kim,c00638@entertainment.demo,Subscriber C00638,11,39,60,0,1,monthly,Africa
+C00639,Leo Kim,c00639@entertainment.demo,Subscriber C00639,50,28,48,6,1,yearly,Europe
+C00640,Leo Patel,c00640@entertainment.demo,Subscriber C00640,64,20,12,4,0,monthly,Asia
+C00641,Benjamin Garcia,c00641@entertainment.demo,Subscriber C00641,56,25,30,0,1,monthly,South America
+C00642,Sophia White,c00642@entertainment.demo,Subscriber C00642,78,10,42,10,1,yearly,North America
+C00643,Benjamin Khan,c00643@entertainment.demo,Subscriber C00643,53,26,24,2,0,monthly,North America
+C00644,James Thomas,c00644@entertainment.demo,Subscriber C00644,65,19,30,9,1,yearly,South America
+C00645,Benjamin Khan,c00645@entertainment.demo,Subscriber C00645,81,7,42,2,0,yearly,Asia
+C00646,James Brown,c00646@entertainment.demo,Subscriber C00646,83,6,30,4,1,yearly,North America
+C00647,Amelia White,c00647@entertainment.demo,Subscriber C00647,26,37,24,3,1,monthly,North America
+C00648,Amelia Patel,c00648@entertainment.demo,Subscriber C00648,38,33,48,8,1,yearly,Asia
+C00649,Henry Anderson,c00649@entertainment.demo,Subscriber C00649,73,14,54,7,1,monthly,Asia
+C00650,James Kim,c00650@entertainment.demo,Subscriber C00650,82,7,24,5,0,monthly,Africa
+C00651,Noah Martin,c00651@entertainment.demo,Subscriber C00651,56,25,24,7,0,monthly,South America
+C00652,James Moore,c00652@entertainment.demo,Subscriber C00652,57,24,24,10,0,yearly,North America
+C00653,Harper Anderson,c00653@entertainment.demo,Subscriber C00653,78,10,18,6,1,yearly,Europe
+C00654,Ava Moore,c00654@entertainment.demo,Subscriber C00654,71,15,12,1,0,yearly,North America
+C00655,Ava Khan,c00655@entertainment.demo,Subscriber C00655,48,29,6,4,1,yearly,Asia
+C00656,James Thomas,c00656@entertainment.demo,Subscriber C00656,65,19,12,5,1,monthly,Asia
+C00657,Charlotte Khan,c00657@entertainment.demo,Subscriber C00657,41,32,18,2,0,yearly,Africa
+C00658,Charlotte Smith,c00658@entertainment.demo,Subscriber C00658,58,24,36,4,0,yearly,Europe
+C00659,Ethan Patel,c00659@entertainment.demo,Subscriber C00659,21,38,30,9,1,yearly,South America
+C00660,Charlotte Smith,c00660@entertainment.demo,Subscriber C00660,83,6,24,9,1,yearly,North America
+C00661,Mia Khan,c00661@entertainment.demo,Subscriber C00661,23,37,18,3,1,yearly,Asia
+C00662,Sophia Brown,c00662@entertainment.demo,Subscriber C00662,48,28,12,3,1,monthly,Europe
+C00663,Lucas Thomas,c00663@entertainment.demo,Subscriber C00663,27,36,42,3,0,monthly,South America
+C00664,Noah Kim,c00664@entertainment.demo,Subscriber C00664,19,38,18,4,0,monthly,North America
+C00665,Liam White,c00665@entertainment.demo,Subscriber C00665,45,30,54,8,0,yearly,North America
+C00666,James Johnson,c00666@entertainment.demo,Subscriber C00666,38,33,42,0,1,monthly,South America
+C00667,Noah White,c00667@entertainment.demo,Subscriber C00667,67,18,60,9,0,monthly,Europe
+C00668,Benjamin Brown,c00668@entertainment.demo,Subscriber C00668,84,5,18,0,1,yearly,Europe
+C00669,Ethan White,c00669@entertainment.demo,Subscriber C00669,83,6,30,2,1,yearly,Europe
+C00670,Ethan Kim,c00670@entertainment.demo,Subscriber C00670,57,24,12,7,0,yearly,South America
+C00671,Charlotte Garcia,c00671@entertainment.demo,Subscriber C00671,53,26,6,0,0,yearly,North America
+C00672,Ethan Lee,c00672@entertainment.demo,Subscriber C00672,44,30,24,2,1,yearly,Europe
+C00673,Sophia Lee,c00673@entertainment.demo,Subscriber C00673,13,39,48,5,0,yearly,Africa
+C00674,Harper Martin,c00674@entertainment.demo,Subscriber C00674,32,35,48,9,0,yearly,Asia
+C00675,Olivia Smith,c00675@entertainment.demo,Subscriber C00675,77,11,30,3,0,yearly,South America
+C00676,Ethan Johnson,c00676@entertainment.demo,Subscriber C00676,30,36,54,3,0,yearly,South America
+C00677,Liam Lee,c00677@entertainment.demo,Subscriber C00677,32,35,30,7,0,yearly,North America
+C00678,Isabella Thomas,c00678@entertainment.demo,Subscriber C00678,61,22,12,3,1,yearly,North America
+C00679,Isabella White,c00679@entertainment.demo,Subscriber C00679,36,33,18,6,0,monthly,Asia
+C00680,Ava Moore,c00680@entertainment.demo,Subscriber C00680,35,34,18,7,1,monthly,Europe
+C00681,Mia Brown,c00681@entertainment.demo,Subscriber C00681,31,35,36,4,1,yearly,North America
+C00682,Olivia White,c00682@entertainment.demo,Subscriber C00682,29,36,6,9,1,monthly,South America
+C00683,Isabella Martin,c00683@entertainment.demo,Subscriber C00683,52,27,6,10,0,monthly,Europe
+C00684,Amelia Martin,c00684@entertainment.demo,Subscriber C00684,51,27,12,7,1,yearly,Europe
+C00685,Ava Garcia,c00685@entertainment.demo,Subscriber C00685,73,14,36,10,1,monthly,Africa
+C00686,Leo Johnson,c00686@entertainment.demo,Subscriber C00686,63,20,36,0,0,yearly,North America
+C00687,Mia Smith,c00687@entertainment.demo,Subscriber C00687,80,8,48,8,1,monthly,Africa
+C00688,Mia Smith,c00688@entertainment.demo,Subscriber C00688,62,21,54,5,1,monthly,Asia
+C00689,Charlotte Lee,c00689@entertainment.demo,Subscriber C00689,51,27,42,10,1,yearly,Africa
+C00690,James Patel,c00690@entertainment.demo,Subscriber C00690,43,31,36,9,1,monthly,North America
+C00691,Benjamin White,c00691@entertainment.demo,Subscriber C00691,83,6,54,10,0,monthly,Asia
+C00692,Harper Thomas,c00692@entertainment.demo,Subscriber C00692,74,13,42,3,0,monthly,Europe
+C00693,James Taylor,c00693@entertainment.demo,Subscriber C00693,80,9,30,3,0,yearly,North America
+C00694,Olivia Garcia,c00694@entertainment.demo,Subscriber C00694,78,10,48,1,0,yearly,South America
+C00695,Liam Martin,c00695@entertainment.demo,Subscriber C00695,58,23,36,0,1,monthly,Europe
+C00696,Sophia Khan,c00696@entertainment.demo,Subscriber C00696,46,30,30,6,1,yearly,Africa
+C00697,Ava Wilson,c00697@entertainment.demo,Subscriber C00697,75,12,36,9,0,yearly,South America
+C00698,Leo Martin,c00698@entertainment.demo,Subscriber C00698,76,12,30,9,0,yearly,Asia
+C00699,Olivia Anderson,c00699@entertainment.demo,Subscriber C00699,65,19,30,1,1,yearly,North America
+C00700,Lucas Brown,c00700@entertainment.demo,Subscriber C00700,67,18,18,9,0,yearly,Asia
+C00701,Liam Johnson,c00701@entertainment.demo,Subscriber C00701,62,21,60,7,0,monthly,North America
+C00702,Henry Martin,c00702@entertainment.demo,Subscriber C00702,58,23,48,0,0,yearly,Africa
+C00703,Sophia Martin,c00703@entertainment.demo,Subscriber C00703,55,25,60,3,0,yearly,South America
+C00704,Leo Anderson,c00704@entertainment.demo,Subscriber C00704,31,35,18,2,1,yearly,Asia
+C00705,Liam Jackson,c00705@entertainment.demo,Subscriber C00705,52,26,60,9,0,monthly,Africa
+C00706,James Smith,c00706@entertainment.demo,Subscriber C00706,58,23,24,2,1,yearly,Europe
+C00707,Charlotte Patel,c00707@entertainment.demo,Subscriber C00707,42,31,18,2,0,yearly,North America
+C00708,Isabella Moore,c00708@entertainment.demo,Subscriber C00708,49,28,24,7,0,yearly,Africa
+C00709,Mia Taylor,c00709@entertainment.demo,Subscriber C00709,73,14,60,9,0,yearly,Asia
+C00710,Olivia Smith,c00710@entertainment.demo,Subscriber C00710,78,10,48,8,0,yearly,South America
+C00711,Ethan Wilson,c00711@entertainment.demo,Subscriber C00711,74,13,18,5,1,monthly,Europe
+C00712,Isabella Brown,c00712@entertainment.demo,Subscriber C00712,33,35,30,6,1,monthly,North America
+C00713,Charlotte Patel,c00713@entertainment.demo,Subscriber C00713,62,21,6,0,0,yearly,South America
+C00714,Sophia Jackson,c00714@entertainment.demo,Subscriber C00714,38,33,60,7,1,monthly,South America
+C00715,Lucas Anderson,c00715@entertainment.demo,Subscriber C00715,81,8,18,4,0,yearly,Asia
+C00716,Leo Wilson,c00716@entertainment.demo,Subscriber C00716,63,20,30,9,0,monthly,North America
+C00717,Amelia Wilson,c00717@entertainment.demo,Subscriber C00717,59,23,30,3,1,yearly,Africa
+C00718,Noah Taylor,c00718@entertainment.demo,Subscriber C00718,62,21,6,10,0,yearly,Africa
+C00719,Henry Smith,c00719@entertainment.demo,Subscriber C00719,82,7,54,5,0,yearly,Africa
+C00720,Mia Kim,c00720@entertainment.demo,Subscriber C00720,59,23,54,1,0,yearly,Africa
+C00721,Liam Johnson,c00721@entertainment.demo,Subscriber C00721,27,36,18,6,1,monthly,Europe
+C00722,Leo Jackson,c00722@entertainment.demo,Subscriber C00722,75,12,36,5,0,yearly,Asia
+C00723,Isabella Martin,c00723@entertainment.demo,Subscriber C00723,44,30,24,0,0,yearly,South America
+C00724,Leo Lee,c00724@entertainment.demo,Subscriber C00724,33,35,6,6,0,monthly,Europe
+C00725,Leo Wilson,c00725@entertainment.demo,Subscriber C00725,60,22,42,0,1,yearly,Europe
+C00726,Ethan White,c00726@entertainment.demo,Subscriber C00726,67,18,54,4,1,yearly,Europe
+C00727,Isabella Kim,c00727@entertainment.demo,Subscriber C00727,81,8,12,9,0,monthly,North America
+C00728,Ava Thomas,c00728@entertainment.demo,Subscriber C00728,35,34,30,10,0,monthly,South America
+C00729,Henry Lee,c00729@entertainment.demo,Subscriber C00729,41,32,24,6,0,yearly,Europe
+C00730,Sophia Kim,c00730@entertainment.demo,Subscriber C00730,39,33,36,5,0,yearly,South America
+C00731,Henry Brown,c00731@entertainment.demo,Subscriber C00731,46,30,42,0,1,monthly,Africa
+C00732,Sophia Lee,c00732@entertainment.demo,Subscriber C00732,46,29,30,10,0,monthly,North America
+C00733,Ava Martin,c00733@entertainment.demo,Subscriber C00733,34,34,12,0,0,yearly,Africa
+C00734,Noah Johnson,c00734@entertainment.demo,Subscriber C00734,4,40,12,6,0,yearly,Europe
+C00735,James White,c00735@entertainment.demo,Subscriber C00735,34,34,54,0,0,yearly,Europe
+C00736,Ethan Anderson,c00736@entertainment.demo,Subscriber C00736,53,26,6,10,0,yearly,Africa
+C00737,Isabella Taylor,c00737@entertainment.demo,Subscriber C00737,75,12,42,8,1,monthly,South America
+C00738,Henry White,c00738@entertainment.demo,Subscriber C00738,30,36,54,9,0,monthly,Asia
+C00739,Olivia Wilson,c00739@entertainment.demo,Subscriber C00739,74,13,18,3,1,monthly,South America
+C00740,Liam Wilson,c00740@entertainment.demo,Subscriber C00740,82,7,60,7,0,monthly,Asia
+C00741,Liam Anderson,c00741@entertainment.demo,Subscriber C00741,76,11,36,8,1,yearly,Asia
+C00742,Henry Lee,c00742@entertainment.demo,Subscriber C00742,66,19,18,6,1,yearly,South America
+C00743,Amelia Smith,c00743@entertainment.demo,Subscriber C00743,47,29,18,5,1,monthly,South America
+C00744,Leo Wilson,c00744@entertainment.demo,Subscriber C00744,59,23,30,4,1,monthly,Africa
+C00745,Noah Wilson,c00745@entertainment.demo,Subscriber C00745,66,19,60,3,1,yearly,Africa
+C00746,Ethan Moore,c00746@entertainment.demo,Subscriber C00746,52,27,36,6,0,monthly,North America
+C00747,Amelia Smith,c00747@entertainment.demo,Subscriber C00747,17,39,60,2,1,yearly,Asia
+C00748,Noah Brown,c00748@entertainment.demo,Subscriber C00748,68,17,54,1,0,yearly,Europe
+C00749,Harper Khan,c00749@entertainment.demo,Subscriber C00749,82,7,24,7,1,monthly,Europe
+C00750,Lucas Patel,c00750@entertainment.demo,Subscriber C00750,23,37,12,4,1,monthly,Africa
+C00751,Henry Anderson,c00751@entertainment.demo,Subscriber C00751,34,34,12,2,0,yearly,Europe
+C00752,Harper Anderson,c00752@entertainment.demo,Subscriber C00752,65,19,36,6,0,yearly,South America
+C00753,Mia Jackson,c00753@entertainment.demo,Subscriber C00753,79,9,30,5,0,monthly,Asia
+C00754,Mia Anderson,c00754@entertainment.demo,Subscriber C00754,68,17,36,2,1,monthly,South America
+C00755,Ethan Thomas,c00755@entertainment.demo,Subscriber C00755,72,15,24,5,0,yearly,North America
+C00756,Ava Jackson,c00756@entertainment.demo,Subscriber C00756,59,23,36,7,1,yearly,Asia
+C00757,Mia Khan,c00757@entertainment.demo,Subscriber C00757,57,24,36,4,0,yearly,South America
+C00758,Amelia Kim,c00758@entertainment.demo,Subscriber C00758,43,31,12,8,0,yearly,South America
+C00759,Harper Jackson,c00759@entertainment.demo,Subscriber C00759,74,13,6,8,1,yearly,South America
+C00760,James Wilson,c00760@entertainment.demo,Subscriber C00760,66,19,30,9,0,yearly,South America
+C00761,Mia Taylor,c00761@entertainment.demo,Subscriber C00761,85,4,24,5,1,yearly,Africa
+C00762,Ava White,c00762@entertainment.demo,Subscriber C00762,80,9,12,7,1,monthly,Asia
+C00763,Henry Anderson,c00763@entertainment.demo,Subscriber C00763,49,28,42,5,1,monthly,Asia
+C00764,Sophia Moore,c00764@entertainment.demo,Subscriber C00764,54,26,36,6,0,yearly,Africa
+C00765,Charlotte Johnson,c00765@entertainment.demo,Subscriber C00765,54,26,42,1,1,monthly,Africa
+C00766,Harper White,c00766@entertainment.demo,Subscriber C00766,81,8,42,6,1,monthly,Europe
+C00767,Olivia Thomas,c00767@entertainment.demo,Subscriber C00767,46,29,6,8,1,monthly,Asia
+C00768,Benjamin Wilson,c00768@entertainment.demo,Subscriber C00768,53,26,6,5,1,yearly,Asia
+C00769,Lucas Smith,c00769@entertainment.demo,Subscriber C00769,52,27,18,7,0,yearly,North America
+C00770,Isabella Kim,c00770@entertainment.demo,Subscriber C00770,77,11,30,10,1,yearly,North America
+C00771,Henry Patel,c00771@entertainment.demo,Subscriber C00771,79,9,6,9,1,monthly,Europe
+C00772,Amelia Taylor,c00772@entertainment.demo,Subscriber C00772,66,19,42,1,0,yearly,Asia
+C00773,Harper Taylor,c00773@entertainment.demo,Subscriber C00773,84,5,30,6,1,yearly,Asia
+C00774,Olivia Smith,c00774@entertainment.demo,Subscriber C00774,56,25,24,0,0,monthly,North America
+C00775,Liam Kim,c00775@entertainment.demo,Subscriber C00775,65,19,42,4,1,monthly,Asia
+C00776,Leo Patel,c00776@entertainment.demo,Subscriber C00776,66,18,36,9,1,monthly,Europe
+C00777,Sophia Kim,c00777@entertainment.demo,Subscriber C00777,70,16,42,3,1,yearly,North America
+C00778,Isabella Johnson,c00778@entertainment.demo,Subscriber C00778,37,33,60,8,1,yearly,North America
+C00779,Leo Jackson,c00779@entertainment.demo,Subscriber C00779,84,6,48,4,0,yearly,South America
+C00780,Amelia Smith,c00780@entertainment.demo,Subscriber C00780,26,37,12,9,0,yearly,Asia
+C00781,Charlotte Thomas,c00781@entertainment.demo,Subscriber C00781,49,28,12,1,1,yearly,Asia
+C00782,Ethan Khan,c00782@entertainment.demo,Subscriber C00782,80,8,42,9,0,yearly,Asia
+C00783,Noah Lee,c00783@entertainment.demo,Subscriber C00783,72,15,48,8,1,yearly,Asia
+C00784,Benjamin White,c00784@entertainment.demo,Subscriber C00784,68,17,48,3,1,yearly,South America
+C00785,Isabella Brown,c00785@entertainment.demo,Subscriber C00785,70,16,24,0,1,yearly,Europe
+C00786,Benjamin Garcia,c00786@entertainment.demo,Subscriber C00786,52,27,60,6,0,yearly,Asia
+C00787,Benjamin White,c00787@entertainment.demo,Subscriber C00787,62,21,30,6,1,monthly,Europe
+C00788,James Khan,c00788@entertainment.demo,Subscriber C00788,7,40,60,7,0,yearly,Asia
+C00789,Olivia Jackson,c00789@entertainment.demo,Subscriber C00789,26,37,54,2,1,yearly,North America
+C00790,Leo Smith,c00790@entertainment.demo,Subscriber C00790,67,18,30,6,0,yearly,Europe
+C00791,Leo Brown,c00791@entertainment.demo,Subscriber C00791,81,8,18,10,0,yearly,North America
+C00792,Olivia Lee,c00792@entertainment.demo,Subscriber C00792,75,12,42,8,1,monthly,North America
+C00793,Lucas White,c00793@entertainment.demo,Subscriber C00793,83,6,18,9,1,yearly,Asia
+C00794,Charlotte Garcia,c00794@entertainment.demo,Subscriber C00794,64,20,6,7,1,yearly,Europe
+C00795,Lucas Wilson,c00795@entertainment.demo,Subscriber C00795,71,15,60,9,0,monthly,North America
+C00796,Mia Jackson,c00796@entertainment.demo,Subscriber C00796,56,24,12,3,1,yearly,North America
+C00797,Noah Garcia,c00797@entertainment.demo,Subscriber C00797,46,29,36,8,1,monthly,Asia
+C00798,Harper Martin,c00798@entertainment.demo,Subscriber C00798,28,36,36,9,1,yearly,Africa
+C00799,Harper Johnson,c00799@entertainment.demo,Subscriber C00799,73,14,36,6,1,yearly,Asia
+C00800,Olivia Kim,c00800@entertainment.demo,Subscriber C00800,68,17,60,5,1,monthly,South America
+C00801,Ethan Khan,c00801@entertainment.demo,Subscriber C00801,13,39,60,4,1,yearly,Asia
+C00802,Isabella Lee,c00802@entertainment.demo,Subscriber C00802,35,34,6,2,0,yearly,Africa
+C00803,Henry Wilson,c00803@entertainment.demo,Subscriber C00803,77,10,30,4,1,monthly,Africa
+C00804,Henry Anderson,c00804@entertainment.demo,Subscriber C00804,84,5,54,5,1,yearly,Europe
+C00805,Leo Jackson,c00805@entertainment.demo,Subscriber C00805,37,33,18,2,1,yearly,North America
+C00806,Olivia Garcia,c00806@entertainment.demo,Subscriber C00806,85,4,12,3,0,yearly,Asia
+C00807,Noah Moore,c00807@entertainment.demo,Subscriber C00807,77,11,30,10,0,yearly,North America
+C00808,Henry Khan,c00808@entertainment.demo,Subscriber C00808,53,26,18,2,1,yearly,Africa
+C00809,James Thomas,c00809@entertainment.demo,Subscriber C00809,80,8,48,8,1,yearly,Europe
+C00810,Ethan Taylor,c00810@entertainment.demo,Subscriber C00810,82,7,6,8,1,yearly,Europe
+C00811,Amelia White,c00811@entertainment.demo,Subscriber C00811,63,20,30,4,0,yearly,South America
+C00812,Sophia Anderson,c00812@entertainment.demo,Subscriber C00812,75,12,36,1,1,monthly,Europe
+C00813,Lucas Moore,c00813@entertainment.demo,Subscriber C00813,25,37,30,6,0,yearly,Europe
+C00814,Lucas Martin,c00814@entertainment.demo,Subscriber C00814,68,17,48,1,0,monthly,Europe
+C00815,Sophia White,c00815@entertainment.demo,Subscriber C00815,76,12,36,4,0,yearly,Europe
+C00816,Sophia Taylor,c00816@entertainment.demo,Subscriber C00816,49,28,6,5,1,yearly,North America
+C00817,Harper Khan,c00817@entertainment.demo,Subscriber C00817,66,18,60,7,0,yearly,Africa
+C00818,Lucas Thomas,c00818@entertainment.demo,Subscriber C00818,46,29,48,7,1,yearly,South America
+C00819,Noah Khan,c00819@entertainment.demo,Subscriber C00819,43,31,30,10,1,yearly,Europe
+C00820,Lucas White,c00820@entertainment.demo,Subscriber C00820,71,15,30,7,1,yearly,North America
+C00821,Isabella Thomas,c00821@entertainment.demo,Subscriber C00821,28,36,36,0,1,yearly,Europe
+C00822,Olivia Johnson,c00822@entertainment.demo,Subscriber C00822,78,10,42,10,0,yearly,South America
+C00823,Ava Patel,c00823@entertainment.demo,Subscriber C00823,12,39,60,8,0,yearly,Africa
+C00824,Harper Brown,c00824@entertainment.demo,Subscriber C00824,71,15,24,10,0,yearly,Europe
+C00825,Harper Garcia,c00825@entertainment.demo,Subscriber C00825,21,38,60,0,1,yearly,South America
+C00826,Leo Kim,c00826@entertainment.demo,Subscriber C00826,51,27,36,0,1,yearly,North America
+C00827,Harper Smith,c00827@entertainment.demo,Subscriber C00827,83,6,12,4,1,yearly,Asia
+C00828,Noah Anderson,c00828@entertainment.demo,Subscriber C00828,76,11,60,4,1,monthly,Europe
+C00829,Henry Jackson,c00829@entertainment.demo,Subscriber C00829,18,38,24,10,1,yearly,Africa
+C00830,Benjamin Taylor,c00830@entertainment.demo,Subscriber C00830,31,35,42,3,0,yearly,Europe
+C00831,Olivia Smith,c00831@entertainment.demo,Subscriber C00831,56,25,42,8,0,yearly,Africa
+C00832,Ava Khan,c00832@entertainment.demo,Subscriber C00832,77,11,36,0,1,yearly,North America
+C00833,Mia Jackson,c00833@entertainment.demo,Subscriber C00833,75,12,48,1,1,yearly,South America
+C00834,Leo Patel,c00834@entertainment.demo,Subscriber C00834,4,40,42,8,0,yearly,Africa
+C00835,Sophia Anderson,c00835@entertainment.demo,Subscriber C00835,63,20,24,6,1,yearly,North America
+C00836,Ava Lee,c00836@entertainment.demo,Subscriber C00836,39,33,6,7,0,monthly,Europe
+C00837,Ava Jackson,c00837@entertainment.demo,Subscriber C00837,75,13,60,0,1,yearly,Africa
+C00838,Harper Garcia,c00838@entertainment.demo,Subscriber C00838,62,21,6,3,0,yearly,Africa
+C00839,James White,c00839@entertainment.demo,Subscriber C00839,64,20,12,7,0,yearly,Africa
+C00840,James Martin,c00840@entertainment.demo,Subscriber C00840,74,13,54,10,0,monthly,South America
+C00841,Liam Martin,c00841@entertainment.demo,Subscriber C00841,31,35,42,5,1,monthly,Europe
+C00842,Noah Anderson,c00842@entertainment.demo,Subscriber C00842,29,36,60,9,0,monthly,South America
+C00843,Benjamin Smith,c00843@entertainment.demo,Subscriber C00843,78,10,42,7,0,yearly,North America
+C00844,Benjamin Brown,c00844@entertainment.demo,Subscriber C00844,82,7,48,4,1,yearly,Africa
+C00845,Harper Martin,c00845@entertainment.demo,Subscriber C00845,74,13,54,4,0,monthly,South America
+C00846,Amelia Khan,c00846@entertainment.demo,Subscriber C00846,57,24,48,0,0,yearly,North America
+C00847,Mia Johnson,c00847@entertainment.demo,Subscriber C00847,59,23,18,1,1,monthly,Asia
+C00848,Isabella Smith,c00848@entertainment.demo,Subscriber C00848,82,6,30,7,0,yearly,North America
+C00849,Benjamin Brown,c00849@entertainment.demo,Subscriber C00849,64,20,6,2,1,monthly,Asia
+C00850,Sophia Johnson,c00850@entertainment.demo,Subscriber C00850,44,30,36,2,0,monthly,North America
+C00851,Benjamin Taylor,c00851@entertainment.demo,Subscriber C00851,75,12,24,5,1,monthly,South America
+C00852,Henry Jackson,c00852@entertainment.demo,Subscriber C00852,31,35,60,5,0,yearly,Asia
+C00853,Noah Kim,c00853@entertainment.demo,Subscriber C00853,78,10,30,6,0,monthly,Europe
+C00854,Harper Smith,c00854@entertainment.demo,Subscriber C00854,43,31,30,9,1,yearly,Europe
+C00855,Liam Wilson,c00855@entertainment.demo,Subscriber C00855,48,29,12,7,1,yearly,South America
+C00856,Ava Anderson,c00856@entertainment.demo,Subscriber C00856,53,26,54,9,1,monthly,North America
+C00857,Ethan Moore,c00857@entertainment.demo,Subscriber C00857,78,10,12,6,1,yearly,Africa
+C00858,Olivia Patel,c00858@entertainment.demo,Subscriber C00858,37,33,6,10,1,yearly,Asia
+C00859,Charlotte Brown,c00859@entertainment.demo,Subscriber C00859,75,13,12,5,0,monthly,North America
+C00860,Liam Garcia,c00860@entertainment.demo,Subscriber C00860,51,27,36,5,0,yearly,North America
+C00861,Liam Wilson,c00861@entertainment.demo,Subscriber C00861,63,21,48,10,1,yearly,South America
+C00862,Ava Moore,c00862@entertainment.demo,Subscriber C00862,71,15,48,3,0,yearly,South America
+C00863,Benjamin Thomas,c00863@entertainment.demo,Subscriber C00863,49,28,54,4,0,monthly,Europe
+C00864,Mia Brown,c00864@entertainment.demo,Subscriber C00864,51,27,48,7,0,monthly,North America
+C00865,James Anderson,c00865@entertainment.demo,Subscriber C00865,50,28,30,8,1,yearly,South America
+C00866,Amelia Johnson,c00866@entertainment.demo,Subscriber C00866,29,36,48,1,1,yearly,Asia
+C00867,Harper Wilson,c00867@entertainment.demo,Subscriber C00867,69,17,6,10,0,yearly,Europe
+C00868,Leo Martin,c00868@entertainment.demo,Subscriber C00868,74,13,12,0,1,yearly,Europe
+C00869,Lucas Johnson,c00869@entertainment.demo,Subscriber C00869,83,6,42,6,1,yearly,Europe
+C00870,Noah Smith,c00870@entertainment.demo,Subscriber C00870,69,17,48,8,0,yearly,North America
+C00871,Isabella Garcia,c00871@entertainment.demo,Subscriber C00871,49,28,30,7,1,yearly,South America
+C00872,Lucas Jackson,c00872@entertainment.demo,Subscriber C00872,62,21,12,4,1,monthly,North America
+C00873,Harper Brown,c00873@entertainment.demo,Subscriber C00873,51,27,48,6,1,yearly,North America
+C00874,Olivia Anderson,c00874@entertainment.demo,Subscriber C00874,49,28,60,5,1,monthly,Africa
+C00875,James Jackson,c00875@entertainment.demo,Subscriber C00875,50,28,60,5,0,yearly,South America
+C00876,Benjamin White,c00876@entertainment.demo,Subscriber C00876,36,34,18,3,1,yearly,Africa
+C00877,Noah Jackson,c00877@entertainment.demo,Subscriber C00877,41,32,54,4,0,monthly,South America
+C00878,Liam Brown,c00878@entertainment.demo,Subscriber C00878,50,27,42,10,1,yearly,Europe
+C00879,Lucas Kim,c00879@entertainment.demo,Subscriber C00879,68,17,12,5,0,yearly,Asia
+C00880,Harper Lee,c00880@entertainment.demo,Subscriber C00880,69,17,12,8,1,yearly,South America
+C00881,Benjamin Smith,c00881@entertainment.demo,Subscriber C00881,68,17,6,1,0,yearly,North America
+C00882,Ethan Jackson,c00882@entertainment.demo,Subscriber C00882,53,26,30,6,1,yearly,Asia
+C00883,Amelia Thomas,c00883@entertainment.demo,Subscriber C00883,20,38,60,10,0,yearly,Asia
+C00884,Liam Smith,c00884@entertainment.demo,Subscriber C00884,70,16,60,6,1,yearly,North America
+C00885,Olivia Khan,c00885@entertainment.demo,Subscriber C00885,85,4,24,9,0,yearly,Europe
+C00886,Charlotte Moore,c00886@entertainment.demo,Subscriber C00886,43,31,12,10,0,yearly,Africa
+C00887,Ava Johnson,c00887@entertainment.demo,Subscriber C00887,33,35,6,5,1,yearly,Asia
+C00888,Isabella Smith,c00888@entertainment.demo,Subscriber C00888,39,33,60,7,0,yearly,South America
+C00889,Sophia Thomas,c00889@entertainment.demo,Subscriber C00889,79,9,12,3,1,monthly,South America
+C00890,Isabella Lee,c00890@entertainment.demo,Subscriber C00890,27,36,36,3,0,monthly,Europe
+C00891,Amelia Khan,c00891@entertainment.demo,Subscriber C00891,51,27,30,4,1,yearly,North America
+C00892,Mia White,c00892@entertainment.demo,Subscriber C00892,17,39,42,8,1,monthly,South America
+C00893,Charlotte Martin,c00893@entertainment.demo,Subscriber C00893,82,7,24,5,1,monthly,Africa
+C00894,Isabella Brown,c00894@entertainment.demo,Subscriber C00894,80,8,36,3,0,monthly,South America
+C00895,Mia Patel,c00895@entertainment.demo,Subscriber C00895,15,39,54,7,1,yearly,Asia
+C00896,Lucas Jackson,c00896@entertainment.demo,Subscriber C00896,77,10,24,10,0,monthly,North America
+C00897,Amelia Smith,c00897@entertainment.demo,Subscriber C00897,53,26,48,10,0,monthly,South America
+C00898,Benjamin Smith,c00898@entertainment.demo,Subscriber C00898,54,26,54,2,1,yearly,Africa
+C00899,James Kim,c00899@entertainment.demo,Subscriber C00899,29,36,54,10,1,yearly,Europe
+C00900,Olivia Johnson,c00900@entertainment.demo,Subscriber C00900,63,21,12,2,1,monthly,Europe
+C00901,Ava Thomas,c00901@entertainment.demo,Subscriber C00901,85,5,30,6,1,yearly,South America
+C00902,Henry Martin,c00902@entertainment.demo,Subscriber C00902,79,9,54,1,1,yearly,Asia
+C00903,Lucas Smith,c00903@entertainment.demo,Subscriber C00903,69,17,60,1,1,monthly,South America
+C00904,Amelia Khan,c00904@entertainment.demo,Subscriber C00904,70,16,12,9,0,yearly,North America
+C00905,Amelia Taylor,c00905@entertainment.demo,Subscriber C00905,61,22,18,1,1,yearly,Asia
+C00906,Henry Patel,c00906@entertainment.demo,Subscriber C00906,83,6,12,0,0,yearly,Europe
+C00907,Leo Jackson,c00907@entertainment.demo,Subscriber C00907,16,39,12,2,1,monthly,South America
+C00908,Ethan Brown,c00908@entertainment.demo,Subscriber C00908,53,26,6,0,1,yearly,South America
+C00909,Amelia White,c00909@entertainment.demo,Subscriber C00909,69,17,18,2,1,yearly,North America
+C00910,Ava Khan,c00910@entertainment.demo,Subscriber C00910,30,35,48,3,1,yearly,North America
+C00911,Harper Brown,c00911@entertainment.demo,Subscriber C00911,52,27,18,10,1,yearly,Africa
+C00912,Olivia White,c00912@entertainment.demo,Subscriber C00912,46,30,54,9,1,yearly,Africa
+C00913,Charlotte Jackson,c00913@entertainment.demo,Subscriber C00913,61,22,24,7,1,monthly,Europe
+C00914,Henry Anderson,c00914@entertainment.demo,Subscriber C00914,69,16,54,9,1,yearly,Africa
+C00915,Mia Anderson,c00915@entertainment.demo,Subscriber C00915,61,22,42,3,1,monthly,Europe
+C00916,Harper Jackson,c00916@entertainment.demo,Subscriber C00916,69,16,12,1,0,monthly,Africa
+C00917,Benjamin Thomas,c00917@entertainment.demo,Subscriber C00917,71,15,54,1,1,yearly,Asia
+C00918,Harper Brown,c00918@entertainment.demo,Subscriber C00918,30,35,18,5,0,monthly,Europe
+C00919,Isabella Kim,c00919@entertainment.demo,Subscriber C00919,66,18,30,5,1,monthly,Africa
+C00920,Henry Johnson,c00920@entertainment.demo,Subscriber C00920,80,9,12,2,0,yearly,North America
+C00921,Henry Martin,c00921@entertainment.demo,Subscriber C00921,72,14,6,2,0,yearly,Asia
+C00922,Harper Thomas,c00922@entertainment.demo,Subscriber C00922,25,37,60,3,0,monthly,Asia
+C00923,Amelia Smith,c00923@entertainment.demo,Subscriber C00923,81,8,60,7,0,yearly,Asia
+C00924,James White,c00924@entertainment.demo,Subscriber C00924,33,35,54,1,1,monthly,Asia
+C00925,Isabella Patel,c00925@entertainment.demo,Subscriber C00925,65,19,6,2,1,monthly,Africa
+C00926,Liam Taylor,c00926@entertainment.demo,Subscriber C00926,38,33,60,1,0,yearly,Africa
+C00927,Mia Khan,c00927@entertainment.demo,Subscriber C00927,41,32,42,0,1,yearly,Africa
+C00928,Henry Brown,c00928@entertainment.demo,Subscriber C00928,75,12,18,5,1,monthly,Africa
+C00929,Isabella Khan,c00929@entertainment.demo,Subscriber C00929,85,4,60,5,1,monthly,North America
+C00930,Harper White,c00930@entertainment.demo,Subscriber C00930,80,8,60,0,1,yearly,North America
+C00931,Henry Martin,c00931@entertainment.demo,Subscriber C00931,66,19,12,8,0,yearly,Asia
+C00932,Sophia Thomas,c00932@entertainment.demo,Subscriber C00932,59,23,54,0,1,yearly,Europe
+C00933,Lucas Wilson,c00933@entertainment.demo,Subscriber C00933,60,22,12,1,0,yearly,Europe
+C00934,Liam Brown,c00934@entertainment.demo,Subscriber C00934,58,24,6,3,1,yearly,Africa
+C00935,Harper Taylor,c00935@entertainment.demo,Subscriber C00935,84,5,6,9,1,monthly,Europe
+C00936,Ava Jackson,c00936@entertainment.demo,Subscriber C00936,70,16,30,9,0,monthly,South America
+C00937,Ethan Patel,c00937@entertainment.demo,Subscriber C00937,78,10,36,9,1,yearly,North America
+C00938,Charlotte Moore,c00938@entertainment.demo,Subscriber C00938,78,10,18,10,0,yearly,South America
+C00939,Mia Johnson,c00939@entertainment.demo,Subscriber C00939,72,14,60,6,0,yearly,Europe
+C00940,Olivia Lee,c00940@entertainment.demo,Subscriber C00940,44,30,12,3,0,yearly,Africa
+C00941,Liam Kim,c00941@entertainment.demo,Subscriber C00941,65,19,42,9,0,yearly,Asia
+C00942,James Wilson,c00942@entertainment.demo,Subscriber C00942,22,38,54,8,0,yearly,North America
+C00943,Ava Johnson,c00943@entertainment.demo,Subscriber C00943,51,27,48,2,1,yearly,North America
+C00944,Mia Lee,c00944@entertainment.demo,Subscriber C00944,70,16,42,9,1,yearly,South America
+C00945,Benjamin Patel,c00945@entertainment.demo,Subscriber C00945,76,11,24,3,0,yearly,Asia
+C00946,Ethan Garcia,c00946@entertainment.demo,Subscriber C00946,66,19,42,6,1,yearly,North America
+C00947,James Moore,c00947@entertainment.demo,Subscriber C00947,27,36,18,5,1,yearly,Asia
+C00948,Olivia Jackson,c00948@entertainment.demo,Subscriber C00948,78,10,24,9,1,yearly,North America
+C00949,Sophia Khan,c00949@entertainment.demo,Subscriber C00949,32,35,60,1,0,monthly,Europe
+C00950,Amelia Taylor,c00950@entertainment.demo,Subscriber C00950,54,26,30,3,0,yearly,North America
+C00951,Mia Khan,c00951@entertainment.demo,Subscriber C00951,35,34,60,10,0,monthly,South America
+C00952,Ava Anderson,c00952@entertainment.demo,Subscriber C00952,85,5,36,7,0,monthly,Asia
+C00953,Lucas White,c00953@entertainment.demo,Subscriber C00953,13,39,36,5,0,yearly,North America
+C00954,Ava Wilson,c00954@entertainment.demo,Subscriber C00954,50,27,30,4,0,monthly,Europe
+C00955,Benjamin Wilson,c00955@entertainment.demo,Subscriber C00955,61,21,42,10,0,yearly,South America
+C00956,Benjamin White,c00956@entertainment.demo,Subscriber C00956,65,19,48,7,1,monthly,Europe
+C00957,Ethan Jackson,c00957@entertainment.demo,Subscriber C00957,27,36,54,6,0,monthly,South America
+C00958,Isabella Patel,c00958@entertainment.demo,Subscriber C00958,40,32,30,0,0,yearly,Europe
+C00959,Harper Wilson,c00959@entertainment.demo,Subscriber C00959,17,39,6,3,0,yearly,South America
+C00960,Mia Khan,c00960@entertainment.demo,Subscriber C00960,79,9,48,8,0,yearly,Asia
+C00961,Noah Brown,c00961@entertainment.demo,Subscriber C00961,23,37,48,7,1,yearly,South America
+C00962,Noah Thomas,c00962@entertainment.demo,Subscriber C00962,76,11,36,0,0,monthly,Asia
+C00963,Mia Patel,c00963@entertainment.demo,Subscriber C00963,80,8,60,4,1,yearly,Africa
+C00964,Mia Khan,c00964@entertainment.demo,Subscriber C00964,50,28,30,6,0,yearly,Asia
+C00965,Isabella Johnson,c00965@entertainment.demo,Subscriber C00965,54,25,48,10,1,yearly,South America
+C00966,Isabella Johnson,c00966@entertainment.demo,Subscriber C00966,30,36,6,10,0,yearly,Europe
+C00967,Lucas Garcia,c00967@entertainment.demo,Subscriber C00967,60,22,24,6,0,yearly,South America
+C00968,Henry Smith,c00968@entertainment.demo,Subscriber C00968,85,5,42,8,0,yearly,Africa
+C00969,Sophia Johnson,c00969@entertainment.demo,Subscriber C00969,49,28,6,9,0,monthly,Europe
+C00970,Sophia Kim,c00970@entertainment.demo,Subscriber C00970,18,38,6,4,0,yearly,Europe
+C00971,Harper Garcia,c00971@entertainment.demo,Subscriber C00971,46,30,12,3,0,yearly,Africa
+C00972,Harper Wilson,c00972@entertainment.demo,Subscriber C00972,64,20,30,7,0,monthly,Africa
+C00973,Ethan Moore,c00973@entertainment.demo,Subscriber C00973,83,6,42,10,0,yearly,North America
+C00974,Isabella Taylor,c00974@entertainment.demo,Subscriber C00974,67,18,6,8,1,yearly,North America
+C00975,Henry Lee,c00975@entertainment.demo,Subscriber C00975,11,39,60,3,0,monthly,Europe
+C00976,Mia Patel,c00976@entertainment.demo,Subscriber C00976,67,18,12,4,1,monthly,North America
+C00977,Lucas White,c00977@entertainment.demo,Subscriber C00977,77,11,24,4,1,monthly,South America
+C00978,Mia Smith,c00978@entertainment.demo,Subscriber C00978,54,26,12,4,0,yearly,Asia
+C00979,Henry Lee,c00979@entertainment.demo,Subscriber C00979,64,20,48,8,0,monthly,North America
+C00980,Charlotte Thomas,c00980@entertainment.demo,Subscriber C00980,85,4,18,9,1,yearly,Africa
+C00981,Mia Brown,c00981@entertainment.demo,Subscriber C00981,50,28,60,0,0,monthly,Asia
+C00982,Olivia Taylor,c00982@entertainment.demo,Subscriber C00982,15,39,36,0,1,yearly,Africa
+C00983,Leo Anderson,c00983@entertainment.demo,Subscriber C00983,50,28,60,4,0,yearly,Asia
+C00984,Ethan Smith,c00984@entertainment.demo,Subscriber C00984,28,36,36,5,1,monthly,Africa
+C00985,Mia Smith,c00985@entertainment.demo,Subscriber C00985,79,10,48,10,0,monthly,Europe
+C00986,Charlotte Patel,c00986@entertainment.demo,Subscriber C00986,16,39,18,9,0,monthly,Africa
+C00987,Noah White,c00987@entertainment.demo,Subscriber C00987,39,33,60,5,1,yearly,Africa
+C00988,Charlotte Wilson,c00988@entertainment.demo,Subscriber C00988,48,28,24,4,0,monthly,Europe
+C00989,Ava Wilson,c00989@entertainment.demo,Subscriber C00989,38,33,42,1,0,yearly,North America
+C00990,Amelia Johnson,c00990@entertainment.demo,Subscriber C00990,76,11,42,1,0,monthly,South America
+C00991,Noah Thomas,c00991@entertainment.demo,Subscriber C00991,23,37,30,10,1,yearly,Africa
+C00992,Ava Kim,c00992@entertainment.demo,Subscriber C00992,20,38,42,7,0,monthly,Europe
+C00993,Henry Brown,c00993@entertainment.demo,Subscriber C00993,76,12,24,6,0,monthly,Africa
+C00994,Lucas White,c00994@entertainment.demo,Subscriber C00994,82,7,54,9,0,yearly,South America
+C00995,Mia Wilson,c00995@entertainment.demo,Subscriber C00995,47,29,48,0,0,yearly,Europe
+C00996,Lucas Kim,c00996@entertainment.demo,Subscriber C00996,83,6,60,5,0,yearly,Europe
+C00997,Henry Kim,c00997@entertainment.demo,Subscriber C00997,62,21,12,3,1,yearly,South America
+C00998,Leo Thomas,c00998@entertainment.demo,Subscriber C00998,65,19,60,7,0,yearly,Africa
+C00999,Benjamin Moore,c00999@entertainment.demo,Subscriber C00999,73,14,18,1,0,monthly,Asia
+C01000,Benjamin Jackson,c01000@entertainment.demo,Subscriber C01000,70,16,24,8,0,yearly,South America

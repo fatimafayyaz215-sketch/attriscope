@@ -2,9 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { ADVISOR_QUICK_PROMPTS, ADVISOR_WELCOME_EXAMPLE, ADVISOR_WELCOME_TOPICS } from "@/lib/advisor-prompts";
+import {
+  ADVISOR_WELCOME_EXAMPLE,
+  getAdvisorQuickPrompts,
+  getAdvisorWelcomeTopics,
+  resolveAdvisorWeights,
+  SIGNAL_LABELS,
+} from "@/lib/advisor-prompts";
 import { ADVISOR_INDUSTRY_CHANGED } from "@/lib/advisor-events";
 import type { Industry } from "@/lib/industry";
+import type { ScoringWeights } from "@/lib/scoring";
 import { useAdvisorChat } from "@/components/layout/advisor-chat-context";
 import AdvisorMessageBody from "@/components/layout/AdvisorMessageBody";
 
@@ -18,6 +25,7 @@ type ChatMessage = {
 type AdvisorContext = {
   industry: string;
   industryLabel: string;
+  weights?: ScoringWeights;
   metrics: {
     totalCustomers: number;
     churnCustomers?: number;
@@ -31,24 +39,29 @@ function churnCount(metrics: AdvisorContext["metrics"]) {
 }
 
 function buildWelcome(ctx: AdvisorContext): ChatMessage {
-  const { metrics, industryLabel, industry } = ctx;
+  const { metrics, industryLabel, industry, weights } = ctx;
   const industryKey = (industry || "saas").toLowerCase() as Industry;
-  const topics =
-    ADVISOR_WELCOME_TOPICS[industryKey] || ADVISOR_WELCOME_TOPICS.saas;
+  const resolvedWeights = weights ?? resolveAdvisorWeights(industryKey);
+  const topics = getAdvisorWelcomeTopics(industryKey, resolvedWeights);
   const example =
     ADVISOR_WELCOME_EXAMPLE[industryKey] || ADVISOR_WELCOME_EXAMPLE.saas;
-  const mrr =
-    metrics.revenueAtRiskMrr > 0
-      ? ` ~$${Math.round(metrics.revenueAtRiskMrr).toLocaleString()} MRR at risk.`
-      : "";
+  const topSignal = (
+    [
+      ["inactivity", resolvedWeights.inactivity],
+      ["usage", resolvedWeights.usage],
+      ["support", resolvedWeights.support],
+      ["payment", resolvedWeights.payment],
+    ] as const
+  ).sort((a, b) => b[1] - a[1])[0];
+
   return {
     id: "welcome",
     role: "assistant",
-    content: `Hi — I'm your ${industryLabel} churn advisor. You have ${churnCount(metrics)} predicted churn accounts of ${metrics.totalCustomers} tracked.${mrr}
+    content: `Hi — I'm your ${industryLabel} churn advisor. You have ${churnCount(metrics)} high-risk accounts of ${metrics.totalCustomers} tracked.
 
-Ask about ${topics}.
+Your top weighted signal is **${SIGNAL_LABELS[topSignal[0]]}** at **${topSignal[1]}%**. Ask about ${topics}.
 
-Tap a suggestion below or type your own ${industryLabel} question — ${example}.`,
+Tap a suggestion below or type your own question — ${example}.`,
     source: "gemini",
   };
 }
@@ -59,7 +72,8 @@ function newId() {
 
 function contextFingerprint(ctx: AdvisorContext) {
   const m = ctx.metrics;
-  return `${ctx.industry}|${m.totalCustomers}|${churnCount(m)}|${m.revenueAtRiskMrr}`;
+  const w = ctx.weights ?? resolveAdvisorWeights((ctx.industry || "saas") as Industry);
+  return `${ctx.industry}|${w.inactivity}|${w.usage}|${w.support}|${w.payment}|${m.totalCustomers}|${churnCount(m)}`;
 }
 
 function buildSyncNotice(ctx: AdvisorContext): ChatMessage {
@@ -93,7 +107,18 @@ export default function AdvisorChatPanel() {
   const contextRef = useRef<AdvisorContext | null>(null);
 
   const industryKey = (context?.industry || "saas").toLowerCase() as Industry;
-  const quickPrompts = ADVISOR_QUICK_PROMPTS[industryKey] ?? ADVISOR_QUICK_PROMPTS.saas;
+  const advisorWeights =
+    context?.weights ?? resolveAdvisorWeights(industryKey);
+  const quickPrompts = getAdvisorQuickPrompts(
+    industryKey,
+    advisorWeights,
+    context
+      ? {
+          totalCustomers: context.metrics.totalCustomers,
+          highRiskCustomers: churnCount(context.metrics),
+        }
+      : undefined,
+  );
   const showSuggestions = !messages.some((m) => m.role === "user");
 
   useEffect(() => {
@@ -410,7 +435,7 @@ export default function AdvisorChatPanel() {
         {showSuggestions ? (
           <div className="shrink-0 px-3 pt-2 pb-1 border-t border-gray-100 bg-white max-h-[30vh] overflow-y-auto">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              {context?.industryLabel || "Industry"} suggestions
+              {context?.industryLabel || "Industry"} · weights {advisorWeights.inactivity}/{advisorWeights.usage}/{advisorWeights.support}/{advisorWeights.payment}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {quickPrompts.map((q) => (

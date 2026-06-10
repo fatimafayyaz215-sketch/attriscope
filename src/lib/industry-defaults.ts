@@ -5,7 +5,7 @@ export type IndustryId = "entertainment" | "saas" | "education";
 export const DEFAULT_INDUSTRY: IndustryId = "saas";
 
 export const INDUSTRY_DEFAULT_WEIGHTS: Record<IndustryId, ScoringWeights> = {
-  entertainment: { inactivity: 30, usage: 30, support: 20, payment: 20 },
+  entertainment: { inactivity: 35, usage: 30, support: 20, payment: 15 },
   // SaaS preset: usage drop (45) and payment delay (30) are strongest churn signals
   saas: { inactivity: 10, usage: 45, support: 15, payment: 30 },
   education: { inactivity: 35, usage: 25, support: 15, payment: 25 },

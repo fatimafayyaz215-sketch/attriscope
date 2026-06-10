@@ -6,11 +6,9 @@ import { notifyAdvisorIndustryChanged } from "@/lib/advisor-events";
 import { getIndustryDefaultWeights, normalizeIndustry } from "@/lib/industry-defaults";
 
 export default function SettingsFooter() {
-  const { weights, industry, setWeights, setIndustry, bumpDataVersion, setCustomers } = useChurnStore();
+  const { weights, industry, setWeights, setIndustry } = useChurnStore();
   const [saving, setSaving] = useState(false);
-  const [recalculating, setRecalculating] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
-  const [recalcAt, setRecalcAt] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [error, setError] = useState("");
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -107,36 +105,6 @@ export default function SettingsFooter() {
     }
   };
 
-  const recalculateScores = async () => {
-    setRecalculating(true);
-    setError("");
-    try {
-      // Send the currently-selected weights so recalculation uses the active
-      // industry formula even if the user hasn't pressed "Save Settings" yet.
-      const res = await fetch("/api/settings/recalculate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          weight_inactivity: weights.inactivity,
-          weight_usage: weights.usage,
-          weight_support: weights.support,
-          weight_payment: weights.payment,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Recalculation failed");
-
-      setCustomers([]);
-      bumpDataVersion();
-      setRecalcAt(new Date().toLocaleString());
-      showToast(`Recalculated ${data.updated ?? 0} customers`);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Recalculation failed");
-    } finally {
-      setRecalculating(false);
-    }
-  };
-
   return (
     <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
       {toast && (
@@ -148,10 +116,6 @@ export default function SettingsFooter() {
         <div>
           <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Last Saved</p>
           <p className="text-xs font-bold text-gray-700">{savedAt ?? "Not yet saved"}</p>
-        </div>
-        <div>
-          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Last Recalculated</p>
-          <p className="text-xs font-bold text-gray-700">{recalcAt ?? "Not yet recalculated"}</p>
         </div>
         {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
         {savedAt && !error && (
@@ -167,15 +131,8 @@ export default function SettingsFooter() {
           Reset to Default
         </button>
         <button
-          onClick={recalculateScores}
-          disabled={saving || recalculating}
-          className="px-6 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm font-bold transition-colors shadow-sm disabled:opacity-60"
-        >
-          {recalculating ? "Recalculating…" : "Recalculate Scores"}
-        </button>
-        <button
           onClick={saveSettings}
-          disabled={saving || recalculating}
+          disabled={saving}
           className="px-8 py-2.5 bg-[#1e293b] hover:bg-black text-white rounded-lg text-sm font-bold transition-colors shadow-sm disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save Settings"}

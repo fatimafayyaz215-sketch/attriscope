@@ -24,6 +24,15 @@ Main workflow:
 4) Review high-risk customers in Risk Analysis and Dashboard widgets.
 5) Draft and send retention emails in Outreach Hub.
 
+Risk Analysis workspace filters (only these exist — do not invent others):
+- Search by customer name, email, or company.
+- Risk level dropdown: All Levels, High Risk, Medium Risk, Low Risk.
+- Key signal dropdown: All Signals, Inactivity, Usage Drop, Support Complaints, Payment Delay.
+- Signal filters match customers with active signal values (e.g. Payment Delay = payment_delay flagged).
+- Deep links: /risk-analysis?signal=payment or /risk-analysis?level=high&signal=payment
+- Key Factor column shows the strongest of the four signals per row (includes payment delay).
+- Click a row for the Risk Intelligence panel; use Outreach → for retention emails.
+
 How scoring works:
 - Four signals are measured: Login/Inactivity, Usage Drop, Support Complaints, Payment Delay.
 - Each signal is normalized based on the customer's billing cycle before scoring.
@@ -33,11 +42,13 @@ How scoring works:
 - If billing_cycle column is not in the CSV, the system defaults to yearly caps.
 - Weights are user-configurable in Settings. Industry presets apply on onboarding and Reset to Default.
 - SaaS preset (default industry): inactivity 10%, usage 45%, support 15%, payment 30%.
+- Entertainment preset: inactivity 35%, usage 30%, support 20%, payment 15%.
 - Risk bands: High >= 70, Medium 40-69, Low < 40.
 
 Weight / priority guidance:
 - The four signals each have a weight slider in Settings.
 - SaaS profile prioritizes usage drop (45%) and payment delay (30%) as the strongest churn signals.
+- Entertainment profile prioritizes inactivity (35%) and usage drop (30%) for streaming/viewing habits.
 - If all four signals matter equally for your business, set each to 25%.
 - Total recommended to be 100%, but the formula self-adjusts even if it isn't.
 - Use Reset to Default to restore the current industry profile (SaaS: 10/45/15/30).
@@ -140,12 +151,56 @@ function getRuleBasedAnswer(question: string): string {
     ].join("\n");
   }
 
+  if (
+    q.includes("payment delay") ||
+    q.includes("payment_delay") ||
+    q.includes("payment friction") ||
+    (q.includes("payment") && (q.includes("save") || q.includes("flag") || q.includes("filter")))
+  ) {
+    return [
+      "**Find customers with payment delays:**",
+      "1) Open `Risk Analysis` (`/risk-analysis`).",
+      "2) Set **Key signal** to **Payment Delay** (optionally set **High Risk** too).",
+      "3) Review the filtered list — Key Factor may show **Payment delayed**.",
+      "4) Click a customer, then use **Outreach →** to draft a retention email.",
+      "",
+      "**Deep link:** `/risk-analysis?signal=payment` or `/risk-analysis?level=high&signal=payment`",
+    ].join("\n");
+  }
+
+  if (
+    q.includes("usage drop") ||
+    q.includes("support complaint") ||
+    q.includes("support ticket") ||
+    q.includes("inactive") ||
+    q.includes("inactivity")
+  ) {
+    const signal =
+      q.includes("usage") ? "usage"
+      : q.includes("support") || q.includes("ticket") || q.includes("complaint") ? "support"
+      : "inactivity";
+    const label =
+      signal === "usage" ? "Usage Drop"
+      : signal === "support" ? "Support Complaints"
+      : "Inactivity";
+    return [
+      `**Filter by ${label}:**`,
+      "1) Open `Risk Analysis`.",
+      `2) Set **Key signal** to **${label}**.`,
+      "3) Optionally combine with a **risk level** filter (e.g. High Risk).",
+      "4) Select a customer and use **Outreach →** for targeted retention.",
+      "",
+      `**Deep link:** \`/risk-analysis?signal=${signal}\``,
+    ].join("\n");
+  }
+
   if (q.includes("risk analysis") || q.includes("high risk") || q.includes("dashboard")) {
     return [
       "Use Dashboard and Risk Analysis together:",
       "- Dashboard gives KPI and trend summaries.",
-      "- Risk Analysis provides row-level customer risk details and filtering.",
+      "- Risk Analysis has **search**, **risk level** filter, and **key signal** filter (inactivity, usage drop, support, payment delay).",
       "- High-risk customers are the best candidates for Outreach Hub campaigns.",
+      "- Example: `/risk-analysis?level=high&signal=payment` for high-risk accounts with payment delays.",
     ].join("\n");
   }
 
@@ -243,7 +298,8 @@ User question:
 ${trimmedQuestion}
 
 Write a clear, practical response focused on app functionality.
-Do not invent non-existent screens or features.
+Do not invent non-existent screens or features. Risk Analysis only has search, risk-level filter, and key-signal filter — never describe other filter types.
+When guiding users to filter by payment_delay, usage drop, support, or inactivity, reference the Key signal dropdown and deep links like /risk-analysis?signal=payment.
 When relevant, give concrete re-engagement recommendations (offers, campaigns, and next-step actions).
 Format the final response with clear line breaks, bullets, and **bold** labels (no ### headers or ***).
 `;

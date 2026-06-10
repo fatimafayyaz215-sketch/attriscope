@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -50,15 +50,14 @@ export default function EngagementTrendChart() {
 
   const hasData = totalCustomers > 0;
 
-  const chartData = (hasData ? trend : [
-    { week: "0–7 days", engagement: 0, count: 0 },
-    { week: "7–14 days", engagement: 0, count: 0 },
-    { week: "14–21 days", engagement: 0, count: 0 },
-    { week: "21–28 days", engagement: 0, count: 0 },
-  ]).map((d, i) => ({
-    ...d,
-    week: [`0–7d`, `7–14d`, `14–21d`, `21–28d`][i] ?? d.week,
-  }));
+  const chartData = hasData
+    ? trend
+    : [
+        { week: "0–7d", engagement: 0, count: 0 },
+        { week: "8–30d", engagement: 0, count: 0 },
+        { week: "31–60d", engagement: 0, count: 0 },
+        { week: "61–90d", engagement: 0, count: 0 },
+      ];
 
   const first = trend[0]?.engagement ?? 0;
   const last  = trend[trend.length - 1]?.engagement ?? 0;
@@ -70,8 +69,8 @@ export default function EngagementTrendChart() {
     ? Math.round(trend.reduce((s, p) => s + p.engagement, 0) / trend.length)
     : 0;
 
-  const maxCount = Math.max(...chartData.map((d) => d.count), 1);
-  const barYMax  = Math.max(Math.ceil(maxCount * 1.3), 5);
+  const maxCount = Math.max(...chartData.map((d) => d.count), 0);
+  const barYMax = maxCount > 0 ? Math.ceil(maxCount * 1.15) : 10;
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl shadow-sm h-full flex flex-col overflow-hidden">
@@ -80,7 +79,7 @@ export default function EngagementTrendChart() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-bold text-white leading-tight">Engagement Trend</h2>
-            <p className="text-xs text-blue-200 mt-0.5">Inactivity windows · bars = customers, line = engagement</p>
+            <p className="text-xs text-blue-200 mt-0.5">Days inactive · bars = customers per window, line = engagement rate</p>
           </div>
           <div className="flex items-center gap-3">
             {hasData && (
@@ -146,6 +145,16 @@ export default function EngagementTrendChart() {
 
             <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f0f9ff", radius: 8 }} />
 
+            <Area
+              yAxisId="right"
+              dataKey="engagement"
+              name="EngagementArea"
+              fill="url(#areaGrad)"
+              stroke="transparent"
+              isAnimationActive
+              legendType="none"
+            />
+
             <Bar
               yAxisId="left"
               dataKey="count"
@@ -155,16 +164,6 @@ export default function EngagementTrendChart() {
               maxBarSize={56}
               isAnimationActive
               opacity={hasData ? 1 : 0.15}
-            />
-
-            <Area
-              yAxisId="right"
-              dataKey="engagement"
-              name="EngagementArea"
-              fill="url(#areaGrad)"
-              stroke="transparent"
-              isAnimationActive
-              legendType="none"
             />
 
             <Line

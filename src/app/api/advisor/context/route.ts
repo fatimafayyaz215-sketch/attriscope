@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { normalizeIndustry } from "@/lib/industry-defaults";
+import { getIndustryDefaultWeights, normalizeIndustry } from "@/lib/industry-defaults";
 import type { Industry } from "@/lib/industry";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,11 @@ export async function GET() {
   }
 
   const [{ data: settings }, { data: customers, error: custErr }] = await Promise.all([
-    supabase.from("user_settings").select("industry").eq("user_id", user.id).single(),
+    supabase
+      .from("user_settings")
+      .select("industry, weight_inactivity, weight_usage, weight_support, weight_payment")
+      .eq("user_id", user.id)
+      .single(),
     supabase.from("customers").select("risk_level").eq("user_id", user.id),
   ]);
 
@@ -32,13 +36,22 @@ export async function GET() {
   }
 
   const industry = normalizeIndustry(settings?.industry) as Industry;
+  const defaults = getIndustryDefaultWeights(industry);
   const rows = customers ?? [];
   const totalCustomers = rows.length;
   const highRiskCustomers = rows.filter((c) => c.risk_level === "high").length;
 
+  const weights = {
+    inactivity: settings?.weight_inactivity ?? defaults.inactivity,
+    usage: settings?.weight_usage ?? defaults.usage,
+    support: settings?.weight_support ?? defaults.support,
+    payment: settings?.weight_payment ?? defaults.payment,
+  };
+
   return NextResponse.json({
     industry,
     industryLabel: INDUSTRY_LABEL[industry],
+    weights,
     metrics: {
       totalCustomers,
       churnCustomers: highRiskCustomers,

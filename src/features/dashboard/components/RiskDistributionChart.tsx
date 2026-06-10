@@ -72,6 +72,7 @@ export default function RiskDistributionChart() {
             <YAxis
               allowDecimals={false}
               domain={[0, yMax]}
+              ticks={Array.from({ length: 5 }, (_, i) => Math.round((yMax / 4) * i))}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "#9ca3af" }}

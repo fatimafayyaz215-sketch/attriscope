@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { customerMatchesSignalFilter, parseSignalFilter } from "@/lib/customer-signals";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
 export async function GET(request: NextRequest) {
@@ -11,6 +12,7 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const level = searchParams.get("level");
+  const signal = parseSignalFilter(searchParams.get("signal"));
   const limit = parseInt(searchParams.get("limit") ?? "500");
   const search = searchParams.get("search") ?? "";
 
@@ -22,6 +24,9 @@ export async function GET(request: NextRequest) {
     .limit(limit);
 
   if (level) query = query.eq("risk_level", level);
+  if (signal === "payment") query = query.gt("payment_delay", 0);
+  if (signal === "usage") query = query.gt("usage_drop", 0);
+  if (signal === "support") query = query.gt("support_complaints", 0);
   if (search) {
     const q = search.replaceAll(",", " ");
     query = query.or(`name.ilike.%${q}%,email.ilike.%${q}%,company.ilike.%${q}%`);
@@ -30,10 +35,14 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const customers = (data ?? []).map((customer) => ({
+  let customers = (data ?? []).map((customer) => ({
     ...customer,
     days_inactive: computeDaysInactiveFromLastLogin(customer.last_login_at, customer.days_inactive),
   }));
+
+  if (signal !== "all") {
+    customers = customers.filter((customer) => customerMatchesSignalFilter(customer, signal));
+  }
 
   return NextResponse.json({ customers });
 }

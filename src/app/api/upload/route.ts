@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Papa from "papaparse";
 import { createClient } from "@/lib/supabase/server";
-import { computeChurnScore, DEFAULT_WEIGHTS, ScoringWeights, BillingCycle } from "@/lib/scoring";
+import { parseBillingCycle } from "@/lib/billing-cycle";
+import { computeChurnScore, DEFAULT_WEIGHTS, ScoringWeights } from "@/lib/scoring";
 import type { MappedField } from "@/lib/column-detector";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
@@ -13,8 +14,9 @@ function getField(row: Record<string, string>, field: MappedField, mapping: Mapp
 }
 
 function parsePaymentDelay(raw: string): 0 | 1 {
-  const v = raw.toLowerCase();
+  const v = raw.toLowerCase().trim();
   if (v === "1" || v === "true" || v === "yes" || v === "delayed" || v === "late" || v === "missed" || v === "overdue") return 1;
+  if (v.includes("delay") || v.includes("late") || v.includes("overdue")) return 1;
   return 0;
 }
 
@@ -91,11 +93,7 @@ export async function POST(request: NextRequest) {
     const supportComplaints = Math.max(0, parseInt(getField(row, "support_complaints", mapping)) || 0);
     const paymentDelay = parsePaymentDelay(getField(row, "payment_delay", mapping));
 
-    // Billing cycle — normalise common variants, default to 'yearly'
-    const cycleRaw = getField(row, "billing_cycle", mapping).toLowerCase().trim();
-    const billingCycle: BillingCycle = /^(monthly|month|mo|mth|mthly|1month|30days?)$/.test(cycleRaw)
-      ? "monthly"
-      : "yearly";
+    const billingCycle = parseBillingCycle(getField(row, "billing_cycle", mapping));
 
     const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights, billingCycle);
 

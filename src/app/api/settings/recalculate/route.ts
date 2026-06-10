@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { detectColumn, type MappedField } from "@/lib/column-detector";
-import { BillingCycle, computeChurnScore, DEFAULT_WEIGHTS, type ScoringWeights } from "@/lib/scoring";
+import { parseBillingCycle } from "@/lib/billing-cycle";
+import { computeChurnScore, DEFAULT_WEIGHTS, type ScoringWeights } from "@/lib/scoring";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 
 const BATCH_SIZE = 500;
@@ -131,10 +132,7 @@ export async function POST(request: NextRequest) {
     const supportComplaints = Math.max(0, parseInt(getField(row, "support_complaints", mapping), 10) || 0);
     const paymentDelay = parsePaymentDelay(getField(row, "payment_delay", mapping));
 
-    const cycleRaw = getField(row, "billing_cycle", mapping).toLowerCase().trim();
-    const billingCycle: BillingCycle = /^(monthly|month|mo|mth|mthly|1month|30days?)$/.test(cycleRaw)
-      ? "monthly"
-      : "yearly";
+    const billingCycle = parseBillingCycle(getField(row, "billing_cycle", mapping));
 
     const { score, level } = computeChurnScore(daysInactive, usageDrop, supportComplaints, paymentDelay, weights, billingCycle);
 
