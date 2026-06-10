@@ -16,10 +16,16 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
     }
 
     const token = match[0];
-    const inner = token.slice(
-      token.startsWith("***") ? 3 : token.startsWith("**") || token.startsWith("`") ? 2 : 1,
-      token.endsWith("***") ? -3 : -1,
-    );
+    let inner: string;
+    if (token.startsWith("***")) {
+      inner = token.slice(3, -3);
+    } else if (token.startsWith("**")) {
+      inner = token.slice(2, -2);
+    } else if (token.startsWith("`")) {
+      inner = token.slice(1, -1);
+    } else {
+      inner = token.slice(1, -1);
+    }
 
     if (token.startsWith("***")) {
       parts.push(

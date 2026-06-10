@@ -6,75 +6,23 @@ import { generateGeminiText, hasGeminiApiKey } from "@/lib/gemini";
 type ChatTurn = { role: "user" | "assistant"; content: string };
 
 const ASSISTANT_TIMEOUT_MS = 12000;
+const ASSISTANT_MAX_OUTPUT_TOKENS = 400;
 
-const APP_KNOWLEDGE_BASE = `
-You are the in-product assistant for Attriscope.
+const APP_KNOWLEDGE_BASE = `You are Attriscope's in-product assistant.
 
-Product areas and routes:
-- Dashboard overview: /dashboard
-- Risk analysis workspace: /risk-analysis
-- Outreach Hub (AI email drafting): /outreach-hub
-- Data import and mapping: /data-management
-- Settings (industry + weights): /settings
+Routes: /dashboard, /risk-analysis, /outreach-hub, /data-management, /settings.
+Workflow: onboarding → CSV upload → risk scores (0-100) → Risk Analysis → Outreach Hub.
 
-Main workflow:
-1) Onboarding: pick industry, calibrate weights, connect/import data.
-2) Upload CSV in Data Management.
-3) App computes a churn risk score (0-100) per customer using four signals.
-4) Review high-risk customers in Risk Analysis and Dashboard widgets.
-5) Draft and send retention emails in Outreach Hub.
+Risk Analysis filters only: search; risk level (High/Medium/Low); key signal (Inactivity, Usage Drop, Support Complaints, Payment Delay). Deep links e.g. /risk-analysis?level=high&signal=payment. Key Factor = strongest signal per row.
 
-Risk Analysis workspace filters (only these exist — do not invent others):
-- Search by customer name, email, or company.
-- Risk level dropdown: All Levels, High Risk, Medium Risk, Low Risk.
-- Key signal dropdown: All Signals, Inactivity, Usage Drop, Support Complaints, Payment Delay.
-- Signal filters match customers with active signal values (e.g. Payment Delay = payment_delay flagged).
-- Deep links: /risk-analysis?signal=payment or /risk-analysis?level=high&signal=payment
-- Key Factor column shows the strongest of the four signals per row (includes payment delay).
-- Click a row for the Risk Intelligence panel; use Outreach → for retention emails.
+Scoring: 4 signals (inactivity, usage drop, support, payment delay); billing caps — monthly: 28d inactivity, 5 tickets; yearly: 85d, 9 tickets. Weights in Settings. Presets: SaaS 10/45/15/30, Entertainment 35/30/20/15, Education 35/25/15/25. Bands: High ≥70, Medium 40-69, Low <40.
 
-How scoring works:
-- Four signals are measured: Login/Inactivity, Usage Drop, Support Complaints, Payment Delay.
-- Each signal is normalized based on the customer's billing cycle before scoring.
-- Billing cycle caps (monthly plan): inactivity capped at 28 days, support tickets capped at 5.
-- Billing cycle caps (yearly plan): inactivity capped at 85 days, support tickets capped at 9.
-- This ensures monthly and yearly customers are judged fairly on the same scale.
-- If billing_cycle column is not in the CSV, the system defaults to yearly caps.
-- Weights are user-configurable in Settings. Industry presets apply on onboarding and Reset to Default.
-- SaaS preset (default industry): inactivity 10%, usage 45%, support 15%, payment 30%.
-- Entertainment preset: inactivity 35%, usage 30%, support 20%, payment 15%.
-- Risk bands: High >= 70, Medium 40-69, Low < 40.
+CSV: customer_id, name, email, company, last_login_at, current_sessions, previous_sessions, support_complaints, payment_delay, billing_cycle (auto-mapped).
 
-Weight / priority guidance:
-- The four signals each have a weight slider in Settings.
-- SaaS profile prioritizes usage drop (45%) and payment delay (30%) as the strongest churn signals.
-- Entertainment profile prioritizes inactivity (35%) and usage drop (30%) for streaming/viewing habits.
-- If all four signals matter equally for your business, set each to 25%.
-- Total recommended to be 100%, but the formula self-adjusts even if it isn't.
-- Use Reset to Default to restore the current industry profile (SaaS: 10/45/15/30).
+Rules: App help only. No internal formula math. Be concise (under ~120 words). Use **bold**, bullets, \`routes\` — no ### or ***.`;
 
-CSV upload guidance:
-- Supported columns: customer_id, name, email, company, last_login_at, current_sessions, previous_sessions, support_complaints, payment_delay, billing_cycle.
-- Column names are auto-detected — common naming variations are handled automatically.
-- Inactivity is derived from last_login_at at read time.
-- billing_cycle values: monthly (also accepts: month, mo, mth); anything else defaults to yearly.
-
-Response behavior:
-- Answer only app-related questions (features, workflow, settings, scoring, navigation).
-- Do NOT expose or explain the internal scoring formula equation.
-- Explain scoring in plain language: signals, weights, billing cycle fairness, risk bands.
-- When asked how to re-engage inactive or high-risk customers, provide actionable plays (offer types, cadence, channels, and follow-up steps).
-- Use recent churn analyses from this workspace as context when available, and reference concrete risk signals.
-- If question is outside app functionality, say you can only help with Attriscope usage.
-- Keep responses practical and concise.
-- Format answers for readable chat UI:
-  - use short section headers on their own line (optional, plain text — no # symbols),
-  - use bullet points (- item) or numbered steps (1. step) for instructions,
-  - use **bold** for emphasis and \`inline code\` for routes or field names,
-  - do not use ### headers or *** triple asterisks.
-`;
-
-function getRuleBasedAnswer(question: string): string {
+/** Returns a canned answer for common FAQs, or null when Gemini should handle the question. */
+function tryRuleBasedAnswer(question: string): string | null {
   const q = question.toLowerCase();
 
   if (
@@ -125,7 +73,7 @@ function getRuleBasedAnswer(question: string): string {
     ].join("\n");
   }
 
-  if (q.includes("upload") || q.includes("csv") || q.includes("data") || q.includes("import") || q.includes("column")) {
+  if (q.includes("upload") || q.includes("csv") || q.includes("import") || q.includes("column") || (q.includes("data") && !q.includes("customer"))) {
     return [
       "**To upload customer data:**",
       "1) Open `Data Management`.",
@@ -142,7 +90,7 @@ function getRuleBasedAnswer(question: string): string {
     ].join("\n");
   }
 
-  if (q.includes("outreach") || q.includes("email")) {
+  if (q.includes("outreach") || (q.includes("email") && !q.includes("column"))) {
     return [
       "Use Outreach Hub for retention emails:",
       "1) Select a customer from Risk Analysis (or from query parameter navigation).",
@@ -172,8 +120,7 @@ function getRuleBasedAnswer(question: string): string {
     q.includes("usage drop") ||
     q.includes("support complaint") ||
     q.includes("support ticket") ||
-    q.includes("inactive") ||
-    q.includes("inactivity")
+    (q.includes("inactivity") && (q.includes("filter") || q.includes("signal")))
   ) {
     const signal =
       q.includes("usage") ? "usage"
@@ -220,7 +167,23 @@ function getRuleBasedAnswer(question: string): string {
     ].join("\n");
   }
 
+  return null;
+}
+
+function getRuleBasedFallback(): string {
   return "I can help with Attriscope features like onboarding, data upload, scoring formula, risk analysis, outreach emails, and settings. Ask me a specific workflow or screen question.";
+}
+
+function needsCustomerAnalysisContext(question: string): boolean {
+  const q = question.toLowerCase();
+
+  if (
+    /\b(csv|upload|import|column|mapping|setting|weight|industry|onboarding|how do i|how to|where is|what is|navigate|workflow|route|page|screen|tab)\b/.test(q)
+  ) {
+    return false;
+  }
+
+  return /\b(customer|customers|churn|at[- ]risk|high[- ]risk|who should|re-?engage|retention campaign|my account)\b/.test(q);
 }
 
 export async function POST(request: NextRequest) {
@@ -244,9 +207,13 @@ export async function POST(request: NextRequest) {
   }
 
   const trimmedQuestion = question.trim();
-  const fallback = getRuleBasedAnswer(trimmedQuestion);
-  const lowerQuestion = trimmedQuestion.toLowerCase();
-  const needsAnalysisContext = /(churn|risk|inactive|inactivity|re-?engage|retention|offer|voucher|discount|loyalty|campaign|customer)/i.test(lowerQuestion);
+  const ruleAnswer = tryRuleBasedAnswer(trimmedQuestion);
+
+  if (ruleAnswer) {
+    return NextResponse.json({ answer: ruleAnswer, source: "rules" });
+  }
+
+  const fallback = getRuleBasedFallback();
 
   if (!hasGeminiApiKey()) {
     return NextResponse.json({ answer: fallback, source: "rules" });
@@ -263,8 +230,8 @@ export async function POST(request: NextRequest) {
       .map((h) => `${h.role.toUpperCase()}: ${h.content}`)
       .join("\n");
 
-    let recentAnalysisContext = "(Recent analysis context skipped for this question type.)";
-    if (needsAnalysisContext) {
+    let recentAnalysisContext = "";
+    if (needsCustomerAnalysisContext(trimmedQuestion)) {
       const { data: recentAnalyses } = await supabase
         .from("customers")
         .select("name, risk_score, risk_level, last_login_at, days_inactive, usage_drop, support_complaints, payment_delay, ai_explanation, created_at")
@@ -278,33 +245,25 @@ export async function POST(request: NextRequest) {
             .map((c, idx) => {
               const usagePct = Math.round(Number(c.usage_drop ?? 0) * 100);
               const dynamicDays = computeDaysInactiveFromLastLogin(c.last_login_at, c.days_inactive);
-              const shortAnalysis = (c.ai_explanation ?? "").replace(/\s+/g, " ").slice(0, 140);
-              return `${idx + 1}. ${c.name} (${c.risk_level?.toUpperCase()} ${c.risk_score}/100) - inactive ${dynamicDays}d, usage ${usagePct}%, support ${c.support_complaints}, payment ${c.payment_delay ? "yes" : "no"}. Analysis: ${shortAnalysis}`;
+              const shortAnalysis = (c.ai_explanation ?? "").replace(/\s+/g, " ").slice(0, 80);
+              return `${idx + 1}. ${c.name} (${c.risk_level?.toUpperCase()} ${c.risk_score}/100) inactive ${dynamicDays}d, usage ${usagePct}%, support ${c.support_complaints}, payment ${c.payment_delay ? "yes" : "no"}. ${shortAnalysis}`;
             })
             .join("\n")
-        : "(No recent AI analyses available yet. Ask user to run analysis in Risk Analysis if needed.)";
+        : "(No recent AI analyses yet.)";
     }
 
-    const prompt = `
-${APP_KNOWLEDGE_BASE}
+    const prompt = `${APP_KNOWLEDGE_BASE}
 
-Conversation history:
-${conversationText || "(no previous history)"}
+${conversationText ? `History:\n${conversationText}\n` : ""}${recentAnalysisContext ? `Recent analyses:\n${recentAnalysisContext}\n` : ""}Question: ${trimmedQuestion}
 
-Recent churn analyses (most recent first):
-${recentAnalysisContext}
+Answer practically. Do not invent features. Risk Analysis filters: search, risk level, key signal only.`;
 
-User question:
-${trimmedQuestion}
-
-Write a clear, practical response focused on app functionality.
-Do not invent non-existent screens or features. Risk Analysis only has search, risk-level filter, and key-signal filter — never describe other filter types.
-When guiding users to filter by payment_delay, usage drop, support, or inactivity, reference the Key signal dropdown and deep links like /risk-analysis?signal=payment.
-When relevant, give concrete re-engagement recommendations (offers, campaigns, and next-step actions).
-Format the final response with clear line breaks, bullets, and **bold** labels (no ### headers or ***).
-`;
-
-    const answer = (await generateGeminiText(prompt, { timeoutMs: ASSISTANT_TIMEOUT_MS })).trim();
+    const answer = (
+      await generateGeminiText(prompt, {
+        timeoutMs: ASSISTANT_TIMEOUT_MS,
+        maxOutputTokens: ASSISTANT_MAX_OUTPUT_TOKENS,
+      })
+    ).trim();
 
     return NextResponse.json({ answer: answer || fallback, source: "gemini" });
   } catch {

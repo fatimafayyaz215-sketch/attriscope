@@ -40,16 +40,23 @@ function isRetryableModelError(err: unknown): boolean {
 
 export type GenerateGeminiTextOptions = {
   timeoutMs?: number;
+  maxOutputTokens?: number;
 };
 
 async function generateWithModel(
   genAI: GoogleGenerativeAI,
   modelName: string,
   prompt: string,
-  timeoutMs?: number,
+  options?: Pick<GenerateGeminiTextOptions, "timeoutMs" | "maxOutputTokens">,
 ): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: modelName });
+  const model = genAI.getGenerativeModel({
+    model: modelName,
+    ...(options?.maxOutputTokens
+      ? { generationConfig: { maxOutputTokens: options.maxOutputTokens } }
+      : {}),
+  });
   const generate = model.generateContent(prompt).then((result) => result.response.text());
+  const timeoutMs = options?.timeoutMs;
 
   if (!timeoutMs) return generate;
 
@@ -74,7 +81,7 @@ export async function generateGeminiText(prompt: string, options?: GenerateGemin
 
     for (const modelName of GEMINI_MODELS) {
       try {
-        return await generateWithModel(genAI, modelName, prompt, options?.timeoutMs);
+        return await generateWithModel(genAI, modelName, prompt, options);
       } catch (err: unknown) {
         lastErr = err;
 
