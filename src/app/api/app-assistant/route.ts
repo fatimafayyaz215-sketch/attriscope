@@ -8,7 +8,7 @@ type ChatTurn = { role: "user" | "assistant"; content: string };
 const ASSISTANT_TIMEOUT_MS = 12000;
 
 const APP_KNOWLEDGE_BASE = `
-You are the in-product assistant for ChurnGuard AI.
+You are the in-product assistant for Attriscope.
 
 Product areas and routes:
 - Dashboard overview: /dashboard
@@ -65,7 +65,7 @@ Response behavior:
 - Explain scoring in plain language: signals, weights, billing cycle fairness, risk bands.
 - When asked how to re-engage inactive or high-risk customers, provide actionable plays (offer types, cadence, channels, and follow-up steps).
 - Use recent churn analyses from this workspace as context when available, and reference concrete risk signals.
-- If question is outside app functionality, say you can only help with ChurnGuard AI usage.
+- If question is outside app functionality, say you can only help with Attriscope usage.
 - Keep responses practical and concise.
 - Format answers for readable chat UI:
   - use short section headers on their own line (optional, plain text — no # symbols),
@@ -105,7 +105,7 @@ function getRuleBasedAnswer(question: string): string {
 
   if (q.includes("formula") || q.includes("weight") || q.includes("prediction") || q.includes("score") || q.includes("billing") || q.includes("cycle")) {
     return [
-      "**How ChurnGuard AI scores churn risk:**",
+      "**How Attriscope scores churn risk:**",
       "",
       "Each customer gets a **Risk Score from 0 to 100** based on 4 signals:",
       "- **Login / Inactivity** — days since last login",
@@ -220,7 +220,7 @@ function getRuleBasedAnswer(question: string): string {
     ].join("\n");
   }
 
-  return "I can help with ChurnGuard AI features like onboarding, data upload, scoring formula, risk analysis, outreach emails, and settings. Ask me a specific workflow or screen question.";
+  return "I can help with Attriscope features like onboarding, data upload, scoring formula, risk analysis, outreach emails, and settings. Ask me a specific workflow or screen question.";
 }
 
 export async function POST(request: NextRequest) {

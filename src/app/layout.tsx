@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ChurnGuard AI — Predict. Retain. Grow.",
-  description: "AI-powered customer churn prediction platform that helps you identify at-risk customers and take action before they leave.",
+  title: "Attriscope — See attrition before it happens.",
+  description: "Attriscope helps you score customer attrition risk from real signals and act before customers leave.",
 };
 
 export default function RootLayout({

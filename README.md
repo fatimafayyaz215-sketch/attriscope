@@ -91,7 +91,7 @@ For production (Vercel), set the same `NEXT_PUBLIC_*` variables under **Project 
 
 ## Scoring Fields & RavenStack Dataset
 
-ChurnGuard scores each customer using **4 signals**. The upload CSV must include these columns (see `public/saas-sample-customers.csv` for the test template).
+Attriscope scores each customer using **4 signals**. The upload CSV must include these columns (see `public/saas-sample-customers.csv` for the test template).
 
 | # | App column(s) | What it measures |
 |---|---------------|------------------|
@@ -210,7 +210,7 @@ Google login is already implemented in code (`src/services/auth.service.ts` → 
 1. Open [Google Cloud Console](https://console.cloud.google.com/) and select (or create) a project.
 2. Go to **Google Auth Platform → Overview** and click **Get started** if prompted.
 3. Complete the setup wizard:
-   - **App name:** ChurnGuard AI
+   - **App name:** Attriscope
    - **Audience:** External (any Google account)
    - **Developer contact:** your team email
 4. Under **Audience → Test users**, add Gmail addresses that may sign in while the app is in **Testing** mode.

@@ -2,7 +2,7 @@ import type { BillingCycle } from "@/lib/scoring";
 
 /**
  * Normalise billing cycle / plan labels to monthly or yearly caps.
- * Accepts ChurnGuard values (monthly/yearly) and entertainment plan tiers (Basic/Standard/Premium).
+ * Accepts Attriscope values (monthly/yearly) and entertainment plan tiers (Basic/Standard/Premium).
  */
 export function parseBillingCycle(raw: string | null | undefined): BillingCycle {
   const v = (raw ?? "").toLowerCase().trim();

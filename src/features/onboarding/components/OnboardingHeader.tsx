@@ -12,8 +12,8 @@ export default function OnboardingHeader({ step = 1, title = "Industry Context" 
           </svg>
         </div>
         <div className="hidden xs:block sm:block">
-          <div className="text-blue-900 font-bold text-base leading-tight tracking-tight">ChurnGuard AI</div>
-          <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">Vigilant Intelligence</div>
+          <div className="text-blue-900 font-bold text-base leading-tight tracking-tight">Attriscope</div>
+          <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">Attrition Intelligence</div>
         </div>
       </Link>
 

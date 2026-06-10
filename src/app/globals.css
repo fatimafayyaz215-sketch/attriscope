@@ -47,11 +47,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-}
+/* Link colors are set per component (Tailwind). Global hover rules broke button-styled links. */
 
-a:hover {
-  color: var(--color-primary-dark);
+.landing-page a:hover,
+.landing-page a:focus-visible {
+  text-decoration: none;
 }

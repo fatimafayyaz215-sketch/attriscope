@@ -1,5 +1,5 @@
 ﻿-- ============================================================
--- ChurnGuard AI — Supabase Schema
+-- Attriscope — Supabase Schema
 -- Run this in the Supabase SQL Editor to set up the database.
 -- ============================================================
 

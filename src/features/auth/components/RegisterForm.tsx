@@ -72,7 +72,7 @@ export default function RegisterForm() {
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Check your inbox</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Check your inbox</h2>
         <p className="text-gray-500 text-sm leading-relaxed mb-1">
           We&apos;ve sent a confirmation link to
         </p>
@@ -123,10 +123,10 @@ export default function RegisterForm() {
   return (
     <>
       <div className="flex-1 flex flex-col justify-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Create your account</h1>
-        <p className="text-gray-500 text-sm mb-8">Start your 14-day free trial. No credit card required.</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Create your account</h1>
+        <p className="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8 leading-relaxed">Start your 14-day free trial. No credit card required.</p>
 
-        <form onSubmit={handleRegister} className="flex flex-col gap-5">
+        <form onSubmit={handleRegister} className="flex flex-col gap-4 sm:gap-5">
 
           {error && (
             <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2">
@@ -146,7 +146,7 @@ export default function RegisterForm() {
 
           {/* Company Name */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="register-company" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+            <label htmlFor="register-company" className="text-[10px] sm:text-xs font-semibold tracking-wide sm:tracking-widest text-gray-500 uppercase">
               Company Name
             </label>
             <div className="relative">
@@ -169,7 +169,7 @@ export default function RegisterForm() {
 
           {/* Email */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="register-email" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+            <label htmlFor="register-email" className="text-[10px] sm:text-xs font-semibold tracking-wide sm:tracking-widest text-gray-500 uppercase">
               Email Address
             </label>
             <div className="relative">
@@ -192,7 +192,7 @@ export default function RegisterForm() {
 
           {/* Password */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="register-password" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+            <label htmlFor="register-password" className="text-[10px] sm:text-xs font-semibold tracking-wide sm:tracking-widest text-gray-500 uppercase">
               Password
             </label>
             <div className="relative">
@@ -237,7 +237,7 @@ export default function RegisterForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-2.5 sm:py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>

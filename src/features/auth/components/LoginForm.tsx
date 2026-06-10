@@ -44,8 +44,8 @@ export default function LoginForm() {
 
       {/* ── Top section ───────────────────────────────────────────── */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
-        <p className="text-gray-500 text-sm mb-8">Please enter your details to sign in.</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
+        <p className="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8">Please enter your details to sign in.</p>
 
         {error && (
           <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 mb-2">
@@ -53,11 +53,11 @@ export default function LoginForm() {
           </div>
         )}
 
-        <form onSubmit={handleSignIn} className="flex flex-col gap-5">
+        <form onSubmit={handleSignIn} className="flex flex-col gap-4 sm:gap-5">
 
           {/* Email */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="login-email" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+            <label htmlFor="login-email" className="text-[10px] sm:text-xs font-semibold tracking-wide sm:tracking-widest text-gray-500 uppercase">
               Email Address
             </label>
             <div className="relative">
@@ -82,7 +82,7 @@ export default function LoginForm() {
           {/* Password */}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <label htmlFor="login-password" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+              <label htmlFor="login-password" className="text-[10px] sm:text-xs font-semibold tracking-wide sm:tracking-widest text-gray-500 uppercase">
                 Password
               </label>
               <Link href="/forgot-password" className="text-xs text-blue-600 hover:underline font-medium">
@@ -130,7 +130,7 @@ export default function LoginForm() {
             id="login-submit"
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-2.5 sm:py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Signing in…" : "Sign In"}
             {!loading && (

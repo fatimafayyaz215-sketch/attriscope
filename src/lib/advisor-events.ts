@@ -1,5 +1,5 @@
-export const ADVISOR_INDUSTRY_CHANGED = "churnguard:industry-changed";
-export const ADVISOR_SETTINGS_CHANGED = "churnguard:settings-changed";
+export const ADVISOR_INDUSTRY_CHANGED = "attriscope:industry-changed";
+export const ADVISOR_SETTINGS_CHANGED = "attriscope:settings-changed";
 
 export function notifyAdvisorIndustryChanged(industry: string) {
   if (typeof window === "undefined") return;

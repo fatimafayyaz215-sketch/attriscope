@@ -41,8 +41,8 @@ export default function Sidebar({
             </svg>
           </div>
           <div>
-            <div className="text-blue-900 font-bold text-lg leading-tight tracking-tight">ChurnGuard AI</div>
-            <div className="text-[9px] font-bold tracking-widest text-gray-500 uppercase">Vigilant Intelligence</div>
+            <div className="text-blue-900 font-bold text-lg leading-tight tracking-tight">Attriscope</div>
+            <div className="text-[9px] font-bold tracking-widest text-gray-500 uppercase">Attrition Intelligence</div>
           </div>
         </Link>
         {onNavigate ? (

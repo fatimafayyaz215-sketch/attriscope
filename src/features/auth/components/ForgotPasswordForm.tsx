@@ -25,12 +25,12 @@ export default function ForgotPasswordForm() {
 
   return (
     <div className="flex flex-col justify-center">
-      <h1 className="text-2xl font-bold text-gray-900 mb-1">Forgot your password?</h1>
-      <p className="text-gray-500 text-sm mb-8 leading-relaxed">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Forgot your password?</h1>
+      <p className="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8 leading-relaxed">
         Enter the email address associated with your account, and we&apos;ll send you a link to reset your password.
       </p>
 
-      <form onSubmit={handleReset} className="flex flex-col gap-5">
+      <form onSubmit={handleReset} className="flex flex-col gap-4 sm:gap-5">
 
         {error && (
           <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
@@ -46,7 +46,7 @@ export default function ForgotPasswordForm() {
 
         {/* Email */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="reset-email" className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
+          <label htmlFor="reset-email" className="text-[10px] sm:text-xs font-semibold tracking-wide sm:tracking-widest text-gray-500 uppercase">
             Email Address
           </label>
           <div className="relative">
@@ -71,7 +71,7 @@ export default function ForgotPasswordForm() {
         <button
           type="submit"
           disabled={loading || sent}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-semibold py-2.5 sm:py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? "Sending…" : sent ? "Link Sent" : "Send Reset Link"}
           {!loading && !sent && (

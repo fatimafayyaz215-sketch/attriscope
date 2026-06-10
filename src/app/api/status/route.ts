@@ -8,7 +8,7 @@ export async function GET() {
   return NextResponse.json({
     status: "online",
     version: "1.0.0",
-    message: "ChurnGuard AI API is operational",
+    message: "Attriscope API is operational",
     timestamp: new Date().toISOString()
   });
 }
