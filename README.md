@@ -11,17 +11,15 @@
 1. [Overview](#overview)
 2. [Implemented Features](#implemented-features)
 3. [Tech Stack](#tech-stack)
-4. [Getting Started](#getting-started)
-5. [Database Setup](#database-setup)
-6. [Industries & Scoring](#industries--scoring)
-7. [Scoring Fields & Industry Datasets](#scoring-fields--industry-datasets)
-8. [Google Sign-In Configuration](#google-sign-in-configuration)
-9. [Folder Structure](#folder-structure)
-10. [API Routes](#api-routes)
-11. [CSS Variables & Design Tokens](#css-variables--design-tokens)
-12. [Naming Conventions](#naming-conventions)
-13. [Developer Guide & Architecture](#developer-guide--architecture)
-14. [Scripts](#scripts)
+4. [Project Configuration](#project-configuration) — local + Vercel production (start here)
+5. [Industries & Scoring](#industries--scoring)
+6. [Scoring Fields & Industry Datasets](#scoring-fields--industry-datasets)
+7. [Folder Structure](#folder-structure)
+8. [API Routes](#api-routes)
+9. [CSS Variables & Design Tokens](#css-variables--design-tokens)
+10. [Naming Conventions](#naming-conventions)
+11. [Developer Guide & Architecture](#developer-guide--architecture)
+12. [Scripts](#scripts)
 
 ---
 
@@ -30,6 +28,8 @@
 Attriscope ingests customer CSV data, scores each account on four behavioral signals, and surfaces high-risk customers for AI-assisted analysis and retention outreach.
 
 **Core workflow:** sign up → onboarding (industry + weights) → CSV upload → dashboard & risk analysis → outreach emails.
+
+**New teammate?** Start with [Project Configuration](#project-configuration) — one guide for local setup and Vercel production.
 
 **Workspace layout:** the git repo root is `churn-prediction/` (parent folder). The Next.js app lives in `churn-prediction/churn-prediction/`. Python dataset tooling lives in `datasets/` at the repo root (sibling to the app folder).
 
@@ -68,53 +68,356 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 
 ---
 
-## Getting Started
+## Project Configuration
 
-All commands below run from the **app directory** (`churn-prediction/churn-prediction/`).
+> **Teammate quick-start:** follow Steps 1–11 in order. Steps 2–5 set up Supabase once (shared by local and production). Step 9 runs the app on your PC. Step 10 deploys to Vercel.
 
-```bash
-# 1. Install dependencies
-npm install
+**App folder** (run all `npm` commands here):
 
-# 2. Copy environment variables
-cp .env.example .env.local        # macOS / Linux
-# copy .env.example .env.local    # Windows (cmd)
-# Copy-Item .env.example .env.local  # Windows (PowerShell)
-
-# 3. Fill in Supabase values in .env.local (see table below)
-
-# 4. Set up the database (see Database Setup)
-
-# 5. Start the development server
-npm run dev
+```
+churn-prediction/churn-prediction/
 ```
 
-Open http://localhost:3000 in your browser.
-
-### Environment variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL (Project Settings → API). No `/rest/v1/` suffix. |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase `anon` public key |
-| `GEMINI_API_KEY` | No | Enables AI explanations, email drafting, and the in-app assistant |
-| `GEMINI_API_KEYS` | No | Comma-separated Gemini keys for rate-limit rotation (overrides `GEMINI_API_KEY` when set) |
-
-> Google OAuth credentials are **not** stored in `.env.local`. Configure them in the Supabase dashboard (see [Google Sign-In](#google-sign-in-configuration)).
-
-For production (Vercel), set the same `NEXT_PUBLIC_*` variables under **Project Settings → Environment Variables**, then redeploy after changes.
+**Production URL (team deployment):** https://churn-prediction-navy.vercel.app
 
 ---
 
-## Database Setup
+### Before you start
 
-1. Create a Supabase project at [supabase.com](https://supabase.com).
-2. Open **SQL Editor** and run `supabase/schema.sql` to create tables, indexes, and RLS policies:
-   - `customers` — imported and scored customer records
-   - `user_settings` — per-user industry and scoring weights
+| Requirement | Required? | Notes |
+|-------------|-----------|-------|
+| [Node.js 18+](https://nodejs.org) (LTS) | Yes | Check with `node -v` and `npm -v` |
+| [Supabase](https://supabase.com) account | Yes | Free tier is enough |
+| [Google AI Studio](https://aistudio.google.com/apikey) key | Optional | AI emails, risk explanations, in-app assistant |
+| [Google Cloud](https://console.cloud.google.com) project | Optional | Only for “Sign in with Google” |
+| [Vercel](https://vercel.com) account | Optional | Only for production deployment |
+
+---
+
+### Step 1 — Install Node.js and dependencies
+
+**1.1 Install Node.js** (one-time)
+
+1. Download **LTS** from https://nodejs.org and run the installer.
+2. Restart your terminal, then verify:
+
+```bash
+node -v
+npm -v
+```
+
+**1.2 Install project packages** (one-time per clone)
+
+```bash
+cd churn-prediction/churn-prediction    # adjust path to your clone
+npm install
+```
+
+Wait until it finishes without errors.
+
+---
+
+### Step 2 — Create a Supabase project
+
+Used for **both** local development and production — one Supabase project for the whole team.
+
+1. Go to [supabase.com](https://supabase.com) → **Sign up** / **Sign in**.
+2. Click **New project**.
+3. Set:
+   - **Name:** `Attriscope` (or any name)
+   - **Database password:** save this somewhere safe
+   - **Region:** closest to your team
+4. Click **Create new project** and wait ~2 minutes.
+
+**Copy your API credentials** (you will need them in Step 6):
+
+1. **Project Settings** (gear) → **API**
+2. Copy **Project URL** → this becomes `NEXT_PUBLIC_SUPABASE_URL`
+3. Copy **anon public** key → this becomes `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+> The URL looks like `https://abcdefgh.supabase.co` — do **not** add `/rest/v1/` at the end.
+
+---
+
+### Step 3 — Create database tables
+
+1. In Supabase, open **SQL Editor** → **New query**.
+2. On your computer, open `supabase/schema.sql` in this repo.
+3. Copy **all** the SQL, paste into the editor, click **Run**.
+4. Success = no red errors. This creates:
+   - `customers` — imported + scored records
+   - `user_settings` — industry and scoring weights
    - `outreach_emails` — drafted/sent retention emails
-3. Optionally apply `supabase/migrations/20260521_set_default_weights_to_25_each.sql` if your project was created with older column defaults.
-4. Upload auth email templates from `supabase/templates/` via **Authentication → Email Templates** in the Supabase dashboard (`confirm-signup.html`, `reset-password.html`, etc.).
+
+**Optional:** if the project was created with older defaults, also run `supabase/migrations/20260521_set_default_weights_to_25_each.sql`.
+
+---
+
+### Step 4 — Configure Supabase Auth
+
+**4.1 Email login (required)**
+
+1. **Authentication** → **Providers** → ensure **Email** is **enabled**.
+2. For easier local testing, you may disable **Confirm email** under **Authentication → Email** (re-enable for production).
+
+**4.2 Redirect URLs (required for login)**
+
+Go to **Authentication** → **URL Configuration**.
+
+Add **both** local and production URLs so the same Supabase project works everywhere:
+
+| Setting | Value |
+|---------|-------|
+| **Site URL** | `http://localhost:3000` for local-first setup, or your Vercel URL for production-first |
+| **Redirect URLs** | Add every line below |
+
+```
+http://localhost:3000/**
+http://localhost:3000/auth/callback
+https://churn-prediction-navy.vercel.app/**
+https://churn-prediction-navy.vercel.app/auth/callback
+```
+
+Replace the Vercel hostname if your team uses a different deployment URL. Click **Save**.
+
+---
+
+### Step 5 — Email templates (recommended)
+
+Branded auth emails live in `supabase/templates/`:
+
+| File | Supabase template |
+|------|-------------------|
+| `confirm-signup.html` | Confirm signup |
+| `reset-password.html` | Reset password |
+| `magic-link.html` | Magic link |
+| `email-change.html` | Change email |
+| `invite.html` | Invite user |
+
+For each: open the `.html` file → copy content → paste in **Authentication → Email Templates** → **Save**.
+
+---
+
+### Step 6 — Environment variables
+
+#### Local — `.env.local`
+
+From the app folder:
+
+```bash
+cp .env.example .env.local        # macOS / Linux
+copy .env.example .env.local      # Windows (cmd)
+Copy-Item .env.example .env.local  # Windows (PowerShell)
+```
+
+Edit `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_public_key
+
+# Optional — leave blank if you skip Step 7
+GEMINI_API_KEY=
+```
+
+| Variable | Required | Where to get it |
+|----------|----------|-----------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → Project Settings → API → Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → Project Settings → API → anon public |
+| `GEMINI_API_KEY` | No | [Google AI Studio](https://aistudio.google.com/apikey) (Step 7) |
+| `GEMINI_API_KEYS` | No | Comma-separated keys; overrides `GEMINI_API_KEY` when set |
+
+> Google OAuth credentials are **not** in `.env.local` — they go in Supabase (Step 8).
+
+**After changing `.env.local`, restart the dev server** (`Ctrl+C`, then `npm run dev` again).
+
+#### Production — Vercel (Step 10)
+
+Same variables in Vercel → **Project Settings → Environment Variables** for **Production** (and **Preview** if you want):
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+GEMINI_API_KEY=your_gemini_key
+```
+
+Redeploy after any env change.
+
+---
+
+### Step 7 — Google Gemini API (optional)
+
+Enables: AI risk explanations, Outreach Hub email drafting, in-app advisor chat.
+
+**Without Gemini:** login, CSV upload, scoring, dashboard, and risk analysis still work.
+
+1. Go to [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
+2. Sign in → **Create API key** → copy it.
+3. Add to `.env.local` (local) and Vercel env vars (production):
+
+```env
+GEMINI_API_KEY=your_key_here
+```
+
+4. Restart `npm run dev` locally, or redeploy on Vercel.
+
+---
+
+### Step 8 — Google Sign-In (optional)
+
+Skip this if email/password login is enough. No code changes — only dashboard configuration.
+
+**How OAuth works:**
+
+1. User clicks **Google** on `/login`
+2. Supabase → Google → back to Supabase: `https://<PROJECT_REF>.supabase.co/auth/v1/callback`
+3. Supabase → your app: `https://<your-domain>/auth/callback`
+4. App sends new users to `/onboarding`, returning users to `/dashboard`
+
+**8.1 Google Cloud Console**
+
+1. [Google Cloud Console](https://console.cloud.google.com/) → create or select a project.
+2. **Google Auth Platform → Overview** → complete setup if prompted:
+   - **App name:** Attriscope
+   - **Audience:** External
+3. **Audience → Test users** → add Gmail addresses allowed while app is in **Testing** mode.
+4. **Clients → Create client** → **Web application**:
+   - **Authorized JavaScript origins:**
+     ```
+     http://localhost:3000
+     https://churn-prediction-navy.vercel.app
+     ```
+   - **Authorized redirect URIs** (Supabase only — **not** localhost or Vercel):
+     ```
+     https://<PROJECT_REF>.supabase.co/auth/v1/callback
+     ```
+5. Copy **Client ID** and **Client Secret**.
+
+**8.2 Enable in Supabase**
+
+1. **Authentication → Providers → Google** → Enable ON.
+2. Paste Client ID + Client Secret → **Save**.
+
+**Going live (optional):** publish the OAuth consent screen in Google Cloud (**Audience** → **In production**). Basic `email` / `profile` / `openid` scopes usually do not need verification.
+
+---
+
+### Step 9 — Run locally
+
+Every time you develop on your machine:
+
+```bash
+cd churn-prediction/churn-prediction
+npm run dev
+```
+
+Open **http://localhost:3000** in your browser.
+
+Stop the server: **Ctrl + C** in the terminal.
+
+**First-time app flow:**
+
+1. **Register** at http://localhost:3000/register
+2. Complete **Onboarding** (industry → weights → data connection)
+3. **Data Management** → download a sample CSV → upload it
+4. Check **Dashboard** and **Risk Analysis**
+
+**Useful commands:**
+
+```bash
+npm run lint    # check code quality
+npm run build   # verify production build before pushing
+```
+
+---
+
+### Step 10 — Deploy to production (Vercel)
+
+**10.1 Connect the repo**
+
+1. Push this project to GitHub (if not already).
+2. Sign in at [vercel.com](https://vercel.com) → **Add New → Project**.
+3. Import the GitHub repo.
+4. Set **Root Directory** to `churn-prediction` (the inner app folder) if the repo root is the parent `churn-prediction/` workspace.
+5. Framework preset: **Next.js** (auto-detected).
+
+**10.2 Environment variables**
+
+In Vercel → **Settings → Environment Variables**, add (same as Step 6):
+
+| Name | Value |
+|------|-------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key |
+| `GEMINI_API_KEY` | Your Gemini key (optional) |
+
+**10.3 Deploy**
+
+Click **Deploy**. Vercel assigns a URL like `https://your-app.vercel.app`.
+
+**10.4 Post-deploy checklist**
+
+1. **Supabase** → **Authentication → URL Configuration**:
+   - Add your Vercel URL to **Redirect URLs** (if not already in Step 4):
+     ```
+     https://your-app.vercel.app/**
+     https://your-app.vercel.app/auth/callback
+     ```
+   - Set **Site URL** to your Vercel URL for production-first auth emails.
+2. **Google Cloud** (if using Google login): add your Vercel URL to **Authorized JavaScript origins**.
+3. Visit `https://your-app.vercel.app/login` and test register + login.
+
+**Redeploy** after changing env vars: Vercel → **Deployments** → **Redeploy**.
+
+---
+
+### Step 11 — Verify everything works
+
+| Check | Local | Production |
+|-------|-------|------------|
+| Home page loads | http://localhost:3000 | `https://your-app.vercel.app` |
+| Email register + login | `/register` → `/onboarding` | Same on Vercel URL |
+| Google login (if enabled) | `/login` → Google | Test-user Gmail only while in Testing |
+| CSV upload | Data Management → sample CSV | Same |
+| Dashboard shows data | `/dashboard` | Same |
+| AI explanation | Risk Analysis → select customer | Needs `GEMINI_API_KEY` |
+
+---
+
+### Setup checklist
+
+| Step | Task | Done |
+|------|------|------|
+| 1 | Node.js installed, `npm install` completed | ☐ |
+| 2 | Supabase project created | ☐ |
+| 3 | `schema.sql` run in SQL Editor | ☐ |
+| 4 | Redirect URLs added (localhost + Vercel) | ☐ |
+| 5 | Email templates pasted (optional) | ☐ |
+| 6 | `.env.local` filled with Supabase keys | ☐ |
+| 7 | `GEMINI_API_KEY` added (optional) | ☐ |
+| 8 | Google OAuth in Cloud + Supabase (optional) | ☐ |
+| 9 | `npm run dev` → localhost:3000 works | ☐ |
+| 10 | Vercel env vars set + deployed | ☐ |
+| 11 | Login + CSV upload tested on production | ☐ |
+
+---
+
+### Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `npm` / `node` not recognized | Install Node.js LTS, restart terminal |
+| Page won’t load on localhost:3000 | Ensure `npm run dev` is running; read terminal errors |
+| Login fails / Unauthorized | Check `.env.local` URL and anon key; no typos or extra spaces |
+| Register works, login fails | Disable “Confirm email” in Supabase for testing, or confirm via email |
+| Redirect to `/login?error=auth_callback_failed` | Add `http://localhost:3000/auth/callback` (or Vercel equivalent) to Supabase **Redirect URLs** |
+| `Unsupported provider: provider is not enabled` | Enable Google under Supabase **Authentication → Providers** |
+| `redirect_uri_mismatch` (Google) | Redirect URI must be `https://<PROJECT_REF>.supabase.co/auth/v1/callback` only |
+| `Access blocked` (Google) | Add Gmail under Google Cloud **Audience → Test users** |
+| AI features don’t work | Set `GEMINI_API_KEY`, restart dev server or redeploy Vercel |
+| Works locally, fails on Vercel | Match Vercel env vars to `.env.local`; redeploy |
+| CSV upload fails | Finish onboarding; use a sample CSV from Data Management |
+| Changed `.env.local`, no effect | Stop server (`Ctrl+C`), run `npm run dev` again |
 
 ---
 
@@ -466,89 +769,6 @@ python datasets/education/validate_formula.py --full
 ```
 
 **Prediction rule:** score ≥ **50** → predicted withdrawal (matches education high-risk band and `EDUCATION_PAYMENT_FLOOR` in the app).
-
----
-
-## Google Sign-In Configuration
-
-Google login is implemented in `src/services/auth.service.ts` (`loginWithGoogle()`) with the callback at `src/app/auth/callback/route.ts`. Teammates only need to configure **Google Cloud Console** and **Supabase** — no code changes required.
-
-### How the OAuth flow works
-
-1. User clicks **Google** on `/login`
-2. Supabase redirects to Google
-3. Google returns to Supabase: `https://<PROJECT_REF>.supabase.co/auth/v1/callback`
-4. Supabase redirects to your app: `https://<your-domain>/auth/callback`
-5. The callback route exchanges the auth code for a session and sends the user to `/onboarding` or `/dashboard`
-
-### Step 1 — Google Cloud Console
-
-1. Open [Google Cloud Console](https://console.cloud.google.com/) and select (or create) a project.
-2. Go to **Google Auth Platform → Overview** and click **Get started** if prompted.
-3. Complete the setup wizard:
-   - **App name:** Attriscope
-   - **Audience:** External (any Google account)
-   - **Developer contact:** your team email
-4. Under **Audience → Test users**, add Gmail addresses that may sign in while the app is in **Testing** mode.
-5. Go to **Clients → Create client**:
-   - **Application type:** Web application
-   - **Authorized JavaScript origins:**
-     ```
-     https://churn-prediction-navy.vercel.app
-     http://localhost:3000
-     ```
-   - **Authorized redirect URIs** (Supabase callback — **not** your Vercel URL):
-     ```
-     https://<PROJECT_REF>.supabase.co/auth/v1/callback
-     ```
-     Replace `<PROJECT_REF>` with the ref from `NEXT_PUBLIC_SUPABASE_URL` (e.g. `fwqsygqaemrgaenmlhfp`).
-6. Copy the **Client ID** and **Client Secret**.
-
-### Step 2 — Supabase
-
-1. Open [Supabase Dashboard](https://supabase.com/dashboard) → your project.
-2. **Authentication → Providers → Google**
-   - Turn **Enable Sign in with Google** ON
-   - Paste the **Client ID** and **Client Secret** from Google Cloud
-   - Click **Save**
-3. **Authentication → URL Configuration**
-   - **Site URL:** `https://churn-prediction-navy.vercel.app` (or your deployment URL)
-   - **Redirect URLs** — add all of:
-     ```
-     https://churn-prediction-navy.vercel.app/**
-     https://churn-prediction-navy.vercel.app/auth/callback
-     http://localhost:3000/**
-     http://localhost:3000/auth/callback
-     ```
-
-### Step 3 — Vercel (production)
-
-```
-NEXT_PUBLIC_SUPABASE_URL=https://<PROJECT_REF>.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_anon_key>
-```
-
-Redeploy after changing env vars.
-
-### Step 4 — Verify
-
-1. Open `/login` locally or on your deployment.
-2. Click **Google** and sign in with a test-user Gmail.
-3. First-time users land on `/onboarding`; returning users go to `/dashboard`.
-
-### Troubleshooting
-
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `Unsupported provider: provider is not enabled` | Google not enabled in Supabase | Enable Google under **Authentication → Providers**, paste Client ID + Secret, click **Save** |
-| `redirect_uri_mismatch` | Wrong redirect URI in Google Cloud | Use only `https://<PROJECT_REF>.supabase.co/auth/v1/callback` |
-| Redirect to `/login?error=auth_callback_failed` | App callback URL not allowed | Add `https://<your-domain>/auth/callback` to Supabase **Redirect URLs** |
-| `Access blocked` / app in Testing | Gmail not a test user | Add the account under Google Cloud **Audience → Test users** |
-| Works locally, fails on Vercel | Different Supabase project or missing env vars | Align Vercel `NEXT_PUBLIC_SUPABASE_*` with `.env.local` and redeploy |
-
-### Going live (optional)
-
-When ready for any Google user (not just test users), publish the OAuth consent screen in Google Cloud (**Audience** → move from Testing to **In production**). Basic `email` / `profile` / `openid` scopes typically do not require verification.
 
 ---
 
