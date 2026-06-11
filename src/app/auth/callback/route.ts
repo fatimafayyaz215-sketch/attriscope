@@ -9,25 +9,43 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  // Explicit next override (e.g. ?next=/reset-password for password-reset flow)
   const next = searchParams.get("next");
+  const authError = searchParams.get("error");
+  const authErrorDescription = searchParams.get("error_description");
+
+  const passwordResetNext = next === "/reset-password";
+
+  if (authError) {
+    const target = passwordResetNext
+      ? `${origin}/reset-password?error=${encodeURIComponent(authErrorDescription ?? authError)}`
+      : `${origin}/login?error=auth_callback_failed`;
+    return NextResponse.redirect(target);
+  }
 
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
+      if (passwordResetNext) {
+        return NextResponse.redirect(`${origin}/reset-password`);
+      }
       if (next) {
-        // Honour explicit override (password reset, magic link, etc.)
         return NextResponse.redirect(`${origin}${next}`);
       }
-      // Determine redirect based on onboarding status stored in user metadata.
       const { data: { user } } = await supabase.auth.getUser();
       const onboarded = user?.user_metadata?.onboarding_completed === true;
       return NextResponse.redirect(`${origin}${onboarded ? "/dashboard" : "/onboarding"}`);
     }
+
+    if (passwordResetNext) {
+      return NextResponse.redirect(`${origin}/reset-password?error=auth_callback_failed`);
+    }
   }
 
-  // Something went wrong — send back to login with an error hint.
+  if (passwordResetNext) {
+    return NextResponse.redirect(`${origin}/reset-password?error=auth_callback_failed`);
+  }
+
   return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
 }

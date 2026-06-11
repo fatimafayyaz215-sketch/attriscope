@@ -40,6 +40,11 @@ export const authService = {
     });
   },
 
+  updatePassword: async (password: string) => {
+    const supabase = createClient();
+    return supabase.auth.updateUser({ password });
+  },
+
   signOut: async () => {
     const supabase = createClient();
     return supabase.auth.signOut();

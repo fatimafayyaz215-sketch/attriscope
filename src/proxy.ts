@@ -56,6 +56,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // /reset-password is intentionally excluded from authPages so recovery sessions can set a new password.
   if (user && isAuthPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";

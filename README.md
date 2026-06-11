@@ -4,6 +4,8 @@
 
 **Production:** https://churn-prediction-navy.vercel.app
 
+**Repository:** https://github.com/zainch70/churn-old
+
 ---
 
 ## Table of Contents
@@ -31,7 +33,7 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 
 **New teammate?** Start with [Project Configuration](#project-configuration) — one guide for local setup and Vercel production.
 
-**Workspace layout:** the git repo root is `churn-prediction/` (parent folder). The Next.js app lives in `churn-prediction/churn-prediction/`. Python dataset tooling lives in `datasets/` at the repo root (sibling to the app folder).
+**Workspace layout:** clone [churn-old](https://github.com/zainch70/churn-old) → Next.js app is `churn-old/churn-prediction/`. Python dataset tooling is `churn-old/datasets/` (sibling to the app folder).
 
 ---
 
@@ -72,10 +74,16 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 
 > **Teammate quick-start:** follow Steps 1–11 in order. Steps 2–5 set up Supabase once (shared by local and production). Step 9 runs the app on your PC. Step 10 deploys to Vercel.
 
-**App folder** (run all `npm` commands here):
+**Repository (clone this):**
 
 ```
-churn-prediction/churn-prediction/
+https://github.com/zainch70/churn-old.git
+```
+
+**App folder** (run all `npm` commands here after cloning):
+
+```
+churn-old/churn-prediction/
 ```
 
 **Production URL (team deployment):** https://churn-prediction-navy.vercel.app
@@ -91,12 +99,31 @@ churn-prediction/churn-prediction/
 | [Google AI Studio](https://aistudio.google.com/apikey) key | Optional | AI emails, risk explanations, in-app assistant |
 | [Google Cloud](https://console.cloud.google.com) project | Optional | Only for “Sign in with Google” |
 | [Vercel](https://vercel.com) account | Optional | Only for production deployment |
+| [Git](https://git-scm.com/downloads) | Yes | To clone the repository |
 
 ---
 
-### Step 1 — Install Node.js and dependencies
+### Step 1 — Clone the repo and install dependencies
 
-**1.1 Install Node.js** (one-time)
+**1.1 Clone the repository** (one-time per machine)
+
+Pick a folder where you keep projects (e.g. `Documents` or `D:\`), then run:
+
+```bash
+git clone https://github.com/zainch70/churn-old.git
+cd churn-old/churn-prediction
+```
+
+**Windows (no Git yet):** install [Git for Windows](https://git-scm.com/download/win), then use **Git Bash** for the commands above.
+
+**Already have the repo?** Pull latest changes before setup:
+
+```bash
+cd churn-old/churn-prediction
+git pull
+```
+
+**1.2 Install Node.js** (one-time)
 
 1. Download **LTS** from https://nodejs.org and run the installer.
 2. Restart your terminal, then verify:
@@ -106,10 +133,9 @@ node -v
 npm -v
 ```
 
-**1.2 Install project packages** (one-time per clone)
+**1.3 Install project packages** (one-time per clone — run inside `churn-old/churn-prediction/`)
 
 ```bash
-cd churn-prediction/churn-prediction    # adjust path to your clone
 npm install
 ```
 
@@ -174,9 +200,13 @@ Add **both** local and production URLs so the same Supabase project works everyw
 ```
 http://localhost:3000/**
 http://localhost:3000/auth/callback
+http://localhost:3000/reset-password
 https://churn-prediction-navy.vercel.app/**
 https://churn-prediction-navy.vercel.app/auth/callback
+https://churn-prediction-navy.vercel.app/reset-password
 ```
+
+Password reset flow: **Forgot password** → email link → `/auth/callback?next=/reset-password` → `/reset-password` form.
 
 Replace the Vercel hostname if your team uses a different deployment URL. Click **Save**.
 
@@ -307,7 +337,7 @@ Skip this if email/password login is enough. No code changes — only dashboard 
 Every time you develop on your machine:
 
 ```bash
-cd churn-prediction/churn-prediction
+cd churn-old/churn-prediction
 npm run dev
 ```
 
@@ -338,7 +368,7 @@ npm run build   # verify production build before pushing
 1. Push this project to GitHub (if not already).
 2. Sign in at [vercel.com](https://vercel.com) → **Add New → Project**.
 3. Import the GitHub repo.
-4. Set **Root Directory** to `churn-prediction` (the inner app folder) if the repo root is the parent `churn-prediction/` workspace.
+4. Set **Root Directory** to `churn-prediction` (the Next.js app folder inside the cloned repo). If Vercel imports `churn-old` as the repo root, the root directory should be `churn-prediction`.
 5. Framework preset: **Next.js** (auto-detected).
 
 **10.2 Environment variables**
@@ -377,6 +407,7 @@ Click **Deploy**. Vercel assigns a URL like `https://your-app.vercel.app`.
 |-------|-------|------------|
 | Home page loads | http://localhost:3000 | `https://your-app.vercel.app` |
 | Email register + login | `/register` → `/onboarding` | Same on Vercel URL |
+| Password reset | `/forgot-password` → email → `/reset-password` | Same on Vercel URL |
 | Google login (if enabled) | `/login` → Google | Test-user Gmail only while in Testing |
 | CSV upload | Data Management → sample CSV | Same |
 | Dashboard shows data | `/dashboard` | Same |
@@ -388,7 +419,7 @@ Click **Deploy**. Vercel assigns a URL like `https://your-app.vercel.app`.
 
 | Step | Task | Done |
 |------|------|------|
-| 1 | Node.js installed, `npm install` completed | ☐ |
+| 1 | Repo cloned, Node.js installed, `npm install` completed | ☐ |
 | 2 | Supabase project created | ☐ |
 | 3 | `schema.sql` run in SQL Editor | ☐ |
 | 4 | Redirect URLs added (localhost + Vercel) | ☐ |
@@ -418,6 +449,8 @@ Click **Deploy**. Vercel assigns a URL like `https://your-app.vercel.app`.
 | Works locally, fails on Vercel | Match Vercel env vars to `.env.local`; redeploy |
 | CSV upload fails | Finish onboarding; use a sample CSV from Data Management |
 | Changed `.env.local`, no effect | Stop server (`Ctrl+C`), run `npm run dev` again |
+| Password reset link expired | Request a new link at `/forgot-password`; links expire in ~1 hour |
+| Reset lands on login with error | Ensure `/auth/callback` and `/reset-password` are in Supabase **Redirect URLs** |
 
 ---
 
