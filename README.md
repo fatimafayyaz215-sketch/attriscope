@@ -1,72 +1,91 @@
-# Churn Prediction — Next.js Application
+# Attriscope — Churn Prediction
 
-> A production-ready Next.js application using the **App Router**, TypeScript, Tailwind CSS v4, and ESLint.
+> A production-ready Next.js application for scoring customer attrition risk, drafting retention outreach, and managing churn intelligence. Built with the **App Router**, TypeScript, Tailwind CSS v4, Supabase, and optional Google Gemini AI.
+
+**Production:** https://churn-prediction-navy.vercel.app
 
 ---
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Tech Stack](#tech-stack)
-3. [Getting Started](#getting-started)
-4. [Scoring Fields & RavenStack Dataset](#scoring-fields--ravenstack-dataset)
-5. [Google Sign-In Configuration](#google-sign-in-configuration)
-6. [Folder Structure](#folder-structure)
-7. [CSS Variables & Design Tokens](#css-variables--design-tokens)
-8. [Naming Conventions](#naming-conventions)
-9. [Best Practices](#best-practices)
-10. [Scripts](#scripts)
+2. [Implemented Features](#implemented-features)
+3. [Tech Stack](#tech-stack)
+4. [Getting Started](#getting-started)
+5. [Database Setup](#database-setup)
+6. [Industries & Scoring](#industries--scoring)
+7. [Scoring Fields & Industry Datasets](#scoring-fields--industry-datasets)
+8. [Google Sign-In Configuration](#google-sign-in-configuration)
+9. [Folder Structure](#folder-structure)
+10. [API Routes](#api-routes)
+11. [CSS Variables & Design Tokens](#css-variables--design-tokens)
+12. [Naming Conventions](#naming-conventions)
+13. [Developer Guide & Architecture](#developer-guide--architecture)
+14. [Scripts](#scripts)
 
 ---
 
 ## Overview
 
-Next.js is a React framework that provides:
+Attriscope ingests customer CSV data, scores each account on four behavioral signals, and surfaces high-risk customers for AI-assisted analysis and retention outreach.
 
-- **App Router** — file-system based routing with React Server Components (RSC) by default.
-- **Server & Client Components** — granular control over rendering (SSR, SSG, ISR, CSR).
-- **Built-in optimisations** — automatic image optimisation (`<Image />`), font loading, and code splitting.
-- **API Routes** — backend endpoints co-located with the frontend inside `src/app/api/`.
-- **Proxy** — edge-runtime logic (auth, redirects, A/B tests) via `proxy.ts`.
+**Core workflow:** sign up → onboarding (industry + weights) → CSV upload → dashboard & risk analysis → outreach emails.
+
+**Workspace layout:** the git repo root is `churn-prediction/` (parent folder). The Next.js app lives in `churn-prediction/churn-prediction/`. Python dataset tooling lives in `datasets/` at the repo root (sibling to the app folder).
 
 ---
 
 ## Implemented Features
 
-- **Authentication Flow**: [Login](http://localhost:3000/login), [Registration](http://localhost:3000/register), and [Forgot Password](http://localhost:3000/forgot-password) screens with modular split-panel designs. Login supports **email/password** and **Google OAuth** (via Supabase).
-- **Onboarding Wizard**: A 3-step configuration flow for [Industry Selection](http://localhost:3000/onboarding), [Weight Calibration](http://localhost:3000/onboarding/step-2), and [Data Connection](http://localhost:3000/onboarding/step-3).
-- **Dashboard Overview**: The main application shell featuring a persistent sidebar and custom [Dashboard Widgets](http://localhost:3000/dashboard) (KPI Cards, Risk Charts, and Alerts).
-- **Risk Analysis**: A specialized [Risk Analysis Workspace](http://localhost:3000/risk-analysis) for predictive scoring, featuring a sticky intelligence panel.
-- **Outreach Hub**: A retention-focused [Outreach Hub](http://localhost:3000/outreach-hub) for drafting AI-personalized emails based on risk factors.
-- **Data Management**: A [Data Import Wizard](http://localhost:3000/data-management) for CSV uploads with AI-assisted mapping.
-- **System Settings**: Advanced [Calibration & Setup](http://localhost:3000/settings) for industry-specific weights and predictive engine parameters.
+- **Landing Page**: Public marketing page at `/` with industry-aware positioning.
+- **Authentication**: [Login](http://localhost:3000/login), [Registration](http://localhost:3000/register), and [Forgot Password](http://localhost:3000/forgot-password) with split-panel layouts. Supports **email/password** and **Google OAuth** (via Supabase).
+- **Onboarding Wizard**: 3-step flow — [Industry Selection](http://localhost:3000/onboarding), [Weight Calibration](http://localhost:3000/onboarding/step-2), and [Data Connection](http://localhost:3000/onboarding/step-3).
+- **Dashboard**: [KPI cards, risk distribution, engagement trend, and alerts](http://localhost:3000/dashboard) inside a persistent sidebar shell.
+- **Risk Analysis**: [Predictive scoring workspace](http://localhost:3000/risk-analysis) with filters, deep links (`?level=high&signal=payment`), and a sticky AI intelligence panel.
+- **Outreach Hub**: [AI-personalized retention emails](http://localhost:3000/outreach-hub) with tone presets; send status tracked in Supabase.
+- **Data Management**: [CSV upload wizard](http://localhost:3000/data-management) with auto column-mapping and per-industry sample downloads.
+- **System Settings**: [Industry presets and weight tuning](http://localhost:3000/settings) with formula transparency and bulk recalculation.
+- **In-App AI Assistant**: Sidebar advisor chat (rule-based FAQs + optional Gemini) with page-aware context.
 
 ---
 
 ## Tech Stack
 
-| Layer       | Technology                      |
-|-------------|---------------------------------|
-| Framework   | Next.js 16 (App Router)         |
-| Language    | TypeScript                      |
-| Styling     | Tailwind CSS v4 + CSS Variables |
-| Auth & DB   | Supabase (Auth, PostgreSQL, RLS)|
-| AI          | Google Gemini (optional)        |
-| Linting     | ESLint + eslint-config-next     |
-| Package Mgr | npm                             |
+| Layer        | Technology |
+|--------------|------------|
+| Framework    | Next.js 16 (App Router) |
+| UI           | React 19, TypeScript |
+| Styling      | Tailwind CSS v4 + CSS variables (`globals.css`) |
+| State        | Zustand (`src/store/churn-store.ts`) |
+| Charts       | Recharts |
+| Auth & DB    | Supabase (Auth, PostgreSQL, RLS) via `@supabase/ssr` |
+| AI           | Google Gemini (`@google/generative-ai`) — optional |
+| CSV parsing  | PapaParse |
+| Route guard  | `src/proxy.ts` (session refresh + protected routes) |
+| Linting      | ESLint 9 + `eslint-config-next` |
+| Package mgr  | npm |
+| FYP tooling  | Python scripts in `datasets/` (pandas) |
 
 ---
 
 ## Getting Started
+
+All commands below run from the **app directory** (`churn-prediction/churn-prediction/`).
 
 ```bash
 # 1. Install dependencies
 npm install
 
 # 2. Copy environment variables
-cp .env.example .env.local   # then fill in the values
+cp .env.example .env.local        # macOS / Linux
+# copy .env.example .env.local    # Windows (cmd)
+# Copy-Item .env.example .env.local  # Windows (PowerShell)
 
-# 3. Start the development server
+# 3. Fill in Supabase values in .env.local (see table below)
+
+# 4. Set up the database (see Database Setup)
+
+# 5. Start the development server
 npm run dev
 ```
 
@@ -74,35 +93,86 @@ Open http://localhost:3000 in your browser.
 
 ### Environment variables
 
-Copy `.env.example` to `.env.local` and fill in:
-
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL (Project Settings → API) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL (Project Settings → API). No `/rest/v1/` suffix. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase `anon` public key |
 | `GEMINI_API_KEY` | No | Enables AI explanations, email drafting, and the in-app assistant |
-| `GEMINI_API_KEYS` | No | Comma-separated Gemini keys for rate-limit rotation (uses this instead of `GEMINI_API_KEY` when set) |
+| `GEMINI_API_KEYS` | No | Comma-separated Gemini keys for rate-limit rotation (overrides `GEMINI_API_KEY` when set) |
 
-> Google OAuth credentials are **not** stored in `.env.local`. They are configured in the Supabase dashboard (see below).
+> Google OAuth credentials are **not** stored in `.env.local`. Configure them in the Supabase dashboard (see [Google Sign-In](#google-sign-in-configuration)).
 
-For production (Vercel), set the same `NEXT_PUBLIC_*` variables under **Project Settings → Environment Variables**, then redeploy if you change them.
+For production (Vercel), set the same `NEXT_PUBLIC_*` variables under **Project Settings → Environment Variables**, then redeploy after changes.
 
 ---
 
-## Scoring Fields & RavenStack Dataset
+## Database Setup
 
-Attriscope scores each customer using **4 signals**. The upload CSV must include these columns (see `public/saas-sample-customers.csv` for the test template).
+1. Create a Supabase project at [supabase.com](https://supabase.com).
+2. Open **SQL Editor** and run `supabase/schema.sql` to create tables, indexes, and RLS policies:
+   - `customers` — imported and scored customer records
+   - `user_settings` — per-user industry and scoring weights
+   - `outreach_emails` — drafted/sent retention emails
+3. Optionally apply `supabase/migrations/20260521_set_default_weights_to_25_each.sql` if your project was created with older column defaults.
+4. Upload auth email templates from `supabase/templates/` via **Authentication → Email Templates** in the Supabase dashboard (`confirm-signup.html`, `reset-password.html`, etc.).
+
+---
+
+## Industries & Scoring
+
+Three supported industries (`src/lib/industry-defaults.ts`):
+
+| Industry | Default weights (inactivity / usage / support / payment) | Risk bands (high / medium) |
+|----------|----------------------------------------------------------|----------------------------|
+| **Entertainment** | 35 / 30 / 20 / 15 | ≥ 70 / ≥ 40 |
+| **SaaS** (default) | 10 / 45 / 15 / 30 | ≥ 70 / ≥ 40 |
+| **Education** | 35 / 25 / 15 / 25 | ≥ 50 / ≥ 35 |
+
+Weights are capped so the four sliders sum to ≤ 100%. Users can override presets in **Settings** or during onboarding.
+
+**Billing-cycle caps** (`src/lib/scoring.ts`):
+
+| Cycle | Inactivity cap | Support ticket cap |
+|-------|----------------|--------------------|
+| Monthly | 30 days | 5 tickets |
+| Yearly | 90 days | 10 tickets |
+
+Sample CSVs per industry are in `public/`:
+
+- `saas-sample-customers.csv`
+- `entertainment-sample-customers.csv`
+- `education-sample-customers.csv`
+
+---
+
+## Scoring Fields & Industry Datasets
+
+Attriscope scores each customer using **4 signals**. Every industry maps different source data into the same upload columns so the app scoring engine stays unchanged.
 
 | # | App column(s) | What it measures |
 |---|---------------|------------------|
-| 1 | `last_login_at` | Days since last activity (inactivity) |
+| 1 | `last_login_at` or `days_inactive` | Days since last activity (inactivity) |
 | 2 | `current_sessions` + `previous_sessions` | Usage drop (recent vs prior period) |
-| 3 | `support_complaints` | Support ticket load |
+| 3 | `support_complaints` | Support ticket load / assessment struggle |
 | 4 | `payment_delay` | Billing/payment risk (`0` = OK, `1` = risk) |
 
-The built-in **sample CSV is synthetic**. For FYP, we use the **RavenStack** Kaggle dataset (`datasets/saas/`). It has **5 files** and **many rows per customer** — the app needs **one row per customer**, so we derive the 4 fields first, then upload.
+Optional: `billing_cycle` (`monthly` / `yearly`) adjusts normalization caps. Columns are auto-mapped on upload via `src/lib/column-detector.ts`.
 
-### RavenStack source files
+Sample CSVs (downloadable in **Data Management**):
+
+| Industry | File | Rows (default build) |
+|----------|------|----------------------|
+| SaaS | `public/saas-sample-customers.csv` | 500 |
+| Entertainment | `public/entertainment-sample-customers.csv` | all subscribers in source |
+| Education | `public/education-sample-customers.csv` | 1,000 (use `--full` for ~32k) |
+
+---
+
+### SaaS — RavenStack dataset
+
+The built-in **sample CSV is synthetic**. For FYP, we use the **RavenStack** dataset in `datasets/saas/`. It has **5 files** and **many rows per customer** — the app needs **one row per customer**, so we derive the 4 fields first, then upload.
+
+#### RavenStack source files
 
 | File | Role |
 |------|------|
@@ -114,48 +184,45 @@ The built-in **sample CSV is synthetic**. For FYP, we use the **RavenStack** Kag
 
 **Join path:** `accounts` → `subscriptions` → `feature_usage` (usage has no `account_id`; join through `subscription_id`).
 
-### How we derive the 4 fields
+#### How we derive the 4 fields
 
-#### 1. Inactivity → `last_login_at`
+**1. Inactivity → `last_login_at`**
 
 - **Source:** `ravenstack_feature_usage.csv` (join to `account_id` via subscriptions)
 - **Rule:** For each customer, take the **latest `usage_date`** = last time they used the product
-- **Note:** Each usage row is **one feature on one day**; `usage_count` is how many times that feature was used that day
 
-#### 2. Usage drop → `current_sessions` + `previous_sessions`
+**2. Usage drop → `current_sessions` + `previous_sessions`**
 
 - **Source:** `ravenstack_feature_usage.csv`
 - **Rule:** Pick a snapshot date (e.g. last date in the dataset). For each customer:
   - **`current_sessions`** = sum of all `usage_count` in the **last 30 days**
   - **`previous_sessions`** = sum of all `usage_count` in the **30 days before that**
-- The app then computes: `usage_drop = (previous - current) / previous`
+- The app computes: `usage_drop = (previous - current) / previous`
 
-#### 3. Support complaints → `support_complaints`
+**3. Support complaints → `support_complaints`**
 
 - **Source:** `ravenstack_support_tickets.csv`
 - **Rule:** For each `account_id`, **count ticket rows** (optionally only tickets in the last 90 days)
-- **Example:** `A-2e4581` has 2 ticket rows → `support_complaints = 2`
 
-#### 4. Payment delay → `payment_delay` (proxy)
+**4. Payment delay → `payment_delay` (proxy)**
 
 - **Source:** `ravenstack_subscriptions.csv`
 - **Rule:** RavenStack has **no real late-payment column**. Use the latest subscription per customer:
   - `payment_delay = 1` if `auto_renew_flag` is false **or** `downgrade_flag` is true
   - otherwise `payment_delay = 0`
 - Document in FYP reports that this is a **billing proxy**, not actual payment failure data
-- **`billing_cycle`:** map `billing_frequency` → `monthly` or `yearly` (helps scoring caps; separate from `payment_delay`)
 
-### Output CSV for upload
-
-After derivation, export **one row per customer** with columns like:
+#### Output CSV for upload
 
 ```csv
 customer_id,name,email,company,last_login_at,current_sessions,previous_sessions,support_complaints,payment_delay,billing_cycle
 ```
 
-Upload via **Data Management** in the app. Identity fields: `customer_id` ← `account_id`, `name`/`company` ← `account_name`, `email` ← generated (dataset has no email).
+Upload via **Data Management**. Identity fields: `customer_id` ← `account_id`, `name`/`company` ← `account_name`, `email` ← generated (dataset has no email).
 
-### Regenerate the test CSV
+#### Regenerate the test CSV
+
+Run from the **repo root** (parent of the app folder):
 
 ```bash
 python datasets/saas/build_upload_csv.py
@@ -164,38 +231,247 @@ python datasets/saas/build_upload_csv.py
 Writes **500 rows** to:
 
 - `datasets/saas/saas-sample-customers.csv`
-- `public/saas-sample-customers.csv` (downloadable in Data Management)
+- `churn-prediction/public/saas-sample-customers.csv`
 
-### Validate the scoring formula (FYP)
-
-Ground truth uses **`churn_flag`** on `ravenstack_accounts.csv` (`True` = churned, `False` = stayed). This is the official yes/no label per account (~22% churn rate in the sample).
+**Validate (FYP):** ground truth = `churn_flag` on `ravenstack_accounts.csv` (`True` = churned).
 
 ```bash
 python datasets/saas/validate_formula.py
+python datasets/saas/validate_formula.py --compare-events   # optional; not recommended for main result
 ```
 
-**Prediction rule:** score ≥ 70 → predicted churn; score &lt; 70 → predicted stay (matches the app’s high-risk band).
+**Prediction rule:** score ≥ 70 → predicted churn (matches SaaS high-risk band).
 
-**Outputs:**
+**Outputs:** `validation_results.csv`, `validation_threshold_sweep.csv` (thresholds 40, 50, 60, 70). Report precision, recall, F1, and the confusion matrix — not accuracy alone.
 
-- `datasets/saas/validation_results.csv` — per-customer scores vs `churn_flag`
-- `datasets/saas/validation_threshold_sweep.csv` — metrics at thresholds 40, 50, 60, 70
+---
 
-Report **precision, recall, F1**, and the confusion matrix (TP/TN/FP/FN), not accuracy alone.
+### Entertainment — Netflix-style dataset
 
-To optionally compare against the churn *events* log (not recommended for the main FYP result):
+Source: `datasets/entertainment/netflix_large_user_data.csv` (synthetic B2C streaming data).
+
+Entertainment clients do not have SaaS-style session logs. The build script **derives session-like integers** from watch time and engagement so the same four-signal formula applies.
+
+#### Source columns
+
+| Source column | Role |
+|---------------|------|
+| `Customer ID` | `customer_id` |
+| `Daily Watch Time (Hours)` | Proxy for current activity (0.5–5 h range) |
+| `Engagement Rate (1-10)` | Proxy for expected / past activity |
+| `Support Queries Logged` | `support_complaints` |
+| `Payment History (On-Time/Delayed)` | `payment_delay` |
+| `Subscription Plan` | `billing_cycle` |
+| `Churn Status (Yes/No)` | Ground truth for validation only |
+
+#### How we derive the 4 fields
+
+**1. Inactivity → `days_inactive`**
+
+No `last_login_at` in the source. Lower watch time → higher inferred inactivity (clamped 0–90 to match yearly cap):
+
+```
+days_inactive = round( sqrt((5.0 - watch_hours) / 5.0) × 90 )
+days_inactive = clamp(0, 90, days_inactive)
+```
+
+Example — churned viewer C00002 (1.75 h watch): `(5−1.75)/5 = 0.65` → `√0.65 × 90 ≈ 73` days inactive.
+
+Example — retained viewer C00001 (4.85 h watch): `(5−4.85)/5 = 0.03` → `√0.03 × 90 ≈ 16` days inactive.
+
+At upload, the app can set `last_login_at = upload_date − days_inactive`.
+
+**2. Usage drop → `current_sessions` + `previous_sessions`**
+
+Session-like numbers bridge entertainment metrics to the SaaS formula:
+
+```
+current_sessions  = round(watch_hours × 8)      # how much they watch now
+previous_sessions = round(engagement_rate × 6)  # how active we expect them to be
+```
+
+The app computes: `usage_drop = (previous − current) / previous` (clamped 0–1; 0 if `previous = 0`).
+
+Example — C00002: `current = round(1.75×8) = 14`, `previous = round(9×6) = 54` → usage drop **74.1%** (high engagement expectation, low actual watch → big gap → churn risk).
+
+**3. Support complaints → `support_complaints`**
+
+```
+support_complaints = Support Queries Logged
+```
+
+**4. Payment delay → `payment_delay`**
+
+```
+payment_delay = 1  if Payment History == "Delayed"
+payment_delay = 0  otherwise
+```
+
+**Billing cycle:**
+
+```
+billing_cycle = "monthly"  if Subscription Plan == "Basic"
+billing_cycle = "yearly"   otherwise
+```
+
+#### Default weights (entertainment preset)
+
+| Factor | Suggested weight |
+|--------|------------------|
+| Login / Inactivity | 35 |
+| Usage Drop | 30 |
+| Support Complaints | 20 |
+| Payment Delays | 15 |
+
+Matches `INDUSTRY_DEFAULT_WEIGHTS.entertainment` in `src/lib/industry-defaults.ts`.
+
+#### Regenerate the test CSV
 
 ```bash
-python datasets/saas/validate_formula.py --compare-events
+python datasets/entertainment/build_upload_csv.py
 ```
+
+Writes to `datasets/entertainment/entertainment-sample-customers.csv` and `churn-prediction/public/entertainment-sample-customers.csv`.
+
+**Validate (FYP):** ground truth = `Churn Status` in the source CSV.
+
+```bash
+python datasets/entertainment/validate_formula.py
+```
+
+**Prediction rule:** score ≥ 70 → predicted churn (matches entertainment high-risk band).
+
+---
+
+### Education — OULAD dataset
+
+Source: **Open University Learning Analytics Dataset (OULAD)** in `datasets/education/`.
+
+**One row = one enrollment** — one student in one course run. Composite key:
+
+```
+customer_id = code_module + "-" + code_presentation + "-" + id_student
+# e.g. AAA-2013J-238007
+```
+
+#### Source files
+
+| OULAD file | What it contains |
+|------------|------------------|
+| `studentInfo.csv` | Who enrolled, region, `final_result` (Pass / Withdrawn / …) |
+| `studentVle.csv` | VLE clicks per day (`date`, `sum_click`, `id_site`) |
+| `studentAssessment.csv` | Assessment submissions and scores |
+| `assessments.csv` | Assessment due dates |
+| `studentRegistration.csv` | Registration and unregistration dates |
+| `courses.csv` | Course length (`module_presentation_length`) |
+
+#### OULAD `date` is not a calendar date
+
+In `studentVle.csv`, `date` is a **course day number**:
+
+| `date` value | Meaning |
+|--------------|---------|
+| `0` | First official day of the course |
+| `-10` | 10 days before the course starts (early browsing) |
+| `50` | 50 days into the course |
+| `243` | Near end of course |
+
+`sum_click` = clicks on **one VLE resource on one day**. A student can have many rows on the same day (one per resource opened). Total VLE usage on a day = sum of all `sum_click` for that student on that day.
+
+#### How we derive the 4 fields
+
+**1. Inactivity → `days_inactive`**
+
+- **Source:** `studentVle.csv`
+- **Snapshot date:** latest VLE `date` for the course (`code_module` + `code_presentation`)
+- **Last activity:** latest VLE `date` for the student enrollment
+- **Formula:** `days_inactive = snapshot_date − last_activity_date`
+
+Example: snapshot at day 243, last click at day 227 → **16 days inactive**.
+
+**2. Usage drop → `current_sessions` + `previous_sessions`**
+
+- **Source:** `studentVle.csv` — sum of `sum_click` in two 28-day windows before snapshot:
+  - **`current_sessions`:** `snapshot − 28 < date ≤ snapshot`
+  - **`previous_sessions`:** `snapshot − 56 < date ≤ snapshot − 28`
+
+App logic (matches `computeUsageDrop` in `src/lib/scoring.ts`):
+
+```
+if previous > 0:
+    usage_drop = (previous - current) / previous
+elif current = 0 AND previous = 0 AND days_inactive > 28:
+    usage_drop = 1.0    # fully disengaged
+else:
+    usage_drop = 0
+```
+
+**3. Support complaints → `support_complaints` (assessment struggle)**
+
+Mapped to SaaS "support tickets." Per assessment, flag if **late** or **low score**:
+
+- **Late:** `date_submitted > due_date + 7` (7-day grace)
+- **Low score:** `score < 40`
+
+```
+support_complaints = count of (late OR low_score) assessments
+```
+
+| Assessment | Due | Submitted | Days after due | Score | Late? | Low score? | Struggle? |
+|------------|-----|-----------|----------------|-------|-------|------------|-----------|
+| 1752 | 19 | 19 | 0 | 70 | No | No | No |
+| 1753 | 54 | 62 | 8 | 62 | Yes | No | **Yes** |
+| 1756 | 215 | 223 | 8 | 70 | Yes | No | **Yes** |
+
+**4. Payment delay → `payment_delay` (withdrawal / unregistration)**
+
+- **Source:** `studentRegistration.csv`
+- **Rule:** `payment_delay = 1` if `date_unregistration` is set; otherwise `0`
+- In OULAD, unregistration = student left the course. The app **floors the score at 50** (education high-risk threshold) when `payment_delay = 1` — see `src/lib/scoring.ts`.
+
+**Billing cycle** (scoring caps only):
+
+- **Source:** `courses.csv` → `module_presentation_length`
+- `billing_cycle = "monthly"` if length ≤ 210 course-days (caps: 30d inactivity, 5 support)
+- `billing_cycle = "yearly"` if length > 210 (caps: 90d inactivity, 10 support)
+- Most OULAD modules are "yearly" (~268 days average)
+
+#### Default weights (education preset)
+
+| Factor | Weight |
+|--------|--------|
+| Inactivity | 35 |
+| Usage Drop | 25 |
+| Support | 15 |
+| Payment | 25 |
+
+**Risk bands:** high ≥ 50, medium ≥ 35 (calibrated against OULAD withdrawal labels — lower than SaaS/entertainment).
+
+#### Regenerate the test CSV
+
+```bash
+python datasets/education/build_upload_csv.py          # 1,000-row sample (default)
+python datasets/education/build_upload_csv.py --full   # all enrollments (~32k)
+```
+
+Writes to `datasets/education/education-sample-customers.csv` and `churn-prediction/public/education-sample-customers.csv`.
+
+Output uses `days_inactive` directly (no `last_login_at` in the CSV). Upload columns: `customer_id`, `name`, `email`, `company`, `days_inactive`, `current_sessions`, `previous_sessions`, `support_complaints`, `payment_delay`, `billing_cycle`.
+
+**Validate (FYP):** ground truth = `final_result == "Withdrawn"` in `studentInfo.csv`.
+
+```bash
+python datasets/education/validate_formula.py
+python datasets/education/validate_formula.py --full
+```
+
+**Prediction rule:** score ≥ **50** → predicted withdrawal (matches education high-risk band and `EDUCATION_PAYMENT_FLOOR` in the app).
 
 ---
 
 ## Google Sign-In Configuration
 
-Google login is already implemented in code (`src/services/auth.service.ts` → `loginWithGoogle()`, callback at `src/app/auth/callback/route.ts`). Teammates only need to configure **Google Cloud Console** and **Supabase** — no code changes required.
-
-**Production URL:** https://churn-prediction-navy.vercel.app
+Google login is implemented in `src/services/auth.service.ts` (`loginWithGoogle()`) with the callback at `src/app/auth/callback/route.ts`. Teammates only need to configure **Google Cloud Console** and **Supabase** — no code changes required.
 
 ### How the OAuth flow works
 
@@ -247,8 +523,6 @@ Google login is already implemented in code (`src/services/auth.service.ts` → 
 
 ### Step 3 — Vercel (production)
 
-Confirm these environment variables match the same Supabase project:
-
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://<PROJECT_REF>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_anon_key>
@@ -258,7 +532,7 @@ Redeploy after changing env vars.
 
 ### Step 4 — Verify
 
-1. Open `/login` on your deployment (or `http://localhost:3000/login` locally).
+1. Open `/login` locally or on your deployment.
 2. Click **Google** and sign in with a test-user Gmail.
 3. First-time users land on `/onboarding`; returning users go to `/dashboard`.
 
@@ -274,210 +548,196 @@ Redeploy after changing env vars.
 
 ### Going live (optional)
 
-When ready for any Google user (not just test users), publish the OAuth consent screen in Google Cloud (**Audience** → move from Testing to **In production**). Google may require app verification for sensitive scopes; basic `email` / `profile` / `openid` scopes typically do not.
+When ready for any Google user (not just test users), publish the OAuth consent screen in Google Cloud (**Audience** → move from Testing to **In production**). Basic `email` / `profile` / `openid` scopes typically do not require verification.
 
 ---
 
 ## Folder Structure
 
 ```
-churn/
-├── public/                     # Static assets served at /
-│   └── images/
+churn-prediction/                    # Next.js app root (run npm commands here)
+├── public/                          # Static assets + industry sample CSVs
 ├── src/
-│   ├── app/                    # App Router root (Next.js 13+)
-│   │   ├── (auth)/             # Route group — shared layout without URL segment
+│   ├── app/
+│   │   ├── (dashboard)/             # Authenticated app shell
+│   │   │   ├── layout.tsx           # DashboardShell wrapper
+│   │   │   ├── dashboard/
+│   │   │   ├── risk-analysis/
+│   │   │   ├── outreach-hub/
+│   │   │   ├── data-management/
+│   │   │   └── settings/
+│   │   ├── (public)/                # Landing + auth pages
+│   │   │   ├── page.tsx             # Landing page (/)
 │   │   │   ├── login/
-│   │   │   │   └── page.tsx
-│   │   │   └── register/
-│   │   │       └── page.tsx
-│   │   ├── (dashboard)/        # Route group — authenticated pages
-│   │   │   ├── layout.tsx      # Shared dashboard shell
-│   │   │   └── overview/
-│   │   │       └── page.tsx
-│   │   ├── api/                # API route handlers
-│   │   │   └── churn/
-│   │   │       └── route.ts
-│   │   ├── error.tsx           # Global error boundary (Client Component)
-│   │   ├── not-found.tsx       # 404 page
-│   │   ├── layout.tsx          # Root layout (html + body)
-│   │   ├── page.tsx            # Home page (/)
-│   │   └── globals.css         # Global styles & CSS design tokens
-│   ├── components/             # Shared, reusable UI components
-│   │   ├── layout/             # Layout components (Sidebar, TopBar)
-│   │   ├── ui/                 # Primitive components (Button, Input, Card...)
-│   │   └── charts/             # Domain-specific chart components
-│   ├── features/               # Feature-based modular components
-│   │   ├── auth/               # Login, Register, Forgot Password logic
-│   │   ├── onboarding/         # Setup wizard steps
-│   │   ├── dashboard/          # Analytics widgets
-│   │   ├── risk-analysis/      # Risk table and AI panel
-│   │   ├── outreach-hub/       # Email editor and context panel
-│   │   └── data-management/    # CSV upload and mapping logic
-│   ├── hooks/                  # Custom React hooks (use-prefix)
-│   ├── lib/                    # Pure utilities, SDK clients, helpers
-│   │   ├── api.ts              # Fetch wrappers / API client
-│   │   └── utils.ts            # General helpers (cn, formatDate...)
-│   ├── services/               # Business-logic layer (server-side)
-│   ├── store/                  # Global client state (Zustand / Redux)
-│   ├── types/                  # Shared TypeScript interfaces & enums
-│   └── constants/              # App-wide constants (routes, config keys)
-├── .env.example                # Documented env variable template
-├── .eslintrc.json
+│   │   │   ├── register/
+│   │   │   └── forgot-password/
+│   │   ├── onboarding/              # 3-step wizard (outside dashboard shell)
+│   │   ├── api/                     # Route handlers (see API Routes)
+│   │   ├── auth/callback/           # OAuth / magic-link session exchange
+│   │   ├── globals.css              # Design tokens + Tailwind
+│   │   ├── layout.tsx               # Root layout
+│   │   ├── loading.tsx
+│   │   ├── error.tsx
+│   │   └── not-found.tsx
+│   ├── components/
+│   │   ├── layout/                  # Sidebar, TopBar, DashboardShell, AdvisorChatPanel
+│   │   └── ui/                      # Button, Input
+│   ├── features/                    # Domain modules
+│   │   ├── auth/
+│   │   ├── landing/
+│   │   ├── onboarding/
+│   │   ├── dashboard/
+│   │   ├── risk-analysis/
+│   │   ├── outreach-hub/
+│   │   ├── data-management/
+│   │   └── settings/
+│   ├── lib/                         # Scoring, Gemini, Supabase clients, column-detector
+│   ├── services/                    # auth.service.ts (Supabase auth)
+│   ├── store/                       # Zustand churn-store
+│   ├── types/
+│   └── proxy.ts                     # Session refresh + route protection
+├── supabase/
+│   ├── schema.sql
+│   ├── migrations/
+│   └── templates/                   # Auth email HTML templates
+├── .env.example
+├── eslint.config.mjs
 ├── next.config.ts
-├── postcss.config.mjs
-├── tailwind.config.ts
+├── postcss.config.mjs               # Tailwind v4 (no tailwind.config.ts)
+├── package.json
 └── tsconfig.json
+
+datasets/                            # Repo root — Python FYP tooling (sibling to app)
+├── saas/                            # RavenStack derivation + validation
+├── entertainment/
+└── education/
 ```
 
-### Key Special Files
+### Key special files
 
-| File            | Purpose                                                      |
-|-----------------|--------------------------------------------------------------|
-| `layout.tsx`    | Persistent UI wrapper; survives navigation within a segment  |
-| `page.tsx`      | The publicly accessible leaf route                           |
-| `loading.tsx`   | Suspense-based loading skeleton for the segment              |
-| `error.tsx`     | Error boundary (must be a Client Component)                  |
-| `not-found.tsx` | Rendered when `notFound()` is called                         |
-| `route.ts`      | API route handler (GET, POST, ...)                           |
-| `proxy.ts`     | Edge-runtime routing, redirects, and rewrites (replaces middleware) |
+| File | Purpose |
+|------|---------|
+| `layout.tsx` | Persistent UI wrapper within a route segment |
+| `page.tsx` | Publicly accessible leaf route |
+| `loading.tsx` | Suspense loading skeleton |
+| `error.tsx` | Error boundary (Client Component) |
+| `not-found.tsx` | 404 page |
+| `route.ts` | API route handler (GET, POST, …) |
+| `proxy.ts` | Session refresh, auth redirects, protected routes |
+
+---
+
+## API Routes
+
+All backend logic runs as Next.js route handlers under `src/app/api/`. Client components call these with `fetch("/api/...")`.
+
+| Route | Methods | Purpose |
+|-------|---------|---------|
+| `/api/upload` | POST | CSV import, scoring, DB insert |
+| `/api/customers` | GET, DELETE | List/filter customers; delete all imported data |
+| `/api/stats` | GET | Dashboard KPIs and engagement trend |
+| `/api/analyze` | POST | AI risk explanation per customer (Gemini + fallback) |
+| `/api/generate-email` | POST | AI retention email drafting |
+| `/api/send-email` | POST | Record outreach email as sent in DB |
+| `/api/settings` | GET, POST | User industry and scoring weights |
+| `/api/settings/recalculate` | POST | Re-score all customers after weight changes |
+| `/api/app-assistant` | POST | In-app advisor chat |
+| `/api/advisor/context` | POST | Page-aware context for advisor panel |
+| `/api/status` | GET | Health check |
 
 ---
 
 ## CSS Variables & Design Tokens
 
-All design tokens are defined in `src/app/globals.css` under `:root` and are available everywhere.
+All design tokens are defined in `src/app/globals.css` under `:root`.
 
 ```css
-/* Colours */
 color: var(--color-primary);
 background-color: var(--color-surface);
-
-/* Typography */
 font-size: var(--text-lg);
-font-weight: var(--font-semibold);
-
-/* Spacing */
 padding: var(--spacing-4);
-gap: var(--spacing-6);
-
-/* Shadows & borders */
 box-shadow: var(--shadow-md);
 border-radius: var(--radius-lg);
-
-/* Motion */
 transition: all var(--transition-fast);
 ```
 
-Dark-mode values are set automatically via `@media (prefers-color-scheme: dark)`.
+Dark-mode values are set via `@media (prefers-color-scheme: dark)`.
+
+**Brand styling:** `text-blue-700`, `bg-[#0a235c]`, glass overlays with `bg-white/80 backdrop-blur-md`.
 
 ---
 
 ## Naming Conventions
 
-| Item                | Convention           | Example                      |
-|---------------------|----------------------|------------------------------|
-| Components          | PascalCase           | `ChurnChart.tsx`             |
-| Hooks               | camelCase + `use`    | `useChurnData.ts`            |
-| Utilities / helpers | camelCase            | `formatPercent.ts`           |
-| Constants           | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT`            |
-| CSS classes         | kebab-case           | `.card-header`               |
-| Env variables       | SCREAMING_SNAKE_CASE | `NEXT_PUBLIC_API_BASE_URL`   |
-| API route files     | `route.ts`           | `src/app/api/churn/route.ts` |
+| Item | Convention | Example |
+|------|------------|---------|
+| Components | PascalCase | `RiskWorkspace.tsx` |
+| Hooks | camelCase + `use` | `useAdvisorChat.ts` |
+| Utilities | camelCase | `computeChurnScore.ts` |
+| Constants | SCREAMING_SNAKE_CASE | `DEFAULT_WEIGHTS` |
+| CSS classes | kebab-case | `.card-header` |
+| Env variables | SCREAMING_SNAKE_CASE | `NEXT_PUBLIC_SUPABASE_URL` |
+| API route files | `route.ts` | `src/app/api/upload/route.ts` |
 
 ---
 
----
+## Developer Guide & Architecture
 
-## 🛠 Developer Guide & Architecture
+### Architecture principles
 
-This section is intended for developers joining the project to ensure consistency and high code quality across the codebase.
+**Feature-based modular architecture** — domain logic lives in `src/features/[feature-name]/`, not scattered across global folders.
 
-### 🏗 Architecture Principles
+- **`src/features/`** — components and logic per business domain
+- **`src/components/layout`** — persistent shell (Sidebar, TopBar, DashboardShell)
+- **`src/components/ui`** — reusable primitives (Button, Input)
+- **`src/app/(dashboard)`** — route group for authenticated pages with shared layout
+- **`src/lib/`** — pure utilities (scoring, Gemini, Supabase clients)
+- **`src/services/`** — Supabase auth wrappers (`auth.service.ts`)
+- **`src/store/`** — client-side Zustand state
 
-We follow a **Feature-Based Modular Architecture**. Instead of placing all logic in global `components/` or `hooks/` folders, we group related logic by domain.
+### Component strategy
 
-- **`src/features/[feature-name]`**: Contains components, hooks, and types specific to a single business domain (e.g., `risk-analysis`).
-- **`src/components/layout`**: Persistent shell components (Sidebar, TopBar) used across the dashboard.
-- **`src/components/ui`**: Atomic, "dumb" UI components (Buttons, Inputs, Modals) that are reusable and brand-consistent.
-- **`src/app/(dashboard)`**: Uses Next.js **Route Groups** to apply a common layout without affecting the URL structure.
+- **Server Components by default** in `src/app/`
+- **`"use client"`** only where interactivity is required
+- **Strict typing** — use `src/types/`; avoid `any`
 
-### ⚛️ Component Strategy
+### Adding a new screen
 
-- **Server Components by Default**: All files in `src/app` should be Server Components unless they require interactivity.
-- **Client Boundary Placement**: Use `"use client"` as far down the component tree as possible. For example, keep the page as a Server Component and wrap only the interactive form in a Client Component.
-- **Strict Typing**: Avoid `any`. Use the types defined in `src/types` or local feature-specific types.
+1. Create or extend a folder in `src/features/`.
+2. Build components in `src/features/[name]/components/`.
+3. Add the route in `src/app/(dashboard)/[name]/page.tsx`.
+4. Add a nav item in `src/components/layout/Sidebar.tsx`.
+5. Update the title mapping in `src/components/layout/TopBar.tsx`.
 
-### 🎨 Styling & Design Tokens
+### Code quality
 
-We use **Tailwind CSS v4** paired with **CSS Variables** defined in `src/app/globals.css`. 
-
-- **Primary Colors**: Use `text-blue-700` or `bg-[#0a235c]` for brand actions.
-- **Glassmorphism**: Use `bg-white/80 backdrop-blur-md` for high-end overlays.
-- **Responsiveness**: Always use `md:`, `lg:`, and `xl:` prefixes to ensure the dashboard remains usable on all screen sizes.
-
----
-
-## 🚀 Development Workflow
-
-### 1. Adding a New Screen
-1.  Create a new feature folder in `src/features/` if the domain is new.
-2.  Build your components in `src/features/[name]/components/`.
-3.  Add the route in `src/app/(dashboard)/[name]/page.tsx`.
-4.  Update the title mapping in `src/components/layout/TopBar.tsx`.
-
-### 2. Code Quality
 ```bash
-npm run lint      # Check for ESLint errors
-npm run build     # Verify the production build (essential before PRs)
+npm run lint      # ESLint
+npm run build     # Production build (run before PRs)
 ```
 
-### 3. Git Workflow
-- Create a feature branch from `main`.
-- Use descriptive commit messages (e.g., `feat:`, `fix:`, `docs:`, `refactor:`).
+### Git workflow
+
+- Branch from `main`; use conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`).
 - Ensure `npm run build` passes before pushing.
 
----
+### Backend integration pattern
 
-## 📜 Scripts
+- **Auth:** `authService` in `src/services/auth.service.ts` wraps the Supabase browser client.
+- **Data & AI:** components call same-origin `/api/*` routes directly (no external API server).
+- **Database:** Supabase PostgreSQL with RLS; server routes use `src/lib/supabase/server.ts`.
 
-| Script | Purpose |
-| :--- | :--- |
-| `npm run dev` | Starts the development server with Turbopack |
-| `npm run build` | Generates an optimized production build |
-| `npm run start` | Serves the production build locally |
-| `npm run lint` | Runs the ESLint suite for code quality |
-
-
----
-
-## 🔌 Backend Integration
-
-To make backend integration seamless, we have implemented a **Service Layer** pattern.
-
-### 1. API Client (`src/lib/api-client.ts`)
-A centralized wrapper around the native `fetch` API. It handles:
-- Base URL management via `NEXT_PUBLIC_API_URL`.
-- Automatic `Content-Type` header injection.
-- Standardized error handling for non-2xx responses.
-
-### 2. Service Layer (`src/services/`)
-Each domain (auth, risk, outreach) has its own service file.
-- **Example**: `auth.service.ts` contains `login()`, `register()`, etc.
-- **Benefit**: Components stay clean; they only call the service and handle the loading/error UI state.
-
-### 3. How to Connect a Component
 ```tsx
 import { authService } from "@/services/auth.service";
 
-// Inside a Client Component:
 const handleLogin = async () => {
   setIsLoading(true);
   try {
-    const data = await authService.login({ email, password });
-    // Handle success (save token, redirect)
+    const { data, error } = await authService.login({ email, password });
+    if (error) throw error;
+    // redirect on success
   } catch (err) {
-    setError(err.message);
+    setError(err instanceof Error ? err.message : "Login failed");
   } finally {
     setIsLoading(false);
   }
@@ -485,3 +745,12 @@ const handleLogin = async () => {
 ```
 
 ---
+
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Start development server (Turbopack) |
+| `npm run build` | Optimized production build |
+| `npm run start` | Serve production build locally |
+| `npm run lint` | Run ESLint |
