@@ -11,7 +11,7 @@ export default function CustomerContextPanel() {
   const searchParams = useSearchParams();
   const urlCustomerId = searchParams.get("customerId");
   const { customers, selectedCustomerId, selectCustomer, setCustomers } = useChurnStore();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(() => customers.length === 0);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("risk_score");
   const [filterLevel, setFilterLevel] = useState<FilterLevel>("all");
@@ -20,15 +20,25 @@ export default function CustomerContextPanel() {
 
   // Always load customers on mount so the picker works
   useEffect(() => {
-    if (customers.length === 0) {
-      setLoading(true);
-      fetch("/api/customers?limit=1000")
-        .then((r) => r.json())
-        .then((d) => { if (!d.error) setCustomers(d.customers); })
-        .catch(() => {})
-        .finally(() => setLoading(false));
+    if (customers.length > 0) {
+      if (urlCustomerId) selectCustomer(urlCustomerId);
+      return;
     }
+
+    let cancelled = false;
+    fetch("/api/customers?limit=1000")
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled && !d.error) setCustomers(d.customers); })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
     if (urlCustomerId) selectCustomer(urlCustomerId);
+
+    return () => {
+      cancelled = true;
+    };
   }, [urlCustomerId, customers.length, setCustomers, selectCustomer]);
 
   const customer: CustomerRow | undefined = customers.find((c) => c.id === effectiveId);

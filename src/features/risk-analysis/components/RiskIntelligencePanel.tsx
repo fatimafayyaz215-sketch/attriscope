@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useChurnStore, type CustomerRow } from "@/store/churn-store";
 
@@ -12,15 +12,7 @@ export default function RiskIntelligencePanel() {
 
   const customer: CustomerRow | undefined = customers.find((c) => c.id === selectedCustomerId);
 
-  // Auto-fetch explanation if we have a selected customer but no explanation yet
-  useEffect(() => {
-    if (customer && !customer.ai_explanation && !analyzing) {
-      fetchExplanation();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCustomerId]);
-
-  const fetchExplanation = async () => {
+  const fetchExplanation = useCallback(async () => {
     if (!customer) return;
     setAnalyzing(true); setError("");
     try {
@@ -37,7 +29,18 @@ export default function RiskIntelligencePanel() {
     } finally {
       setAnalyzing(false);
     }
-  };
+  }, [customer, updateCustomer]);
+
+  // Auto-fetch explanation if we have a selected customer but no explanation yet
+  useEffect(() => {
+    if (!customer || customer.ai_explanation || analyzing) return;
+
+    const timer = window.setTimeout(() => {
+      void fetchExplanation();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [selectedCustomerId, customer, analyzing, fetchExplanation]);
 
   if (!customer) {
     return (

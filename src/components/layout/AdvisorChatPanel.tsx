@@ -174,14 +174,22 @@ export default function AdvisorChatPanel() {
 
   useEffect(() => {
     if (!open) return;
-    void syncContext(messagesRef.current.length === 0 ? "fresh" : "update");
-    const t = window.setTimeout(() => inputRef.current?.focus(), 150);
-    return () => window.clearTimeout(t);
+    const syncTimer = window.setTimeout(() => {
+      void syncContext(messagesRef.current.length === 0 ? "fresh" : "update");
+    }, 0);
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 150);
+    return () => {
+      window.clearTimeout(syncTimer);
+      window.clearTimeout(focusTimer);
+    };
   }, [open, syncContext]);
 
   useEffect(() => {
     if (!open) return;
-    void syncContext("update");
+    const timer = window.setTimeout(() => {
+      void syncContext("update");
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [pathname, open, syncContext]);
 
   useEffect(() => {

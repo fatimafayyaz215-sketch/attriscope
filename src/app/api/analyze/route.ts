@@ -73,7 +73,7 @@ Write the explanation as if speaking directly to the business owner.`;
     await supabase.from("customers").update({ ai_explanation: explanation }).eq("id", customerId);
 
     return NextResponse.json({ explanation, source: "gemini" });
-  } catch (err: unknown) {
+  } catch {
     const fastFallback = buildFastFallbackExplanation(customerWithDynamicInactivity);
     await supabase.from("customers").update({ ai_explanation: fastFallback }).eq("id", customerId);
     return NextResponse.json({ explanation: fastFallback, source: "fallback" });

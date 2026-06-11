@@ -35,7 +35,14 @@ export default function RiskWorkspace() {
   const signalParam = searchParams.get("signal");
   useEffect(() => {
     const fromUrl = parseSignalFilter(signalParam);
-    if (fromUrl !== "all") setSignalFilter(fromUrl);
+    if (fromUrl === "all") return;
+
+    const timer = window.setTimeout(() => {
+      setSignalFilter(fromUrl);
+      setPage(1);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [signalParam]);
 
   const updateQuery = useCallback(
@@ -61,23 +68,37 @@ export default function RiskWorkspace() {
   );
 
   useEffect(() => {
-    setSearch(qFromUrl);
+    const timer = window.setTimeout(() => {
+      setSearch(qFromUrl);
+      setPage(1);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [qFromUrl]);
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
+    const loadingTimer = window.setTimeout(() => {
+      if (!cancelled) setLoading(true);
+    }, 0);
+
     const params = new URLSearchParams({ limit: "1000" });
     if (levelFilter !== "all") params.set("level", levelFilter);
     if (signalFilter !== "all") params.set("signal", signalFilter);
     if (qFromUrl) params.set("search", qFromUrl);
+
     fetch(`/api/customers?${params}`)
       .then((r) => r.json())
-      .then((d) => { if (!d.error) setCustomers(d.customers); })
+      .then((d) => { if (!cancelled && !d.error) setCustomers(d.customers); })
       .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [levelFilter, signalFilter, qFromUrl, setCustomers]);
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-  useEffect(() => { setPage(1); }, [levelFilter, signalFilter, qFromUrl]);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(loadingTimer);
+    };
+  }, [levelFilter, signalFilter, qFromUrl, setCustomers]);
 
   const totalPages = Math.max(1, Math.ceil(customers.length / PAGE_SIZE));
   const pagedCustomers = customers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -115,10 +136,16 @@ export default function RiskWorkspace() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") updateQuery({ q: search });
+                if (e.key === "Enter") {
+                  setPage(1);
+                  updateQuery({ q: search });
+                }
               }}
               onBlur={() => {
-                if (search !== qFromUrl) updateQuery({ q: search });
+                if (search !== qFromUrl) {
+                  setPage(1);
+                  updateQuery({ q: search });
+                }
               }}
               className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white"
             />
@@ -130,6 +157,7 @@ export default function RiskWorkspace() {
             onChange={(e) => {
               const level = e.target.value as RiskLevelFilter;
               setLevelFilter(level);
+              setPage(1);
               updateQuery({ level });
             }}
             className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
@@ -145,6 +173,7 @@ export default function RiskWorkspace() {
             onChange={(e) => {
               const signal = e.target.value as SignalFilter;
               setSignalFilter(signal);
+              setPage(1);
               updateQuery({ signal });
             }}
             className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
@@ -187,6 +216,7 @@ export default function RiskWorkspace() {
               <button
                 onClick={() => {
                   setSignalFilter("all");
+                  setPage(1);
                   updateQuery({ signal: "all" });
                 }}
                 className="text-blue-700 text-sm font-bold hover:underline"

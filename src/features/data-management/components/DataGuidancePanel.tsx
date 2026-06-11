@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import DeleteImportedDataButton from "@/features/data-management/components/DeleteImportedDataButton";
-import { DEFAULT_INDUSTRY, normalizeIndustry, type IndustryId } from "@/lib/industry-defaults";
+import { normalizeIndustry, type IndustryId } from "@/lib/industry-defaults";
 import { useChurnStore } from "@/store/churn-store";
 
 const INDUSTRY_SAMPLES: Record<
@@ -31,12 +31,8 @@ const INDUSTRY_SAMPLES: Record<
 };
 
 export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMockupPath: string }) {
-  const storeIndustry = useChurnStore((s) => s.industry);
-  const [industry, setIndustry] = useState<IndustryId>(() => normalizeIndustry(storeIndustry));
-
-  useEffect(() => {
-    setIndustry(normalizeIndustry(storeIndustry));
-  }, [storeIndustry]);
+  const industry = normalizeIndustry(useChurnStore((s) => s.industry));
+  const setIndustry = useChurnStore((s) => s.setIndustry);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,7 +51,7 @@ export default function DataGuidancePanel({ dashboardMockupPath }: { dashboardMo
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [setIndustry]);
 
   const sample = INDUSTRY_SAMPLES[industry];
 

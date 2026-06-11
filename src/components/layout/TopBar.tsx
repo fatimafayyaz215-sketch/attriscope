@@ -76,20 +76,17 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const trimmedSearch = search.trim();
+  const isSearchActive = trimmedSearch.length >= 2;
+
   useEffect(() => {
-    const q = search.trim();
-    if (q.length < 2) {
-      setSearchResults([]);
-      setSearchOpen(false);
-      setSearchLoading(false);
-      return;
-    }
+    if (!isSearchActive) return;
 
     const controller = new AbortController();
     const timer = setTimeout(async () => {
       setSearchLoading(true);
       try {
-        const res = await fetch(`/api/customers?limit=8&search=${encodeURIComponent(q)}`, { signal: controller.signal });
+        const res = await fetch(`/api/customers?limit=8&search=${encodeURIComponent(trimmedSearch)}`, { signal: controller.signal });
         const data = await res.json();
         if (!res.ok || data.error) {
           setSearchResults([]);
@@ -112,7 +109,11 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [search]);
+  }, [isSearchActive, trimmedSearch]);
+
+  const displayResults = isSearchActive ? searchResults : [];
+  const displayOpen = isSearchActive && searchOpen;
+  const displayLoading = isSearchActive && searchLoading;
 
   const handleLogout = async () => {
     setMenuOpen(false);
@@ -165,7 +166,15 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
             type="text"
             placeholder="Search customers…"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearch(value);
+              if (value.trim().length < 2) {
+                setSearchResults([]);
+                setSearchOpen(false);
+                setSearchLoading(false);
+              }
+            }}
             onFocus={() => {
               if (search.trim().length >= 2) setSearchOpen(true);
             }}
@@ -173,15 +182,15 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
             className="w-56 lg:w-72 bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 focus:bg-white transition-all placeholder:text-gray-400"
           />
 
-          {searchOpen && (
+          {displayOpen && (
             <div className="absolute right-0 mt-2 w-80 max-h-80 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-xl z-50">
-              {searchLoading ? (
+              {displayLoading ? (
                 <div className="px-4 py-3 text-xs text-gray-500">Searching...</div>
-              ) : searchResults.length === 0 ? (
+              ) : displayResults.length === 0 ? (
                 <div className="px-4 py-3 text-xs text-gray-500">No customers found</div>
               ) : (
                 <ul className="py-1">
-                  {searchResults.map((customer) => (
+                  {displayResults.map((customer) => (
                     <li key={customer.id}>
                       <button
                         type="button"

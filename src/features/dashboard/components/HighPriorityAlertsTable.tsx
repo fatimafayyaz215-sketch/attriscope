@@ -34,12 +34,23 @@ export default function HighPriorityAlertsTable() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
+    const loadingTimer = window.setTimeout(() => {
+      if (!cancelled) setLoading(true);
+    }, 0);
+
     fetch("/api/customers?level=high&limit=5")
       .then((r) => r.json())
-      .then((d) => { if (!d.error) setAlerts(d.customers); })
+      .then((d) => { if (!cancelled && !d.error) setAlerts(d.customers); })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(loadingTimer);
+    };
   }, [dataVersion]);
 
   const handleIntervene = (id: string) => {
