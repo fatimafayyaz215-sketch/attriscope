@@ -392,8 +392,8 @@ Do this once per Supabase project. If you skip it, auth still works — emails j
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Public API key |
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → **Settings → General** → Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → **Settings → API Keys** → **Publishable key** → copy (`sb_publishable_...`) |
 | `GEMINI_API_KEY` | No | Google AI (emails, explanations, chat) |
 
 ---

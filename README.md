@@ -159,11 +159,14 @@ Used for **both** local development and production — one Supabase project for 
 
 **Copy your API credentials** (you will need them in Step 6):
 
-1. **Project Settings** (gear) → **API**
-2. Copy **Project URL** → this becomes `NEXT_PUBLIC_SUPABASE_URL`
-3. Copy **anon public** key → this becomes `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+1. **Settings** (gear icon, bottom of left sidebar) → **General** → copy **Project URL** → this becomes `NEXT_PUBLIC_SUPABASE_URL`
+2. **Settings** → **API Keys** → under **Publishable key**, click the copy icon on the **default** row → this becomes `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 > The URL looks like `https://abcdefgh.supabase.co` — do **not** add `/rest/v1/` at the end.
+>
+> The publishable key looks like `sb_publishable_...` — safe for the browser when RLS is enabled (this project uses RLS). Use the **Publishable** key only — **never** put a **Secret** key (`sb_secret_...`) in `.env.local` or Vercel.
+>
+> **Legacy dashboard:** if your project still shows **Project Settings → API → anon public**, that key works too — paste it into `NEXT_PUBLIC_SUPABASE_ANON_KEY` the same way.
 
 ---
 
@@ -246,7 +249,7 @@ Edit `.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_public_key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_publishable_key
 
 # Optional — leave blank if you skip Step 7
 GEMINI_API_KEY=
@@ -254,8 +257,8 @@ GEMINI_API_KEY=
 
 | Variable | Required | Where to get it |
 |----------|----------|-----------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → Project Settings → API → Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → Project Settings → API → anon public |
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → **Settings → General** → Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → **Settings → API Keys** → **Publishable key** → copy |
 | `GEMINI_API_KEY` | No | [Google AI Studio](https://aistudio.google.com/apikey) (Step 7) |
 | `GEMINI_API_KEYS` | No | Comma-separated keys; overrides `GEMINI_API_KEY` when set |
 
@@ -380,7 +383,7 @@ In Vercel → **Settings → Environment Variables**, add (same as Step 6):
 | Name | Value |
 |------|-------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase publishable key (`sb_publishable_...`) |
 | `GEMINI_API_KEY` | Your Gemini key (optional) |
 
 **10.3 Deploy**
@@ -441,7 +444,7 @@ Click **Deploy**. Vercel assigns a URL like `https://your-app.vercel.app`.
 |---------|-----|
 | `npm` / `node` not recognized | Install Node.js LTS, restart terminal |
 | Page won’t load on localhost:3000 | Ensure `npm run dev` is running; read terminal errors |
-| Login fails / Unauthorized | Check `.env.local` URL and anon key; no typos or extra spaces |
+| Login fails / Unauthorized | Check `.env.local` URL and publishable key (**Settings → API Keys**); no typos, no secret key |
 | Register works, login fails | Disable “Confirm email” in Supabase for testing, or confirm via email |
 | Redirect to `/login?error=auth_callback_failed` | Add `http://localhost:3000/auth/callback` (or Vercel equivalent) to Supabase **Redirect URLs** |
 | `Unsupported provider: provider is not enabled` | Enable Google under Supabase **Authentication → Providers** |
