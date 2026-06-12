@@ -761,37 +761,95 @@ Example: snapshot at day 243, last click at day 227 → **16 days inactive**.
 
 **2. Usage drop → `current_sessions` + `previous_sessions`**
 
-- **Source:** `studentVle.csv` — sum of `sum_click` in two 28-day windows before snapshot:
-  - **`current_sessions`:** `snapshot − 28 < date ≤ snapshot`
-  - **`previous_sessions`:** `snapshot − 56 < date ≤ snapshot − 28`
+**Question this answers:** Is the student **less active recently** than in the period just before that?
 
-App logic (matches `computeUsageDrop` in `src/lib/scoring.ts`):
+- **Source:** `studentVle.csv` — for each enrollment, sum all `sum_click` values in two **28-day course-day windows** ending at the snapshot (set in `datasets/education/build_upload_csv.py` as `PERIOD_DAYS = 28`, roughly four weeks per window).
+- A student can have many VLE rows on the same day (one per resource); **all clicks in the window are added together**.
+
+**The two windows** (example: snapshot = day **243**):
+
+```
+Course days:  ... 187 ---- 215 ---- 243 (snapshot)
+                |←─ 28 days ─→|←─ 28 days ─→|
+                PREVIOUS       CURRENT
+                window         window
+```
+
+| Window | Rule | Days included (snapshot = 243) |
+|--------|------|--------------------------------|
+| **Current** (`current_sessions`) | `snapshot − 28 < date ≤ snapshot` | **216 → 243** |
+| **Previous** (`previous_sessions`) | `snapshot − 56 < date ≤ snapshot − 28` | **188 → 215** |
+
+**Worked example — one student, snapshot = 243:**
+
+| Window | Total `sum_click` in that range | Column value |
+|--------|----------------------------------|--------------|
+| Previous (days 188–215) | 50 + 80 + 30 = **160** | `previous_sessions = 160` |
+| Current (days 216–243) | 20 + 10 = **30** | `current_sessions = 30` |
+
+Activity fell from 160 → 30 clicks — a large usage drop.
+
+**Why 28?** Not an OULAD requirement — a practical choice: ~one month per window, two equal periods for a fair “recent vs before” comparison, and aligned with `DISENGAGED_INACTIVITY_DAYS = 28` in `src/lib/scoring.ts`. (SaaS uses 30-day windows for the same idea.)
+
+**App logic** (matches `computeUsageDrop` in `src/lib/scoring.ts`):
 
 ```
 if previous > 0:
-    usage_drop = (previous - current) / previous
+    usage_drop = (previous - current) / previous    # 0 = no drop, 1 = 100% drop
 elif current = 0 AND previous = 0 AND days_inactive > 28:
-    usage_drop = 1.0    # fully disengaged
+    usage_drop = 1.0    # fully disengaged (no clicks in either window)
 else:
-    usage_drop = 0
+    usage_drop = 0      # can't measure drop if previous window had no activity
 ```
+
+Using the worked example: `(160 − 30) / 160 = **0.8125**` → **81% usage drop**.
+
+| `previous_sessions` | `current_sessions` | `usage_drop` | Meaning |
+|---------------------|--------------------|--------------|---------|
+| 100 | 100 | 0 | Steady activity |
+| 100 | 50 | 0.5 | 50% drop |
+| 100 | 0 | 1.0 | Stopped clicking in current window |
+| 0 | 0 | 0 or 1 | 0 if still active; 1 if also `days_inactive > 28` |
 
 **3. Support complaints → `support_complaints` (assessment struggle)**
 
-Mapped to SaaS "support tickets." Per assessment, flag if **late** or **low score**:
+**Question this answers:** How often did this student **struggle with coursework** (late or poor submissions)?
 
-- **Late:** `date_submitted > due_date + 7` (7-day grace)
+Mapped to SaaS **"support tickets"** — in education there are no real tickets, so we count **assessment struggle** instead.
+
+**Source files** (`datasets/education/`):
+
+| File | Key columns used | Role |
+|------|------------------|------|
+| `studentAssessment.csv` | `id_student`, `id_assessment`, `date_submitted`, `score` | What the student submitted and when |
+| `assessments.csv` | `code_module`, `code_presentation`, `id_assessment`, `date` | Due date for each assessment (`date` = course day) |
+| `studentInfo.csv` | `code_module`, `code_presentation`, `id_student` | Links enrollments (only students in the upload sample) |
+
+**How files are joined** (see `derive_support_complaints` in `datasets/education/build_upload_csv.py`):
+
+1. Merge `studentAssessment.csv` with `assessments.csv` on `id_assessment` → each submission gets its **due date** (`assessments.date`).
+2. Filter to enrollments in `studentInfo.csv` (`code_module` + `code_presentation` + `id_student`).
+3. Per assessment submission, flag **late** or **low score** (constants: `LATE_GRACE_DAYS = 7`, `LOW_SCORE_THRESHOLD = 40`).
+
+**Rules per assessment:**
+
+- **Late:** `date_submitted > due_date + 7` (7-day grace after due course day)
 - **Low score:** `score < 40`
+- **Struggle:** late **OR** low score
 
 ```
-support_complaints = count of (late OR low_score) assessments
+support_complaints = count of (late OR low_score) assessments per enrollment
 ```
 
-| Assessment | Due | Submitted | Days after due | Score | Late? | Low score? | Struggle? |
-|------------|-----|-----------|----------------|-------|-------|------------|-----------|
+**Worked example** (assessment IDs from `assessments.csv` for module AAA / 2013J; due = `assessments.date`, submitted = `studentAssessment.date_submitted`):
+
+| Assessment (`id_assessment`) | Due (`assessments.date`) | Submitted (`date_submitted`) | Days after due | Score | Late? | Low score? | Struggle? |
+|----------------------------|--------------------------|------------------------------|----------------|-------|-------|------------|-----------|
 | 1752 | 19 | 19 | 0 | 70 | No | No | No |
 | 1753 | 54 | 62 | 8 | 62 | Yes | No | **Yes** |
 | 1756 | 215 | 223 | 8 | 70 | Yes | No | **Yes** |
+
+If a student has 2 struggling assessments (e.g. 1753 and 1756), `support_complaints = 2`. That value is uploaded and normalized in the app like SaaS support ticket counts.
 
 **4. Payment delay → `payment_delay` (withdrawal / unregistration)**
 
