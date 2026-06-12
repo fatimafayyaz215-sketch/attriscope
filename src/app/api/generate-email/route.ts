@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 import { generateGeminiText, hasGeminiApiKey } from "@/lib/gemini";
 
-const GENERATION_TIMEOUT_MS = 12000;
+const GENERATION_TIMEOUT_MS = 12000;//12 seconds
 type Tone = "professional" | "friendly" | "urgent" | "discount" | "event";
 
 function isTone(value: unknown): value is Tone {

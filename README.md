@@ -33,6 +33,8 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 
 **New teammate?** Start with [Project Configuration](#project-configuration) — one guide for local setup and Vercel production.
 
+**Non-developers / team walkthrough?** See **[TEAM_CODEBASE_GUIDE.md](./TEAM_CODEBASE_GUIDE.md)** — plain-language explanation of every folder, file, and how the app works (no coding background required).
+
 **Workspace layout:** clone [churn-old](https://github.com/zainch70/churn-old) → Next.js app is `churn-old/churn-prediction/`. Python dataset tooling is `churn-old/datasets/` (sibling to the app folder).
 
 ---
