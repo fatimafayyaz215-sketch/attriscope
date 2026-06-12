@@ -704,7 +704,36 @@ customer_id = code_module + "-" + code_presentation + "-" + id_student
 | `studentAssessment.csv` | Assessment submissions and scores |
 | `assessments.csv` | Assessment due dates |
 | `studentRegistration.csv` | Registration and unregistration dates |
-| `courses.csv` | Course length (`module_presentation_length`) |
+| `courses.csv` | One row per course run; includes `module_presentation_length` (see below) |
+
+#### What `module_presentation_length` means
+
+In `courses.csv`, each row is a **course offering** (module + presentation). The column **`module_presentation_length`** is the **total length of that course run in course-days** — not a calendar date and not a student behavior signal.
+
+| Column | Meaning | Example |
+|--------|---------|---------|
+| `code_module` | Course code | `AAA`, `BBB` |
+| `code_presentation` | When the course ran | `2013J` (2013, October start), `2014B` (2014, February start) |
+| `module_presentation_length` | How many **course days** that run lasts | `268` = the presentation spans course days `0` through ~`268` |
+
+Example rows from `datasets/education/courses.csv`:
+
+| code_module | code_presentation | module_presentation_length |
+|-------------|-------------------|--------------------------|
+| AAA | 2013J | 268 |
+| BBB | 2014B | 234 |
+| BBB | 2013B | 240 |
+
+This ties to VLE activity: in `studentVle.csv`, `date` is a **course day number** (`0` = first official day, `50` = day 50 of the course). `module_presentation_length` is the **maximum day index** for that presentation — i.e. how long the module runs. It does **not** measure how active a student is.
+
+**Attriscope use:** we do **not** upload `module_presentation_length` as a scoring input. The build script (`datasets/education/build_upload_csv.py`) reads it only to derive **`billing_cycle`** for normalization caps in `src/lib/scoring.ts`:
+
+| `module_presentation_length` | Derived `billing_cycle` | Inactivity cap | Support ticket cap |
+|------------------------------|-------------------------|----------------|--------------------|
+| ≤ 210 course-days | `monthly` | 30 days | 5 |
+| > 210 course-days | `yearly` | 90 days | 10 |
+
+Most OULAD presentations are ~240–269 days, so they map to **`yearly`**. The upload CSV contains `billing_cycle`, not `module_presentation_length`.
 
 #### OULAD `date` is not a calendar date
 
@@ -770,12 +799,11 @@ support_complaints = count of (late OR low_score) assessments
 - **Rule:** `payment_delay = 1` if `date_unregistration` is set; otherwise `0`
 - In OULAD, unregistration = student left the course. The app **floors the score at 50** (education high-risk threshold) when `payment_delay = 1` — see `src/lib/scoring.ts`.
 
-**Billing cycle** (scoring caps only):
+**5. Billing cycle → `billing_cycle`** (derived from course length; scoring caps only)
 
-- **Source:** `courses.csv` → `module_presentation_length`
-- `billing_cycle = "monthly"` if length ≤ 210 course-days (caps: 30d inactivity, 5 support)
-- `billing_cycle = "yearly"` if length > 210 (caps: 90d inactivity, 10 support)
-- Most OULAD modules are "yearly" (~268 days average)
+- **Source:** `courses.csv` → `module_presentation_length` (see [What `module_presentation_length` means](#what-module_presentation_length-means))
+- **Rule:** `monthly` if length ≤ 210 course-days, else `yearly`
+- **Not a churn signal** — only adjusts inactivity/support normalization caps (same as SaaS monthly vs yearly plans)
 
 #### Default weights (education preset)
 
