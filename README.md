@@ -35,7 +35,7 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 
 **Non-developers / team walkthrough?** See **[TEAM_CODEBASE_GUIDE.md](./TEAM_CODEBASE_GUIDE.md)** — plain-language explanation of every folder, file, and how the app works (no coding background required).
 
-**Workspace layout:** clone [churn-old](https://github.com/zainch70/churn-old) → Next.js app is `churn-old/churn-prediction/`. Python dataset tooling is `churn-old/datasets/` (sibling to the app folder).
+**Workspace layout:** clone [churn-old](https://github.com/zainch70/churn-old) — the **repo root is the Next.js app** (`src/`, `public/`, `package.json`). Optional Python dataset tooling lives in `datasets/` at the same level when included in your clone.
 
 ---
 
@@ -82,10 +82,10 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 https://github.com/zainch70/churn-old.git
 ```
 
-**App folder** (run all `npm` commands here after cloning):
+**App folder** (run all `npm` commands here after cloning — same as the repo root):
 
 ```
-churn-old/churn-prediction/
+churn-old/
 ```
 
 **Production URL (team deployment):** https://churn-prediction-navy.vercel.app
@@ -113,7 +113,7 @@ Pick a folder where you keep projects (e.g. `Documents` or `D:\`), then run:
 
 ```bash
 git clone https://github.com/zainch70/churn-old.git
-cd churn-old/churn-prediction
+cd churn-old
 ```
 
 **Windows (no Git yet):** install [Git for Windows](https://git-scm.com/download/win), then use **Git Bash** for the commands above.
@@ -121,7 +121,7 @@ cd churn-old/churn-prediction
 **Already have the repo?** Pull latest changes before setup:
 
 ```bash
-cd churn-old/churn-prediction
+cd churn-old
 git pull
 ```
 
@@ -135,7 +135,7 @@ node -v
 npm -v
 ```
 
-**1.3 Install project packages** (one-time per clone — run inside `churn-old/churn-prediction/`)
+**1.3 Install project packages** (one-time per clone — run inside `churn-old/`, the repo root)
 
 ```bash
 npm install
@@ -342,7 +342,7 @@ Skip this if email/password login is enough. No code changes — only dashboard 
 Every time you develop on your machine:
 
 ```bash
-cd churn-old/churn-prediction
+cd churn-old
 npm run dev
 ```
 
@@ -373,7 +373,7 @@ npm run build   # verify production build before pushing
 1. Push this project to GitHub (if not already).
 2. Sign in at [vercel.com](https://vercel.com) → **Add New → Project**.
 3. Import the GitHub repo.
-4. Set **Root Directory** to `churn-prediction` (the Next.js app folder inside the cloned repo). If Vercel imports `churn-old` as the repo root, the root directory should be `churn-prediction`.
+4. Leave **Root Directory** empty (`.` — the Next.js app is the GitHub repo root, not a subfolder).
 5. Framework preset: **Next.js** (auto-detected).
 
 **10.2 Environment variables**
@@ -563,7 +563,7 @@ Upload via **Data Management**. Identity fields: `customer_id` ← `account_id`,
 
 #### Regenerate the test CSV
 
-Run from the **repo root** (parent of the app folder):
+Run from the **repo root** (`churn-old/`):
 
 ```bash
 python datasets/saas/build_upload_csv.py
@@ -572,7 +572,7 @@ python datasets/saas/build_upload_csv.py
 Writes **500 rows** to:
 
 - `datasets/saas/saas-sample-customers.csv`
-- `churn-prediction/public/saas-sample-customers.csv`
+- `public/saas-sample-customers.csv`
 
 **Validate (FYP):** ground truth = `churn_flag` on `ravenstack_accounts.csv` (`True` = churned).
 
@@ -672,7 +672,7 @@ Matches `INDUSTRY_DEFAULT_WEIGHTS.entertainment` in `src/lib/industry-defaults.t
 python datasets/entertainment/build_upload_csv.py
 ```
 
-Writes to `datasets/entertainment/entertainment-sample-customers.csv` and `churn-prediction/public/entertainment-sample-customers.csv`.
+Writes to `datasets/entertainment/entertainment-sample-customers.csv` and `public/entertainment-sample-customers.csv`.
 
 **Validate (FYP):** ground truth = `Churn Status` in the source CSV.
 
@@ -881,7 +881,7 @@ python datasets/education/build_upload_csv.py          # 1,000-row sample (defau
 python datasets/education/build_upload_csv.py --full   # all enrollments (~32k)
 ```
 
-Writes to `datasets/education/education-sample-customers.csv` and `churn-prediction/public/education-sample-customers.csv`.
+Writes to `datasets/education/education-sample-customers.csv` and `public/education-sample-customers.csv`.
 
 Output uses `days_inactive` directly (no `last_login_at` in the CSV). Upload columns: `customer_id`, `name`, `email`, `company`, `days_inactive`, `current_sessions`, `previous_sessions`, `support_complaints`, `payment_delay`, `billing_cycle`.
 
@@ -899,7 +899,7 @@ python datasets/education/validate_formula.py --full
 ## Folder Structure
 
 ```
-churn-prediction/                    # Next.js app root (run npm commands here)
+churn-old/                           # Git repo root = Next.js app (run npm commands here)
 ├── public/                          # Static assets + industry sample CSVs
 ├── src/
 │   ├── app/
@@ -951,7 +951,7 @@ churn-prediction/                    # Next.js app root (run npm commands here)
 ├── package.json
 └── tsconfig.json
 
-datasets/                            # Repo root — Python FYP tooling (sibling to app)
+datasets/                            # Optional — Python FYP tooling (when present in repo)
 ├── saas/                            # RavenStack derivation + validation
 ├── entertainment/
 └── education/
