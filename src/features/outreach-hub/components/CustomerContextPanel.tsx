@@ -1,47 +1,104 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useChurnStore, type CustomerRow } from "@/store/churn-store";
 
 type SortKey = "risk_score" | "name" | "days_inactive";
 type FilterLevel = "all" | "high" | "medium" | "low";
 
+function mergeCustomerRow(list: CustomerRow[], row: CustomerRow): CustomerRow[] {
+  if (list.some((c) => c.id === row.id)) return list;
+  return [...list, row];
+}
+
 export default function CustomerContextPanel() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const urlCustomerId = searchParams.get("customerId");
   const { customers, selectedCustomerId, selectCustomer, setCustomers } = useChurnStore();
-  const [loading, setLoading] = useState(() => customers.length === 0);
+  const fullListFetchedRef = useRef(false);
+  const [loadingSelected, setLoadingSelected] = useState(false);
+  const [loadingList, setLoadingList] = useState(() => customers.length === 0 && !urlCustomerId);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("risk_score");
   const [filterLevel, setFilterLevel] = useState<FilterLevel>("all");
 
   const effectiveId = selectedCustomerId ?? urlCustomerId;
+  const customer: CustomerRow | undefined = customers.find((c) => c.id === effectiveId);
 
-  // Always load customers on mount so the picker works
   useEffect(() => {
-    if (customers.length > 0) {
-      if (urlCustomerId) selectCustomer(urlCustomerId);
-      return;
-    }
-
-    let cancelled = false;
-    fetch("/api/customers?limit=1000")
-      .then((r) => r.json())
-      .then((d) => { if (!cancelled && !d.error) setCustomers(d.customers); })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
     if (urlCustomerId) selectCustomer(urlCustomerId);
+  }, [urlCustomerId, selectCustomer]);
+
+  const openCustomerPicker = () => {
+    selectCustomer(null);
+    router.replace("/outreach-hub");
+  };
+
+  const chooseCustomer = (customerId: string) => {
+    selectCustomer(customerId);
+    router.replace(`/outreach-hub?customerId=${encodeURIComponent(customerId)}`);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchFullList = async () => {
+      if (fullListFetchedRef.current) return;
+
+      if (!effectiveId) setLoadingList(true);
+
+      try {
+        const res = await fetch("/api/customers?limit=1000");
+        const data = await res.json();
+        if (!cancelled && !data.error) {
+          setCustomers(data.customers ?? []);
+          fullListFetchedRef.current = true;
+        }
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoadingList(false);
+      }
+    };
+
+    const fetchSelectedCustomer = async (customerId: string) => {
+      const alreadyLoaded = useChurnStore.getState().customers.some((c) => c.id === customerId);
+      if (alreadyLoaded) return;
+
+      setLoadingSelected(true);
+      try {
+        const res = await fetch(`/api/customers?id=${encodeURIComponent(customerId)}`);
+        const data = await res.json();
+        if (!cancelled && !data.error && data.customers?.[0]) {
+          const current = useChurnStore.getState().customers;
+          setCustomers(mergeCustomerRow(current, data.customers[0]));
+        }
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoadingSelected(false);
+      }
+    };
+
+    if (effectiveId) {
+      void fetchSelectedCustomer(effectiveId);
+      void fetchFullList();
+    } else if (useChurnStore.getState().customers.length === 0) {
+      void fetchFullList();
+    } else if (!fullListFetchedRef.current) {
+      void fetchFullList();
+    }
 
     return () => {
       cancelled = true;
     };
-  }, [urlCustomerId, customers.length, setCustomers, selectCustomer]);
+  }, [effectiveId, setCustomers]);
 
-  const customer: CustomerRow | undefined = customers.find((c) => c.id === effectiveId);
+  useEffect(() => {
+    if (customer) setLoadingSelected(false);
+  }, [customer]);
 
   const filteredCustomers = useMemo(() => {
     let list = customers;
@@ -59,7 +116,7 @@ export default function CustomerContextPanel() {
     });
   }, [customers, search, filterLevel, sortBy]);
 
-  if (loading) {
+  if (loadingSelected && effectiveId && !customer) {
     return (
       <div className="flex flex-col gap-6">
         <div className="bg-white border border-gray-200 rounded-xl p-10 flex justify-center shadow-sm">
@@ -117,7 +174,11 @@ export default function CustomerContextPanel() {
 
         {/* Customer list */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-          {filteredCustomers.length === 0 ? (
+          {loadingList ? (
+            <div className="p-10 flex justify-center">
+              <div className="w-8 h-8 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
+            </div>
+          ) : filteredCustomers.length === 0 ? (
             <div className="p-8 text-center">
               <p className="text-sm text-gray-400">No customers match your filters.</p>
             </div>
@@ -135,7 +196,7 @@ export default function CustomerContextPanel() {
                 return (
                   <li key={c.id}>
                     <button
-                      onClick={() => selectCustomer(c.id)}
+                      onClick={() => chooseCustomer(c.id)}
                       className="w-full text-left px-4 py-3 hover:bg-blue-50/50 transition-colors group"
                     >
                       <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -186,7 +247,7 @@ export default function CustomerContextPanel() {
     <div className="flex flex-col gap-6">
       {/* Change customer */}
       <button
-        onClick={() => selectCustomer(null)}
+        onClick={openCustomerPicker}
         className="self-start flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:text-blue-900 transition-colors"
       >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

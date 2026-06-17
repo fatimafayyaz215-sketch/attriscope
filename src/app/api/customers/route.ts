@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
   const level = searchParams.get("level");
   const signal = parseSignalFilter(searchParams.get("signal"));
   const limit = parseInt(searchParams.get("limit") ?? "500");
@@ -20,8 +21,13 @@ export async function GET(request: NextRequest) {
     .from("customers")
     .select("id, name, email, company, industry, last_login_at, days_inactive, usage_drop, support_complaints, payment_delay, risk_score, risk_level, ai_explanation, created_at")
     .eq("user_id", user.id)
-    .order("risk_score", { ascending: false })
-    .limit(limit);
+    .order("risk_score", { ascending: false });
+
+  if (id) {
+    query = query.eq("id", id).limit(1);
+  } else {
+    query = query.limit(limit);
+  }
 
   if (level) query = query.eq("risk_level", level);
   if (signal === "payment") query = query.gt("payment_delay", 0);
