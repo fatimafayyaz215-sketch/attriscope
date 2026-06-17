@@ -127,7 +127,8 @@ export default function EmailEditorPanel() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ customerId: effectiveId, subject, body: emailBody, toEmail }),
       });
-      if (!res.ok) throw new Error("Send failed");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Send failed");
       setSent(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Send failed");
@@ -215,7 +216,7 @@ export default function EmailEditorPanel() {
 
       {/* Email Headers */}
       {error && <div className="px-6 py-2 bg-red-50 text-xs text-red-600 font-medium">{error}</div>}
-      {sent && <div className="px-6 py-2 bg-emerald-50 text-xs text-emerald-700 font-medium">Email marked as sent successfully!</div>}
+      {sent && <div className="px-6 py-2 bg-emerald-50 text-xs text-emerald-700 font-medium">Email sent successfully!</div>}
 
       <div className="border-b border-gray-100 flex flex-col">
         <div className="flex items-center border-b border-gray-50 px-6 py-4">
