@@ -73,7 +73,7 @@ export default function WeightTuning() {
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-sm font-bold text-gray-900">Support Complaints</h3>
-              <p className="text-xs text-gray-400">Number of unresolved support tickets (capped at 10).</p>
+              <p className="text-xs text-gray-400">Number of unresolved support tickets (cap: 5 monthly / 20 yearly).</p>
             </div>
             <div className="text-right">
               <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Weight</p>

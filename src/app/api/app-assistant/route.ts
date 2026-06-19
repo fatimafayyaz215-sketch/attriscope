@@ -15,7 +15,7 @@ Workflow: onboarding → CSV upload → risk scores (0-100) → Risk Analysis �
 
 Risk Analysis filters only: search; risk level (High/Medium/Low); key signal (Inactivity, Usage Drop, Support Complaints, Payment Delay). Deep links e.g. /risk-analysis?level=high&signal=payment. Key Factor = strongest signal per row.
 
-Scoring: 4 signals (inactivity, usage drop, support, payment delay); billing caps — monthly: 28d inactivity, 5 tickets; yearly: 85d, 9 tickets. Weights in Settings. Presets: SaaS 10/45/15/30, Entertainment 35/30/20/15, Education 35/25/15/25. Bands: High ≥70, Medium 40-69, Low <40.
+Scoring: 4 signals (inactivity, usage drop, support, payment delay); billing caps — monthly: 28d inactivity, 5 tickets; yearly: 85d, 9 tickets. Weights in Settings. Presets: SaaS 20/30/30/20, Entertainment 30/30/20/20, Education 35/25/15/25. Bands: High ≥70, Medium 40-69, Low <40.
 
 CSV: customer_id, name, email, company, last_login_at, current_sessions, previous_sessions, support_complaints, payment_delay, billing_cycle (auto-mapped).
 
@@ -68,7 +68,7 @@ function tryRuleBasedAnswer(question: string): string | null {
       "",
       "**Risk levels:** High ≥ 70 · Medium 40–69 · Low < 40",
       "",
-      "**Weights:** SaaS preset (default): inactivity 10%, usage 45%, support 15%, payment 30%. Adjust in `Settings` or use Reset to Default for your industry profile.",
+      "**Weights:** SaaS preset (default): inactivity 20%, usage 30%, support 30%, payment 20%. Adjust in `Settings` or use Reset to Default for your industry profile.",
       "If all 4 matter equally for your business → set each to 25%.",
     ].join("\n");
   }
@@ -158,7 +158,7 @@ function tryRuleBasedAnswer(question: string): string | null {
       "- Tune the **four scoring weights** using sliders.",
       "- Review the live **signal priority panel** to see current weight distribution.",
       "- **Save** your weights to apply them to future uploads.",
-      "- **Reset to Default** to restore your industry profile (SaaS: 10/45/15/30).",
+      "- **Reset to Default** to restore your industry profile (SaaS: 20/30/30/20).",
       "",
       "**Weight tips:**",
       "- All 4 signals equally important → set each to **25%**.",

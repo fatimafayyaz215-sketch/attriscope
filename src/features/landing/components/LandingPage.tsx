@@ -41,12 +41,12 @@ const SIGNALS = [
 const INDUSTRIES = [
   {
     name: "SaaS",
-    weights: "10 / 45 / 15 / 30",
-    note: "Prioritizes usage drop and payment delay for subscription businesses.",
+    weights: "20 / 30 / 30 / 20",
+    note: "Prioritizes usage drop and support for subscription businesses.",
   },
   {
     name: "Entertainment",
-    weights: "35 / 30 / 20 / 15",
+    weights: "30 / 30 / 20 / 20",
     note: "Weights inactivity and viewing engagement for streaming-style datasets.",
   },
   {
