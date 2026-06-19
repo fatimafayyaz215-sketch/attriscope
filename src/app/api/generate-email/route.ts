@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
 import { generateGeminiText, hasGeminiApiKey } from "@/lib/gemini";
+import { upsertOutreachDraft } from "@/lib/outreach-email";
 
 const GENERATION_TIMEOUT_MS = 12000;//12 seconds
 type Tone = "professional" | "friendly" | "urgent" | "discount" | "event";
@@ -164,29 +165,14 @@ export async function POST(request: NextRequest) {
     emailBody = buildFallbackEmailBody(customer, reasonString, tone, eventName);
   }
 
-  // Upsert the email draft (one draft per customer, overwrite on regenerate)
-  const existingEmail = await supabase
-    .from("outreach_emails")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("customer_id", customerId)
-    .eq("status", "draft")
-    .single();
+  const draftResult = await upsertOutreachDraft(supabase, user.id, customerId, {
+    to_email: customer.email,
+    subject,
+    body: emailBody,
+  });
 
-  if (existingEmail.data?.id) {
-    await supabase
-      .from("outreach_emails")
-      .update({ subject, body: emailBody })
-      .eq("id", existingEmail.data.id);
-  } else {
-    await supabase.from("outreach_emails").insert({
-      user_id: user.id,
-      customer_id: customerId,
-      to_email: customer.email,
-      subject,
-      body: emailBody,
-      status: "draft",
-    });
+  if (!draftResult.ok) {
+    return NextResponse.json({ error: draftResult.error }, { status: draftResult.status });
   }
 
   return NextResponse.json({ subject, body: emailBody, toEmail: customer.email, source });

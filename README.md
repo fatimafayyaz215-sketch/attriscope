@@ -46,10 +46,21 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 - **Onboarding Wizard**: 3-step flow — [Industry Selection](http://localhost:3000/onboarding), [Weight Calibration](http://localhost:3000/onboarding/step-2), and [Data Connection](http://localhost:3000/onboarding/step-3).
 - **Dashboard**: [KPI cards, risk distribution, engagement trend, and alerts](http://localhost:3000/dashboard) inside a persistent sidebar shell.
 - **Risk Analysis**: [Predictive scoring workspace](http://localhost:3000/risk-analysis) with filters, deep links (`?level=high&signal=payment`), and a sticky AI intelligence panel.
-- **Outreach Hub**: [AI-personalized retention emails](http://localhost:3000/outreach-hub) with tone presets; send status tracked in Supabase.
+- **Outreach Hub**: [AI-personalized retention emails](http://localhost:3000/outreach-hub) with TipTap rich-text editing (bold, italic, underline, lists), tone presets, **Save Draft** (persisted to Supabase), and optional send via **Resend**.
 - **Data Management**: [CSV upload wizard](http://localhost:3000/data-management) with auto column-mapping and per-industry sample downloads.
 - **System Settings**: [Industry presets and weight tuning](http://localhost:3000/settings) with formula transparency and bulk recalculation.
 - **In-App AI Assistant**: Sidebar advisor chat (rule-based FAQs + optional Gemini) with page-aware context.
+
+### Outreach Hub — drafts & sending
+
+| Action | Where it goes |
+|--------|----------------|
+| **Regenerate** | Calls `/api/generate-email` → AI content saved to `outreach_emails` (`status: draft`) |
+| **Save Draft** | Calls `/api/outreach/draft` → saves your edited To / Subject / Body to the same table |
+| **Open customer** | Loads existing draft from `/api/outreach/draft` if present; otherwise auto-generates |
+| **Send Email** | Calls `/api/send-email` → Resend (when configured) + marks row `sent` |
+
+Draft rows live in Supabase **`outreach_emails`** (one draft per customer per user). No extra schema is required.
 
 ---
 
@@ -64,6 +75,8 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 | Charts       | Recharts |
 | Auth & DB    | Supabase (Auth, PostgreSQL, RLS) via `@supabase/ssr` |
 | AI           | Google Gemini (`@google/generative-ai`) — optional |
+| Email send   | Resend — optional (`RESEND_API_KEY`) |
+| Rich text    | TipTap (`@tiptap/react`, `@tiptap/starter-kit`) — Outreach Hub email editor |
 | CSV parsing  | PapaParse |
 | Route guard  | `src/proxy.ts` (session refresh + protected routes) |
 | Linting      | ESLint 9 + `eslint-config-next` |
@@ -253,6 +266,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_publishable_key
 
 # Optional — leave blank if you skip Step 7
 GEMINI_API_KEY=
+
+# Optional — Resend (Outreach Hub send email; Step 7b)
+# RESEND_API_KEY=
+# RESEND_TEST_RECIPIENT=you@resend-signup-email.com
 ```
 
 | Variable | Required | Where to get it |
@@ -261,6 +278,9 @@ GEMINI_API_KEY=
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → **Settings → API Keys** → **Publishable key** → copy |
 | `GEMINI_API_KEY` | No | [Google AI Studio](https://aistudio.google.com/apikey) (Step 7) |
 | `GEMINI_API_KEYS` | No | Comma-separated keys; overrides `GEMINI_API_KEY` when set |
+| `RESEND_API_KEY` | No | [Resend](https://resend.com) — Outreach Hub **Send Email** (Step 7b) |
+| `RESEND_TEST_RECIPIENT` | No | Your Resend account email — required in test mode to receive sends |
+| `RESEND_FROM_EMAIL` | No | Verified sender; defaults to `Attriscope <onboarding@resend.dev>` |
 
 > Google OAuth credentials are **not** in `.env.local` — they go in Supabase (Step 8).
 
@@ -274,9 +294,29 @@ Same variables in Vercel → **Project Settings → Environment Variables** for 
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 GEMINI_API_KEY=your_gemini_key
+RESEND_API_KEY=your_resend_key
 ```
 
 Redeploy after any env change.
+
+---
+
+### Step 7b — Resend email sending (optional)
+
+Enables: **Send Email** in Outreach Hub (drafts are always saved to Supabase regardless).
+
+**Without Resend:** AI drafting, draft save/load, and editing still work — only live send is disabled.
+
+1. Sign up at [resend.com](https://resend.com) and create an API key.
+2. Add to `.env.local` (and Vercel env vars for production):
+
+```env
+RESEND_API_KEY=re_xxxxxxxx
+RESEND_TEST_RECIPIENT=you@resend-signup-email.com
+```
+
+3. While using the default test sender (`onboarding@resend.dev`), outbound mail is redirected to `RESEND_TEST_RECIPIENT`.
+4. Restart `npm run dev` locally, or redeploy on Vercel.
 
 ---
 
@@ -385,6 +425,7 @@ In Vercel → **Settings → Environment Variables**, add (same as Step 6):
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase publishable key (`sb_publishable_...`) |
 | `GEMINI_API_KEY` | Your Gemini key (optional) |
+| `RESEND_API_KEY` | Your Resend key (optional) |
 
 **10.3 Deploy**
 
@@ -451,6 +492,8 @@ Click **Deploy**. Vercel assigns a URL like `https://your-app.vercel.app`.
 | `redirect_uri_mismatch` (Google) | Redirect URI must be `https://<PROJECT_REF>.supabase.co/auth/v1/callback` only |
 | `Access blocked` (Google) | Add Gmail under Google Cloud **Audience → Test users** |
 | AI features don’t work | Set `GEMINI_API_KEY`, restart dev server or redeploy Vercel |
+| Send Email fails in Outreach Hub | Set `RESEND_API_KEY` and `RESEND_TEST_RECIPIENT` (test sender mode); restart or redeploy |
+| Draft not loading after save | Confirm you reopened the same customer; drafts are keyed by `customer_id` + your user |
 | Works locally, fails on Vercel | Match Vercel env vars to `.env.local`; redeploy |
 | CSV upload fails | Finish onboarding; use a sample CSV from Data Management |
 | Changed `.env.local`, no effect | Stop server (`Ctrl+C`), run `npm run dev` again |
@@ -465,8 +508,8 @@ Three supported industries (`src/lib/industry-defaults.ts`):
 
 | Industry | Default weights (inactivity / usage / support / payment) | Risk bands (high / medium) |
 |----------|----------------------------------------------------------|----------------------------|
-| **Entertainment** | 35 / 30 / 20 / 15 | ≥ 70 / ≥ 40 |
-| **SaaS** (default) | 10 / 45 / 15 / 30 | ≥ 70 / ≥ 40 |
+| **Entertainment** | 30 / 30 / 20 / 20 | ≥ 70 / ≥ 40 |
+| **SaaS** (default) | 20 / 30 / 30 / 20 | ≥ 70 / ≥ 40 |
 | **Education** | 35 / 25 / 15 / 25 | ≥ 50 / ≥ 35 |
 
 Weights are capped so the four sliders sum to ≤ 100%. Users can override presets in **Settings** or during onboarding.
@@ -476,7 +519,7 @@ Weights are capped so the four sliders sum to ≤ 100%. Users can override prese
 | Cycle | Inactivity cap | Support ticket cap |
 |-------|----------------|--------------------|
 | Monthly | 30 days | 5 tickets |
-| Yearly | 90 days | 10 tickets |
+| Yearly | 90 days | 20 tickets |
 
 Sample CSVs per industry are in `public/`:
 
@@ -659,10 +702,10 @@ billing_cycle = "yearly"   otherwise
 
 | Factor | Suggested weight |
 |--------|------------------|
-| Login / Inactivity | 35 |
+| Login / Inactivity | 30 |
 | Usage Drop | 30 |
 | Support Complaints | 20 |
-| Payment Delays | 15 |
+| Payment Delays | 20 |
 
 Matches `INDUSTRY_DEFAULT_WEIGHTS.entertainment` in `src/lib/industry-defaults.ts`.
 
@@ -731,7 +774,7 @@ This ties to VLE activity: in `studentVle.csv`, `date` is a **course day number*
 | `module_presentation_length` | Derived `billing_cycle` | Inactivity cap | Support ticket cap |
 |------------------------------|-------------------------|----------------|--------------------|
 | ≤ 210 course-days | `monthly` | 30 days | 5 |
-| > 210 course-days | `yearly` | 90 days | 10 |
+| > 210 course-days | `yearly` | 90 days | 20 |
 
 Most OULAD presentations are ~240–269 days, so they map to **`yearly`**. The upload CSV contains `billing_cycle`, not `module_presentation_length`.
 
@@ -917,6 +960,7 @@ churn-old/                           # Git repo root = Next.js app (run npm comm
 │   │   │   └── forgot-password/
 │   │   ├── onboarding/              # 3-step wizard (outside dashboard shell)
 │   │   ├── api/                     # Route handlers (see API Routes)
+│   │   │   └── outreach/draft/      # GET/POST saved outreach drafts
 │   │   ├── auth/callback/           # OAuth / magic-link session exchange
 │   │   ├── globals.css              # Design tokens + Tailwind
 │   │   ├── layout.tsx               # Root layout
@@ -932,10 +976,10 @@ churn-old/                           # Git repo root = Next.js app (run npm comm
 │   │   ├── onboarding/
 │   │   ├── dashboard/
 │   │   ├── risk-analysis/
-│   │   ├── outreach-hub/
+│   │   ├── outreach-hub/            # EmailEditorPanel, EmailBodyEditor (TipTap)
 │   │   ├── data-management/
 │   │   └── settings/
-│   ├── lib/                         # Scoring, Gemini, Supabase clients, column-detector
+│   ├── lib/                         # Scoring, Gemini, outreach drafts, Supabase clients, column-detector
 │   ├── services/                    # auth.service.ts (Supabase auth)
 │   ├── store/                       # Zustand churn-store
 │   ├── types/
@@ -981,8 +1025,9 @@ All backend logic runs as Next.js route handlers under `src/app/api/`. Client co
 | `/api/customers` | GET, DELETE | List/filter customers; delete all imported data |
 | `/api/stats` | GET | Dashboard KPIs and engagement trend |
 | `/api/analyze` | POST | AI risk explanation per customer (Gemini + fallback) |
-| `/api/generate-email` | POST | AI retention email drafting |
-| `/api/send-email` | POST | Record outreach email as sent in DB |
+| `/api/generate-email` | POST | AI retention email drafting (also upserts a draft row) |
+| `/api/outreach/draft` | GET, POST | Load or save the current outreach draft (edited content) |
+| `/api/send-email` | POST | Send via Resend; mark outreach email as `sent` in DB |
 | `/api/settings` | GET, POST | User industry and scoring weights |
 | `/api/settings/recalculate` | POST | Re-score all customers after weight changes |
 | `/api/app-assistant` | POST | In-app advisor chat |

@@ -44,7 +44,7 @@ export function getCustomerSignalFactors(customer: SignalCustomer): CustomerSign
     {
       key: "support",
       label: `${customer.support_complaints} tickets`,
-      strength: Math.min(customer.support_complaints / 10, 1),
+      strength: Math.min(customer.support_complaints / 20, 1),
     },
     {
       key: "payment",

@@ -53,3 +53,40 @@ body {
 .landing-page a:focus-visible {
   text-decoration: none;
 }
+
+/* TipTap — Outreach Hub email body */
+.email-tiptap-editor:focus {
+  outline: none;
+}
+
+.email-tiptap-editor p {
+  margin: 0.35rem 0;
+}
+
+.email-tiptap-editor p:first-child {
+  margin-top: 0;
+}
+
+.email-tiptap-editor p:last-child {
+  margin-bottom: 0;
+}
+
+.email-tiptap-editor ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.email-tiptap-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.email-tiptap-editor li {
+  margin: 0.2rem 0;
+}
+
+.email-tiptap-editor li p {
+  margin: 0;
+}

@@ -18,7 +18,7 @@ export default function CustomerContextPanel() {
   const urlCustomerId = searchParams.get("customerId");
   const { customers, selectedCustomerId, selectCustomer, setCustomers } = useChurnStore();
   const fullListFetchedRef = useRef(false);
-  const [loadingSelected, setLoadingSelected] = useState(false);
+  const [pendingSelectedId, setPendingSelectedId] = useState<string | null>(null);
   const [loadingList, setLoadingList] = useState(() => customers.length === 0 && !urlCustomerId);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("risk_score");
@@ -26,6 +26,7 @@ export default function CustomerContextPanel() {
 
   const effectiveId = selectedCustomerId ?? urlCustomerId;
   const customer: CustomerRow | undefined = customers.find((c) => c.id === effectiveId);
+  const loadingSelected = Boolean(effectiveId && !customer && pendingSelectedId === effectiveId);
 
   useEffect(() => {
     if (urlCustomerId) selectCustomer(urlCustomerId);
@@ -67,7 +68,7 @@ export default function CustomerContextPanel() {
       const alreadyLoaded = useChurnStore.getState().customers.some((c) => c.id === customerId);
       if (alreadyLoaded) return;
 
-      setLoadingSelected(true);
+      setPendingSelectedId(customerId);
       try {
         const res = await fetch(`/api/customers?id=${encodeURIComponent(customerId)}`);
         const data = await res.json();
@@ -78,7 +79,9 @@ export default function CustomerContextPanel() {
       } catch {
         // ignore
       } finally {
-        if (!cancelled) setLoadingSelected(false);
+        if (!cancelled) {
+          setPendingSelectedId((current) => (current === customerId ? null : current));
+        }
       }
     };
 
@@ -95,10 +98,6 @@ export default function CustomerContextPanel() {
       cancelled = true;
     };
   }, [effectiveId, setCustomers]);
-
-  useEffect(() => {
-    if (customer) setLoadingSelected(false);
-  }, [customer]);
 
   const filteredCustomers = useMemo(() => {
     let list = customers;

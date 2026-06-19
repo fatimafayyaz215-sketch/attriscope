@@ -25,11 +25,11 @@ export type BillingCycle = "monthly" | "yearly";
 /**
  * Normalization caps that differ by billing cycle.
  *   monthly: inactivity capped at 30 days, support at 5 tickets
- *   yearly:  inactivity capped at 90 days, support at 10 tickets
+ *   yearly:  inactivity capped at 90 days, support at 20 tickets
  */
 export const BILLING_CAPS: Record<BillingCycle, { inactivityDays: number; supportTickets: number }> = {
   monthly: { inactivityDays: 30, supportTickets: 5 },
-  yearly:  { inactivityDays: 90, supportTickets: 10 },
+  yearly:  { inactivityDays: 90, supportTickets: 20 },
 };
 
 const DISENGAGED_INACTIVITY_DAYS = 28;
@@ -82,7 +82,7 @@ export function getRiskThresholds(industry?: string | null): { high: number; med
  * Normalization (Step 1) — caps are dynamic per billing cycle:
  *   x₁ – Login/Inactivity  : days / inactivityCap  (monthly→30, yearly→90)
  *   x₂ – Usage Drop        : ratio clamped 0–1
- *   x₃ – Support Complaints: tickets / supportCap  (monthly→5,  yearly→10)
+ *   x₃ – Support Complaints: tickets / supportCap  (monthly→5,  yearly→20)
  *   x₄ – Payment Delays    : binary 0 / 1 (same for both)
  */
 export function computeChurnScore(

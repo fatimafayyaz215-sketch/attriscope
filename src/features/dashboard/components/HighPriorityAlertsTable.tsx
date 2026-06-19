@@ -20,7 +20,7 @@ function primaryFactor(c: AlertCustomer): string {
   const scores = [
     { label: `Inactivity (${c.days_inactive}d)`, value: c.days_inactive / 90 },
     { label: `Usage Drop (${Math.round(c.usage_drop * 100)}%)`, value: c.usage_drop },
-    { label: `Support Vol. (${c.support_complaints})`, value: c.support_complaints / 10 },
+    { label: `Support Vol. (${c.support_complaints})`, value: c.support_complaints / 20 },
   ];
   scores.sort((a, b) => b.value - a.value);
   return scores[0].label;

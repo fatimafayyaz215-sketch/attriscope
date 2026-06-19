@@ -12,6 +12,8 @@
     "@google/generative-ai": "^0.24.1",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.105.3",
+    "@tiptap/react": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
     "@types/papaparse": "^5.5.2",
     "next": "16.2.4",
     "papaparse": "^5.5.3",
