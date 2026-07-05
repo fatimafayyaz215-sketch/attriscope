@@ -46,7 +46,7 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 - **Onboarding Wizard**: 3-step flow — [Industry Selection](http://localhost:3000/onboarding), [Weight Calibration](http://localhost:3000/onboarding/step-2), and [Data Connection](http://localhost:3000/onboarding/step-3).
 - **Dashboard**: [KPI cards, risk distribution, engagement trend, and alerts](http://localhost:3000/dashboard) inside a persistent sidebar shell.
 - **Risk Analysis**: [Predictive scoring workspace](http://localhost:3000/risk-analysis) with filters, deep links (`?level=high&signal=payment`), and a sticky AI intelligence panel.
-- **Outreach Hub**: [AI-personalized retention emails](http://localhost:3000/outreach-hub) with TipTap rich-text editing (bold, italic, underline, lists), tone presets, **Save Draft** (persisted to Supabase), and optional send via **Resend**.
+- **Outreach Hub**: [AI-personalized retention emails](http://localhost:3000/outreach-hub) with TipTap rich-text editing (bold, italic, underline, lists), tone presets, **Save Draft** / **View Drafts** (list, open, delete with confirmation — persisted in Supabase), and optional send via **Resend**. For **education**, AI emails include enrolled **course subject** context from the CSV.
 - **Data Management**: [CSV upload wizard](http://localhost:3000/data-management) with auto column-mapping and per-industry sample downloads.
 - **System Settings**: [Industry presets and weight tuning](http://localhost:3000/settings) with formula transparency and bulk recalculation.
 - **In-App AI Assistant**: Sidebar advisor chat (rule-based FAQs + optional Gemini) with page-aware context.
@@ -57,10 +57,14 @@ Attriscope ingests customer CSV data, scores each account on four behavioral sig
 |--------|----------------|
 | **Regenerate** | Calls `/api/generate-email` → AI content saved to `outreach_emails` (`status: draft`) |
 | **Save Draft** | Calls `/api/outreach/draft` → saves your edited To / Subject / Body to the same table |
-| **Open customer** | Loads existing draft from `/api/outreach/draft` if present; otherwise auto-generates |
+| **View Drafts** | Opens a modal listing all saved drafts (`GET /api/outreach/drafts`); click a row to open that customer |
+| **Delete draft** | Trash icon in the modal → confirm → `DELETE /api/outreach/draft?draftId=...` |
+| **Open customer** | Loads existing draft from `/api/outreach/draft` if present; otherwise auto-generates once per customer visit |
 | **Send Email** | Calls `/api/send-email` → Resend (when configured) + marks row `sent` |
 
 Draft rows live in Supabase **`outreach_emails`** (one draft per customer per user). No extra schema is required.
+
+**Note:** The email editor auto-loads once when you select a customer. Use **Regenerate** for a new AI email — opening View Drafts or saving does not re-trigger generation.
 
 ---
 
@@ -494,6 +498,8 @@ Click **Deploy**. Vercel assigns a URL like `https://your-app.vercel.app`.
 | AI features don’t work | Set `GEMINI_API_KEY`, restart dev server or redeploy Vercel |
 | Send Email fails in Outreach Hub | Set `RESEND_API_KEY` and `RESEND_TEST_RECIPIENT` (test sender mode); restart or redeploy |
 | Draft not loading after save | Confirm you reopened the same customer; drafts are keyed by `customer_id` + your user |
+| Education emails missing course name | Re-upload CSV with `course_subject`; set industry to **education** in Settings |
+| `course_subject` not auto-mapped | Map column manually in Data Management upload wizard, or rename header to `course_subject` |
 | Works locally, fails on Vercel | Match Vercel env vars to `.env.local`; redeploy |
 | CSV upload fails | Finish onboarding; use a sample CSV from Data Management |
 | Changed `.env.local`, no effect | Stop server (`Ctrl+C`), run `npm run dev` again |
@@ -541,6 +547,8 @@ Attriscope scores each customer using **4 signals**. Every industry maps differe
 | 4 | `payment_delay` | Billing/payment risk (`0` = OK, `1` = risk) |
 
 Optional: `billing_cycle` (`monthly` / `yearly`) adjusts normalization caps. Columns are auto-mapped on upload via `src/lib/column-detector.ts`.
+
+**Education-only metadata (not scoring signals):** `course_subject` — friendly enrolled course name for Outreach Hub and AI emails (see [Education — OULAD dataset](#education--oulad-dataset)). On upload, `course_subject` is preferred over `company` when both are present.
 
 Sample CSVs (downloadable in **Data Management**):
 
@@ -906,6 +914,32 @@ If a student has 2 struggling assessments (e.g. 1753 and 1756), `support_complai
 - **Rule:** `monthly` if length ≤ 210 course-days, else `yearly`
 - **Not a churn signal** — only adjusts inactivity/support normalization caps (same as SaaS monthly vs yearly plans)
 
+#### Course subject → `course_subject` (education outreach only)
+
+**Not a scoring signal.** Used for Outreach Hub labels and AI retention emails so messages can reference the student’s enrolled course (e.g. *“your Computing & IT course”*).
+
+OULAD publishes **anonymized module codes** only (`AAA`, `BBB`, …). The build script adds **readable demo labels** — not official Open University course titles.
+
+| Column | Example | Meaning |
+|--------|---------|---------|
+| `company` | `AAA · 2013J` | Technical enrollment code (module + cohort) |
+| `course_subject` | `Arts & Humanities (AAA · 2013J)` | Friendly course name + code (used in UI & AI) |
+| `code_module` | `AAA` | Raw OULAD module code (extra column; stored in `raw_data`) |
+
+**Module code → friendly title** (defined in `datasets/education/build_upload_csv.py`):
+
+| `code_module` | Friendly title |
+|---------------|----------------|
+| AAA | Arts & Humanities |
+| BBB | Business & Management |
+| CCC | Computing & IT |
+| DDD | Design & Innovation |
+| EEE | Engineering & Technology |
+| FFF | Foundation Mathematics |
+| GGG | Health & Social Care |
+
+**App behavior:** Upload maps `course_subject` via `src/lib/column-detector.ts`. If present, it is stored as the customer’s enrollment label and passed to `/api/generate-email` and `/api/analyze` when industry is **education** (`src/lib/enrollment-context.ts`).
+
 #### Default weights (education preset)
 
 | Factor | Weight |
@@ -926,7 +960,19 @@ python datasets/education/build_upload_csv.py --full   # all enrollments (~32k)
 
 Writes to `datasets/education/education-sample-customers.csv` and `public/education-sample-customers.csv`.
 
-Output uses `days_inactive` directly (no `last_login_at` in the CSV). Upload columns: `customer_id`, `name`, `email`, `company`, `days_inactive`, `current_sessions`, `previous_sessions`, `support_complaints`, `payment_delay`, `billing_cycle`.
+Output uses `days_inactive` directly (no `last_login_at` in the CSV). Upload columns:
+
+```csv
+customer_id,name,email,company,course_subject,days_inactive,current_sessions,previous_sessions,support_complaints,payment_delay,billing_cycle,code_module,region
+```
+
+Example row:
+
+```csv
+AAA-2013J-238007,Lucas Patel,238007@education.demo,AAA · 2013J,Arts & Humanities (AAA · 2013J),16,70,252,0,0,yearly,AAA,South Region
+```
+
+Re-upload the sample CSV after pulling latest changes if you previously imported an older file without `course_subject`.
 
 **Validate (FYP):** ground truth = `final_result == "Withdrawn"` in `studentInfo.csv`.
 
@@ -960,7 +1006,9 @@ churn-old/                           # Git repo root = Next.js app (run npm comm
 │   │   │   └── forgot-password/
 │   │   ├── onboarding/              # 3-step wizard (outside dashboard shell)
 │   │   ├── api/                     # Route handlers (see API Routes)
-│   │   │   └── outreach/draft/      # GET/POST saved outreach drafts
+│   │   │   └── outreach/
+│   │   │       ├── draft/           # GET/POST/DELETE single draft
+│   │   │       └── drafts/          # GET all saved drafts (modal list)
 │   │   ├── auth/callback/           # OAuth / magic-link session exchange
 │   │   ├── globals.css              # Design tokens + Tailwind
 │   │   ├── layout.tsx               # Root layout
@@ -976,10 +1024,10 @@ churn-old/                           # Git repo root = Next.js app (run npm comm
 │   │   ├── onboarding/
 │   │   ├── dashboard/
 │   │   ├── risk-analysis/
-│   │   ├── outreach-hub/            # EmailEditorPanel, EmailBodyEditor (TipTap)
+│   │   ├── outreach-hub/            # EmailEditorPanel, DraftsModal, CustomerContextPanel (TipTap)
 │   │   ├── data-management/
 │   │   └── settings/
-│   ├── lib/                         # Scoring, Gemini, outreach drafts, Supabase clients, column-detector
+│   ├── lib/                         # Scoring, Gemini, outreach drafts, enrollment-context, column-detector
 │   ├── services/                    # auth.service.ts (Supabase auth)
 │   ├── store/                       # Zustand churn-store
 │   ├── types/
@@ -1025,8 +1073,9 @@ All backend logic runs as Next.js route handlers under `src/app/api/`. Client co
 | `/api/customers` | GET, DELETE | List/filter customers; delete all imported data |
 | `/api/stats` | GET | Dashboard KPIs and engagement trend |
 | `/api/analyze` | POST | AI risk explanation per customer (Gemini + fallback) |
-| `/api/generate-email` | POST | AI retention email drafting (also upserts a draft row) |
-| `/api/outreach/draft` | GET, POST | Load or save the current outreach draft (edited content) |
+| `/api/generate-email` | POST | AI retention email drafting (also upserts a draft row; education includes `course_subject`) |
+| `/api/outreach/draft` | GET, POST, DELETE | Load, save, or delete one outreach draft |
+| `/api/outreach/drafts` | GET | List all saved drafts for the current user (Outreach Hub modal) |
 | `/api/send-email` | POST | Send via Resend; mark outreach email as `sent` in DB |
 | `/api/settings` | GET, POST | User industry and scoring weights |
 | `/api/settings/recalculate` | POST | Re-score all customers after weight changes |
@@ -1080,7 +1129,7 @@ Dark-mode values are set via `@media (prefers-color-scheme: dark)`.
 - **`src/components/layout`** — persistent shell (Sidebar, TopBar, DashboardShell)
 - **`src/components/ui`** — reusable primitives (Button, Input)
 - **`src/app/(dashboard)`** — route group for authenticated pages with shared layout
-- **`src/lib/`** — pure utilities (scoring, Gemini, Supabase clients)
+- **`src/lib/`** — pure utilities (scoring, Gemini, Supabase clients, `outreach-email.ts` draft CRUD, `enrollment-context.ts` education course labels)
 - **`src/services/`** — Supabase auth wrappers (`auth.service.ts`)
 - **`src/store/`** — client-side Zustand state
 
