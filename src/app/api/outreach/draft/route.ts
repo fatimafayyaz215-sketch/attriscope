@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import {
   assertCustomerOwnedByUser,
+  deleteOutreachDraft,
   isValidEmail,
   stripHtml,
   upsertOutreachDraft,
@@ -101,4 +102,28 @@ export async function POST(request: NextRequest) {
     id: result.id,
     savedAt,
   });
+}
+
+export async function DELETE(request: NextRequest) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const draftId = request.nextUrl.searchParams.get("draftId")?.trim() ?? "";
+  if (!draftId) {
+    return NextResponse.json({ error: "Missing draftId" }, { status: 400 });
+  }
+
+  const result = await deleteOutreachDraft(supabase, user.id, draftId);
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error }, { status: result.status });
+  }
+
+  return NextResponse.json({ success: true, customerId: result.customerId });
 }

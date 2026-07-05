@@ -48,7 +48,15 @@ function formatSavedAt(value: string): string {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export default function EmailEditorPanel() {
+type EmailEditorPanelProps = {
+  onViewDrafts?: () => void;
+  onRegisterDraftDeleteHandler?: (handler: (customerId: string) => void) => void;
+};
+
+export default function EmailEditorPanel({
+  onViewDrafts,
+  onRegisterDraftDeleteHandler,
+}: EmailEditorPanelProps) {
   const searchParams = useSearchParams();
   const urlCustomerId = searchParams.get("customerId");
   const { selectedCustomerId, customers } = useChurnStore();
@@ -69,6 +77,7 @@ export default function EmailEditorPanel() {
   const [toast, setToast] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const inFlightCustomerIdRef = useRef<string | null>(null);
+  const initializedCustomerIdRef = useRef<string | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bodyEditorRef = useRef<EmailBodyEditorHandle | null>(null);
 
@@ -76,6 +85,27 @@ export default function EmailEditorPanel() {
     bodyEditorRef.current?.setContent(html);
     setEmailBody(html);
   }, []);
+
+  const clearAfterDraftDelete = useCallback(
+    (customerId: string) => {
+      if (customerId !== effectiveId) return;
+
+      const currentCustomer = customers.find((c) => c.id === customerId);
+      if (!currentCustomer) return;
+
+      setSent(false);
+      setError("");
+      setSavedAt(null);
+      setToEmail(currentCustomer.email ?? "");
+      setSubject("");
+      setEditorHtml("");
+    },
+    [customers, effectiveId, setEditorHtml],
+  );
+
+  useEffect(() => {
+    onRegisterDraftDeleteHandler?.(clearAfterDraftDelete);
+  }, [clearAfterDraftDelete, onRegisterDraftDeleteHandler]);
 
   useEffect(() => {
     return () => {
@@ -195,7 +225,16 @@ export default function EmailEditorPanel() {
   }, [effectiveId, emailBody, showToast, subject, toEmail]);
 
   useEffect(() => {
-    if (!customer || !effectiveId) return;
+    if (!effectiveId) {
+      initializedCustomerIdRef.current = null;
+      return;
+    }
+
+    const currentCustomer = customers.find((c) => c.id === effectiveId);
+    if (!currentCustomer) return;
+
+    if (initializedCustomerIdRef.current === effectiveId) return;
+    initializedCustomerIdRef.current = effectiveId;
 
     let cancelled = false;
 
@@ -204,7 +243,7 @@ export default function EmailEditorPanel() {
       setSent(false);
       setError("");
       setSavedAt(null);
-      setToEmail(customer.email ?? "");
+      setToEmail(currentCustomer.email ?? "");
       setSubject("");
       setEditorHtml("");
 
@@ -218,7 +257,7 @@ export default function EmailEditorPanel() {
 
         if (res.ok && data.draft) {
           applyDraft({
-            toEmail: data.draft.toEmail ?? customer.email ?? "",
+            toEmail: data.draft.toEmail ?? currentCustomer.email ?? "",
             subject: data.draft.subject ?? "",
             body: data.draft.body ?? "",
             savedAt: data.draft.savedAt,
@@ -241,7 +280,7 @@ export default function EmailEditorPanel() {
     return () => {
       cancelled = true;
     };
-  }, [applyDraft, customer, effectiveId, setEditorHtml]);
+  }, [applyDraft, customers, effectiveId, setEditorHtml]);
 
   const sendEmail = async () => {
     if (!effectiveId) return;
@@ -412,6 +451,15 @@ export default function EmailEditorPanel() {
           {savedAt ? `Draft saved at ${savedAt}` : "No draft saved yet"}
         </div>
         <div className="flex items-center gap-3 ml-auto">
+          {onViewDrafts && (
+            <button
+              type="button"
+              onClick={onViewDrafts}
+              className="px-5 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              View Drafts
+            </button>
+          )}
           <button
             onClick={() => {
               void saveDraft();
