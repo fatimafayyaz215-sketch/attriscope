@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useChurnStore } from "@/store/churn-store";
 
 const ALL_FIELDS: MappedField[] = [
-  "customer_id", "name", "email", "company",
+  "customer_id", "name", "email", "company", "course_subject",
   "last_login_at", "days_inactive", "current_sessions",
   "previous_sessions", "support_complaints", "payment_delay", "billing_cycle", "ignore",
 ];

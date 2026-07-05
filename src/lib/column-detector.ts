@@ -8,6 +8,7 @@ export type MappedField =
   | "name"
   | "email"
   | "company"
+  | "course_subject"
   | "last_login_at"
   | "days_inactive"
   | "current_sessions"
@@ -22,6 +23,7 @@ export const FIELD_LABELS: Record<MappedField, string> = {
   name: "Customer Name",
   email: "Email Address",
   company: "Company / Org",
+  course_subject: "Course Subject (education)",
   last_login_at: "Last Login Date",
   days_inactive: "Days Inactive",
   current_sessions: "Current Sessions",
@@ -37,6 +39,8 @@ const PATTERNS: Record<MappedField, RegExp> = {
   name: /^(customer_?name|full_?name|client_?name|first_?name|account_?name|^name$)$/i,
   email: /^(email|email_?address|contact_?email|user_?email)$/i,
   company: /^(company|company_?name|org|organization|account|business)$/i,
+  course_subject:
+    /^(course_?subject|subject_?enrolled|enrolled_?course|course_?name|course_?title|module_?enrollment)$/i,
   last_login_at: /^(last_?login(_?at)?|last_?login_?date|last_?activity|last_?active|last_?seen|last_?visit|last_?access|lastlogin)$/i,
   days_inactive: /^(days_?inactive|inactive_?days|days_?since_?login|days_?without_?login)$/i,
   current_sessions: /^(sessions|current_?sessions|session_?count|monthly_?sessions|monthly_?usage|current_?usage|feature_?usage|logins|monthly_?logins|usage)$/i,
@@ -57,10 +61,25 @@ function normalizeHeader(header: string): string {
 
 export function detectColumn(header: string): MappedField {
   const normalized = normalizeHeader(header);
-  for (const [field, pattern] of Object.entries(PATTERNS)) {
-    if (field === "ignore") continue;
-    if (pattern.test(normalized)) return field as MappedField;
+  const order: MappedField[] = [
+    "course_subject",
+    "customer_id",
+    "name",
+    "email",
+    "company",
+    "last_login_at",
+    "days_inactive",
+    "current_sessions",
+    "previous_sessions",
+    "support_complaints",
+    "payment_delay",
+    "billing_cycle",
+  ];
+
+  for (const field of order) {
+    if (PATTERNS[field].test(normalized)) return field;
   }
+
   return "ignore";
 }
 

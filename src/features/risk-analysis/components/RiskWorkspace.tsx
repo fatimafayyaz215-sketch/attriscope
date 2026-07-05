@@ -120,7 +120,7 @@ export default function RiskWorkspace() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 min-w-0">
       {/* Header */}
       <div className="flex flex-col gap-4">
         <div>
@@ -200,7 +200,7 @@ export default function RiskWorkspace() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-sm min-w-0 overflow-hidden">
         {loading ? (
           <div className="p-16 flex justify-center">
             <div className="w-8 h-8 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
@@ -228,17 +228,17 @@ export default function RiskWorkspace() {
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
+          <div className="overflow-x-auto overscroll-x-contain">
+          <table className="w-full min-w-[720px] text-left text-sm">
             <thead className="bg-gray-50/50">
               <tr>
-                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Risk Score</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Level</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <th className="px-4 sm:px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer</th>
+                <th className="px-4 sm:px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Risk Score</th>
+                <th className="px-4 sm:px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Level</th>
+                <th className="px-4 sm:px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                   {signalFilter !== "all" ? "Matched Signal" : "Key Factor"}
                 </th>
-                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Action</th>
+                <th className="px-4 sm:px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -255,13 +255,13 @@ export default function RiskWorkspace() {
                     onClick={() => handleSelect(c)}
                     className={`cursor-pointer transition-colors ${isSelected ? "bg-blue-50/50 border-l-2 border-l-blue-500" : "hover:bg-gray-50/50"}`}
                   >
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="font-bold text-gray-900">{c.name}</div>
-                        <div className="text-[11px] text-gray-500">{c.company || c.email || "—"}</div>
+                    <td className="px-4 sm:px-6 py-4 max-w-[220px]">
+                      <div className="min-w-0">
+                        <div className="font-bold text-gray-900 truncate">{c.name}</div>
+                        <div className="text-[11px] text-gray-500 break-words">{c.company || c.email || "—"}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center justify-center gap-3">
                         <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden shrink-0">
                           <div className={`h-full ${barColor}`} style={{ width: `${c.risk_score}%` }} />
@@ -269,20 +269,20 @@ export default function RiskWorkspace() {
                         <span className={`font-bold ${scoreColor}`}>{c.risk_score}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-4 sm:px-6 py-4 text-center whitespace-nowrap">
                       <span className={`text-[10px] font-bold px-3 py-1 rounded-full tracking-wider ${badgeColor}`}>
                         {c.risk_level.toUpperCase()}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-600 text-xs">
+                    <td className="px-4 sm:px-6 py-4 text-gray-600 text-xs whitespace-nowrap">
                       <span className={signalFilter !== "all" ? "font-semibold text-red-600" : ""}>
                         {displayFactor.label}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-4 sm:px-6 py-4 text-right whitespace-nowrap">
                       <button
                         onClick={(e) => { e.stopPropagation(); selectCustomer(c.id); router.push(`/outreach-hub?customerId=${c.id}`); }}
-                        className="text-xs font-bold text-blue-700 bg-white border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded transition-colors shadow-sm"
+                        className="text-xs font-bold text-blue-700 bg-white border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded transition-colors shadow-sm shrink-0"
                       >
                         Outreach →
                       </button>

@@ -71,24 +71,24 @@ Sign up → Onboarding → Upload CSV → Dashboard → Risk Analysis → Outrea
 When you clone the repo, you get **two main areas**:
 
 ```
-churn-old/                          ← repo root (example clone path)
-│
-├── churn-prediction/               ← THE WEB APP (90% of what matters)
-│   ├── src/                        ← all application code
-│   ├── public/                     ← sample CSVs, images
-│   ├── supabase/                   ← database blueprint + email templates
-│   └── package.json                ← list of libraries the app uses
-│
-└── datasets/                       ← Python tools (FYP / research only)
-    ├── saas/
-    ├── entertainment/
-    └── education/
+<repo-root>/                        ← THE WEB APP — run npm commands here (folder with package.json)
+├── src/                            ← all application code
+├── public/                         ← sample CSVs, images
+├── supabase/                       ← database blueprint + email templates
+└── package.json                    ← list of libraries the app uses
+
+datasets/                           ← Python tools (FYP / research only; sibling folder when present)
+├── saas/
+├── entertainment/
+└── education/
 ```
 
 | Area | Purpose |
 |------|---------|
-| **`churn-prediction/`** | The live website users interact with |
+| **Repo root** (`package.json` here) | The live website users interact with |
 | **`datasets/`** | Builds and validates sample CSV files that get uploaded into the app |
+
+> Some local clones use an extra parent folder (e.g. `churn-prediction/churn-prediction/`). Always `cd` into the directory that contains `package.json` before running `npm install` or `npm run dev`.
 
 ---
 
@@ -125,10 +125,10 @@ churn-old/                          ← repo root (example clone path)
 
 ## 5. App Folder Map
 
-Everything inside `churn-prediction/`:
+Everything inside the app folder (where `package.json` lives):
 
 ```
-churn-prediction/
+<repo-root>/
 ├── public/                 Static files (sample CSVs, icons)
 ├── supabase/               Database SQL + auth email HTML
 ├── src/
@@ -189,7 +189,7 @@ The `(public)` part is invisible in the URL — it's just an organizer.
 |-----|---------|
 | `/dashboard` | KPIs, charts, high-risk alerts |
 | `/risk-analysis` | Search/filter customers, AI explanations |
-| `/outreach-hub` | Draft retention emails |
+| `/outreach-hub` | AI retention emails — edit, save/load drafts, view all drafts, optional send |
 | `/data-management` | Upload CSV, map columns, delete data |
 | `/settings` | Industry, weights, formula transparency |
 
@@ -222,8 +222,12 @@ Think of APIs as **waiters**: the screen orders something, the API goes to the k
 | `DELETE /api/customers` | Delete all imported customer data |
 | `GET /api/stats` | Numbers for dashboard charts |
 | `POST /api/analyze` | AI explanation: "Why is this customer risky?" |
-| `POST /api/generate-email` | AI drafts a retention email |
-| `POST /api/send-email` | Mark email as "sent" in database *(does not send via Gmail)* |
+| `POST /api/generate-email` | AI drafts a retention email (also saves a draft row; education includes course subject) |
+| `GET /api/outreach/draft` | Load saved draft for one customer |
+| `POST /api/outreach/draft` | Save edited To / Subject / Body |
+| `DELETE /api/outreach/draft?draftId=...` | Delete a saved draft |
+| `GET /api/outreach/drafts` | List all saved drafts (View Drafts modal) |
+| `POST /api/send-email` | Send via **Resend** when configured; marks row `sent` in database |
 | `GET /api/settings` | Read user's industry and weights |
 | `POST /api/settings` | Save industry and weights |
 | `POST /api/settings/recalculate` | Re-score all customers after weight change |
@@ -244,7 +248,7 @@ src/features/
 ├── onboarding/        Industry cards, weight sliders
 ├── dashboard/         Stat cards, charts, alerts table
 ├── risk-analysis/     Customer table, filters, AI panel
-├── outreach-hub/      Email editor, customer context
+├── outreach-hub/      Email editor, drafts modal, customer context
 ├── data-management/   CSV upload wizard, delete data
 └── settings/          Industry picker, weights, formula display
 ```
@@ -256,7 +260,7 @@ src/features/
 | **onboarding** | `IndustryCard`, `WeightSlider` | First-time setup |
 | **dashboard** | `StatCards`, `RiskDistributionChart`, `EngagementTrendChart`, `HighPriorityAlertsTable` | Home screen after login |
 | **risk-analysis** | `RiskWorkspace`, `RiskIntelligencePanel` | Deep dive + AI "why" |
-| **outreach-hub** | `EmailEditorPanel`, `CustomerContextPanel` | Write emails to save customers |
+| **outreach-hub** | `EmailEditorPanel`, `DraftsModal`, `CustomerContextPanel` | AI emails, save/view/delete drafts, optional send |
 | **data-management** | `DataImportWorkspace`, `DataGuidancePanel`, `DeleteImportedDataButton` | Import spreadsheet |
 | **settings** | `IndustrySelector`, `WeightTuning`, `FormulaTransparency`, `SettingsFooter` | Tune scoring |
 
@@ -297,7 +301,9 @@ src/features/
 |------|---------|---------|
 | **`scoring.ts`** | Turns 4 signals into 0–100 score + High/Medium/Low | The calculator |
 | **`industry-defaults.ts`** | Default weights & risk thresholds per industry | Preset recipes |
-| **`column-detector.ts`** | Auto-maps CSV columns (name, email, sessions…) | Spreadsheet translator |
+| **`column-detector.ts`** | Auto-maps CSV columns (name, email, sessions, `course_subject`…) | Spreadsheet translator |
+| **`enrollment-context.ts`** | Education-only labels for enrolled course in UI & AI prompts | Course context helper |
+| **`outreach-email.ts`** | Load, save, delete outreach drafts in Supabase | Draft filing |
 | **`inactivity.ts`** | Converts "last login date" → "days inactive" | Date math |
 | **`billing-cycle.ts`** | Reads monthly vs yearly from CSV | Billing parser |
 | **`customer-signals.ts`** | Finds strongest risk signal per customer | "Main red flag" |
@@ -395,6 +401,8 @@ Do this once per Supabase project. If you skip it, auth still works — emails j
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → **Settings → General** → Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → **Settings → API Keys** → **Publishable key** → copy (`sb_publishable_...`) |
 | `GEMINI_API_KEY` | No | Google AI (emails, explanations, chat) |
+| `RESEND_API_KEY` | No | Outreach Hub **Send Email** (via Resend) |
+| `RESEND_TEST_RECIPIENT` | No | Required in Resend test mode — where test sends go |
 
 ---
 
@@ -416,7 +424,9 @@ Each folder has:
 | `build_upload_csv.py` | Creates the CSV file users upload in the app |
 | `validate_formula.py` | Compares predictions vs real churn/withdrawal labels |
 
-Output CSVs are copied to `churn-prediction/public/` for download in Data Management.
+Output CSVs are copied to `public/` (next to `package.json`) for download in Data Management.
+
+**Education only:** `build_upload_csv.py` adds a `course_subject` column with friendly course names mapped from OULAD module codes (`AAA` → Arts & Humanities, etc.). This is **not** used in scoring — only Outreach Hub labels and AI emails.
 
 ---
 
@@ -438,8 +448,8 @@ Each customer gets a **Risk Score 0–100** from four signals:
 
 | Industry | Inactivity | Usage | Support | Payment | High risk if score ≥ |
 |----------|------------|-------|---------|---------|----------------------|
-| **SaaS** | 10% | 45% | 15% | 30% | 70 |
-| **Entertainment** | 35% | 30% | 20% | 15% | 70 |
+| **SaaS** | 20% | 30% | 30% | 20% | 70 |
+| **Entertainment** | 30% | 30% | 20% | 20% | 70 |
 | **Education** | 35% | 25% | 15% | 25% | 50 |
 
 Users can override weights in **Settings** or during onboarding.
@@ -509,7 +519,10 @@ npm run lint     # check code quality
 → Data Management page → `src/app/api/upload/route.ts`
 
 **Does the app actually send emails?**  
-→ It drafts emails with AI and records them as "sent" in the database. It does **not** connect to Gmail/SMTP yet.
+→ **Drafting always works** — AI generates content, and you can **Save Draft**, **View Drafts** (list all), open a customer’s draft, or **delete** with confirmation. Drafts live in Supabase (`outreach_emails`, one per customer per user). **Send Email** uses **Resend** when `RESEND_API_KEY` is set; otherwise only draft/save flows work. The editor auto-generates once per customer visit — use **Regenerate** for a new AI email.
+
+**What is `course_subject` (education)?**  
+→ Optional CSV column with a friendly enrolled course name (e.g. *Computing & IT*). Not a scoring signal — used in Outreach Hub and AI emails when industry is **education**. Re-upload the sample CSV if your data predates this column.
 
 **What if Gemini API key is missing?**  
 → App still works. AI features use simpler fallback text.
@@ -545,7 +558,7 @@ npm run lint     # check code quality
 |--------|-----|------------------|
 | Dashboard | `/dashboard` | Overview of risk across all customers |
 | Risk Analysis | `/risk-analysis` | Find and understand at-risk customers |
-| Outreach Hub | `/outreach-hub` | Draft retention emails |
+| Outreach Hub | `/outreach-hub` | AI retention emails, drafts, optional send |
 | Data Management | `/data-management` | Import or delete customer data |
 | System Settings | `/settings` | Industry and scoring weights |
 

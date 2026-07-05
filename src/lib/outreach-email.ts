@@ -83,3 +83,24 @@ export async function upsertOutreachDraft(
 
   return { ok: true, id: inserted.id };
 }
+
+export async function deleteOutreachDraft(
+  supabase: SupabaseClient,
+  userId: string,
+  draftId: string,
+): Promise<
+  { ok: true; customerId: string } | { ok: false; status: number; error: string }
+> {
+  const { data, error } = await supabase
+    .from("outreach_emails")
+    .delete()
+    .eq("id", draftId)
+    .eq("user_id", userId)
+    .eq("status", "draft")
+    .select("customer_id")
+    .maybeSingle();
+
+  if (error) return { ok: false, status: 500, error: error.message };
+  if (!data) return { ok: false, status: 404, error: "Draft not found" };
+  return { ok: true, customerId: data.customer_id };
+}
