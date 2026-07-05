@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useChurnStore, type CustomerRow } from "@/store/churn-store";
+import { getEnrollmentFieldLabel } from "@/lib/enrollment-context";
+import { normalizeIndustry } from "@/lib/industry-defaults";
 
 type SortKey = "risk_score" | "name" | "days_inactive";
 type FilterLevel = "all" | "high" | "medium" | "low";
@@ -16,7 +18,8 @@ export default function CustomerContextPanel() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlCustomerId = searchParams.get("customerId");
-  const { customers, selectedCustomerId, selectCustomer, setCustomers } = useChurnStore();
+  const { customers, selectedCustomerId, selectCustomer, setCustomers, industry } = useChurnStore();
+  const enrollmentLabel = getEnrollmentFieldLabel(normalizeIndustry(industry));
   const fullListFetchedRef = useRef(false);
   const [pendingSelectedId, setPendingSelectedId] = useState<string | null>(null);
   const [loadingList, setLoadingList] = useState(() => customers.length === 0 && !urlCustomerId);
@@ -139,7 +142,7 @@ export default function CustomerContextPanel() {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search by name, company, email…"
+              placeholder={`Search by name, ${enrollmentLabel.toLowerCase()}, email…`}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white"
@@ -264,7 +267,13 @@ export default function CustomerContextPanel() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900 leading-tight">{customer.name}</h2>
-              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">{customer.company || customer.email || "—"}</p>
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">
+                {normalizeIndustry(industry) === "education"
+                  ? customer.company
+                    ? `${enrollmentLabel}: ${customer.company}`
+                    : customer.email || "—"
+                  : customer.company || customer.email || "—"}
+              </p>
             </div>
           </div>
           <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest text-center leading-tight ${riskBadgeColor}`}>

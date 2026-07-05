@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
+import { formatEnrollmentForPrompt } from "@/lib/enrollment-context";
 import { generateGeminiText, hasGeminiApiKey } from "@/lib/gemini";
+import { normalizeIndustry } from "@/lib/industry-defaults";
 
 const GENERATION_TIMEOUT_MS = 7000;
 
@@ -43,6 +45,16 @@ export async function POST(request: NextRequest) {
 
   if (custErr || !customer) return NextResponse.json({ error: "Customer not found" }, { status: 404 });
 
+  const { data: settingsRow } = await supabase
+    .from("user_settings")
+    .select("industry")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const industry = normalizeIndustry(settingsRow?.industry);
+  const enrollmentContext = formatEnrollmentForPrompt(industry, customer.company);
+  const accountLabel = industry === "education" ? "Course" : "Company";
+
   const dynamicDaysInactive = computeDaysInactiveFromLastLogin(customer.last_login_at, customer.days_inactive);
   const customerWithDynamicInactivity = { ...customer, days_inactive: dynamicDaysInactive };
 
@@ -57,7 +69,7 @@ export async function POST(request: NextRequest) {
 
   const prompt = `You are a customer success expert. Analyse this at-risk customer and explain in 2–3 plain-English sentences why they are likely to churn. Be specific and actionable. Do NOT use markdown.
 
-Customer: ${customerWithDynamicInactivity.name} (${customerWithDynamicInactivity.company || "unknown company"})
+Customer: ${customerWithDynamicInactivity.name} (${enrollmentContext ?? `${accountLabel}: ${customerWithDynamicInactivity.company || "unknown"}`})
 Risk Score: ${customerWithDynamicInactivity.risk_score}/100 (${customerWithDynamicInactivity.risk_level.toUpperCase()} risk)
 Days since last login: ${customerWithDynamicInactivity.days_inactive}
 Usage drop: ${Math.round(Number(customerWithDynamicInactivity.usage_drop) * 100)}%

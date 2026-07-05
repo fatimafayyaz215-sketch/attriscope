@@ -72,7 +72,9 @@ export async function POST(request: NextRequest) {
   const records = rows.map((row) => {
     const name = getField(row, "name", mapping) || getField(row, "customer_id", mapping) || "Unknown";
     const email = getField(row, "email", mapping).toLowerCase();
-    const company = getField(row, "company", mapping);
+    const companyField = getField(row, "company", mapping);
+    const courseSubject = getField(row, "course_subject", mapping);
+    const company = courseSubject || companyField;
 
     const rawDays = getField(row, "days_inactive", mapping);
     const rawLogin = getField(row, "last_login_at", mapping);

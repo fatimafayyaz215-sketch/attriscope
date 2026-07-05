@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { computeDaysInactiveFromLastLogin } from "@/lib/inactivity";
+import { formatEnrollmentForPrompt, shouldPreserveEnrollmentInEmail } from "@/lib/enrollment-context";
 import { generateGeminiText, hasGeminiApiKey } from "@/lib/gemini";
+import { normalizeIndustry } from "@/lib/industry-defaults";
 import { upsertOutreachDraft } from "@/lib/outreach-email";
 
 const GENERATION_TIMEOUT_MS = 12000;//12 seconds
@@ -20,7 +22,13 @@ function getSubjectForTone(tone: Tone, eventName: string | null): string {
   return "Quick check-in — can we help?";
 }
 
-function buildPrompt(tone: Tone, customerName: string, reasonString: string, eventName: string | null): string {
+function buildPrompt(
+  tone: Tone,
+  customerName: string,
+  reasonString: string,
+  eventName: string | null,
+  enrollmentContext: string | null,
+): string {
   const toneInstruction =
     tone === "discount"
       ? "Write a retention email that includes a clear discount or incentive offer to encourage reactivation."
@@ -46,7 +54,7 @@ function buildPrompt(tone: Tone, customerName: string, reasonString: string, eve
   return `${toneInstruction} The email should be warm, specific, and offer a clear next step.
 
 Customer name: ${customerName}
-Risk indicators: ${reasonString}
+${enrollmentContext ? `${enrollmentContext}\n` : ""}Risk indicators: ${reasonString}
 Sender: Your Customer Success Team
 
 Rules:
@@ -57,14 +65,18 @@ Rules:
 - End with a clear call to action (book a call, reply, etc.)
 - Output ONLY the email body text (do not include any subject line)
 - Do not write "Subject:" or any subject-like header
-- Do not mention any company name (including customer company names)
+- Do not mention any company name (including customer company names)${enrollmentContext ? "\n- You may reference the enrolled course/subject naturally when re-engaging the student" : ""}
 - Use neutral wording like "we", "our", "our team" instead of company names/placeholders
 - Use the actual customer name
 - Plain text only, no markdown
 ${toneRules.join("\n")}`;
 }
 
-function sanitizeEmailBody(rawBody: string, company?: string | null): string {
+function sanitizeEmailBody(
+  rawBody: string,
+  company?: string | null,
+  preserveEnrollment = false,
+): string {
   let body = rawBody.trim();
 
   // Remove accidental subject headings from the email body.
@@ -74,7 +86,11 @@ function sanitizeEmailBody(rawBody: string, company?: string | null): string {
     .replace(/^\s*#+\s*subject\s*.*\r?\n?/i, "")
     .trim();
 
-  // Enforce neutral wording for company references.
+  if (preserveEnrollment) {
+    return body;
+  }
+
+  // Enforce neutral wording for company references (SaaS / entertainment).
   if (company) {
     body = body.replaceAll(company, "our team");
   }
@@ -136,6 +152,16 @@ export async function POST(request: NextRequest) {
 
   if (custErr || !customer) return NextResponse.json({ error: "Customer not found" }, { status: 404 });
 
+  const { data: settingsRow } = await supabase
+    .from("user_settings")
+    .select("industry")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const industry = normalizeIndustry(settingsRow?.industry);
+  const enrollmentContext = formatEnrollmentForPrompt(industry, customer.company);
+  const preserveEnrollment = shouldPreserveEnrollmentInEmail(industry);
+
   const dynamicDaysInactive = computeDaysInactiveFromLastLogin(customer.last_login_at, customer.days_inactive);
 
   // Fetch sender's profile (auth user email as fallback sender name)
@@ -152,14 +178,14 @@ export async function POST(request: NextRequest) {
   const reasonString = riskReasons.length > 0 ? riskReasons.join(", ") : "shows signs of disengagement";
   const eventName = tone === "event" ? eventNameInput : null;
 
-  const prompt = buildPrompt(tone, customer.name, reasonString, eventName);
+  const prompt = buildPrompt(tone, customer.name, reasonString, eventName, enrollmentContext);
   const subject = getSubjectForTone(tone, eventName);
   let emailBody = "";
   let source: "gemini" | "fallback" = "gemini";
 
   try {
     const generatedBody = await generateGeminiText(prompt, { timeoutMs: GENERATION_TIMEOUT_MS });
-    emailBody = sanitizeEmailBody(generatedBody, customer.company);
+    emailBody = sanitizeEmailBody(generatedBody, customer.company, preserveEnrollment);
   } catch {
     source = "fallback";
     emailBody = buildFallbackEmailBody(customer, reasonString, tone, eventName);
