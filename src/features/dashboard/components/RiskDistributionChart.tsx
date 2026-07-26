@@ -7,7 +7,7 @@ import { useChurnStore } from "@/store/churn-store";
 interface Stats { total: number; high: number; medium: number; low: number; }
 
 const BARS = [
-  { key: "high",   label: "High",   color: "#ef4444", bg: "#fef2f2" },
+  { key: "high",   label: "High",   color: "#8b5cf6", bg: "#faf5ff" },
   { key: "medium", label: "Med",    color: "#f59e0b", bg: "#fffbeb" },
   { key: "low",    label: "Low",    color: "#10b981", bg: "#ecfdf5" },
 ];
